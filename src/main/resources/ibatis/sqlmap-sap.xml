@@ -308,7 +308,7 @@
 	
 	
 	
-	
+
 	<select id="getQuoteTotal" parameterClass="quoteSap" resultClass="quoteSap">
 		<![CDATA[
         select 
