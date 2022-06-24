@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+		<title>Index</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+        #CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+		<style type="text/css">
+        #banner {position:relative; width:550px; height:220px; border:0px solid #666; overflow:hidden;}
+        #banner_list img {border:0px;width:560px; height:220px;}
+        #banner_bg {position:absolute; bottom:0;background-color:#000;height:30px;filter: Alpha(Opacity=30);opacity:0.3;z-index:1000;cursor:pointer; width:560px; }
+        #banner_info{position:absolute; bottom:0; left:5px;height:22px;color:#fff;z-index:1001;cursor:pointer}
+        #banner_text {position:absolute;width:120px;z-index:1002; right:3px; bottom:3px;}
+        #banner ul {position:absolute;list-style-type:none;filter: Alpha(Opacity=80);opacity:0.8; border:1px solid #fff;z-index:1002;
+        			margin:0; padding:0; bottom:3px; right:5px;}
+        #banner ul li { padding:0px 8px;float:left;display:block;color:#FFF;border:#e5eaff 1px solid;background:#6f4f67;cursor:pointer}
+        #banner ul li.on { background:#900}
+        #banner_list a{position:absolute;}
+		  
+ 
+        #a {  text-decoration: none;  } 
+        
+  
+ 
+		</style>
+    </head>
+		<body>
+			<!--
+			<table style="margin:2% 5% 3% 10%" width="80%"   border="0" cellspacing="0" cellpadding="0">
+			   <tr>
+				<td>
+					 <a   href="$!{env.appUrl}/wfe/eventAction!toTripApply.jspa"> 
+                    <img height="69px" width="67px" src="$!{env.imgUrl}/images/banners/icon1.gif"></img> 
+					</a>
+					</br>出差申请
+				</td>
+				<td>
+				  <a href="$!{env.appUrl}/allUserAction!searchAddressBookPre.jspa">
+                    <img height="69px" width="67px" src="$!{env.imgUrl}/images/banners/icon2.gif"></img> 
+					</a>
+					</br>通讯录
+				</td>
+				<td>
+				   <a href="$!{env.appUrl}/wfe/eventAction!toSearchEvent.jspa">
+                    <img height="69px" width="67px" src="$!{env.imgUrl}/images/banners/icon3.gif"></img> 
+					</a>
+					</br>我的事务
+				</td>
+				<td>
+				   <a href="$!{env.appUrl}/wfe/eventAction!toSearchProcessEvent.jspa">
+                    <img height="69px" width="67px" src="$!{env.imgUrl}/images/banners/icon4.gif"></img> 
+					</a>
+					</br>待办事务
+				</td>
+				<td>
+				   <a href="$!{env.appUrl}/wfe/eventAction!toSearchProcessedEvent.jspa">
+                    <img height="69px" width="67px" src="$!{env.imgUrl}/images/banners/icon5.gif"></img> 
+					</a>
+					</br>已办事务
+				</td>
+				<td>
+				 <a href="$!{env.appUrl}/account/accountAction!toSearchExpenses.jspa">
+                    <img height="69px" width="67px" src="$!{env.imgUrl}/images/banners/icon6.gif"></img> 
+					</a>
+					</br>日常费用
+				</td>
+			   </tr>
+			   
+			</table>
+			-->
+			
+            <table style="display:none" width="100%" border="0" cellspacing="0" cellpadding="0">
+			#foreach($lanNewsTotal in $lanNewsTotalList)
+			#if($velocityCount%2 == 0)
+				 <tr> 
+					<td>
+			<table width="100%" border="0" cellspacing="0" cellpadding="2">
+            <tr> 
+			#end
+               <td align="center" valign="top">
+                 <div class="easyui-panel" title="$!{lanNewsTotal.total_name}"  style="width:500px;height:250px;padding:10px 10px;"  data-options="tools:'#tt$velocityCount'"> 
+							<div id="tt$velocityCount">
+								<a href="javascript:void(0)" class="icon-more" onclick="javascript:getSearchNews($!{lanNewsTotal.total_id},'$!{lanNewsTotal.total_name}','$!{lanNewsTotal.total_show}')"></a>
+							</div>
+							#if($!{lanNewsTotal.total_show} == 'Y' )
+							<div id="banner">	
+								<div id="banner_bg"></div>
+								<div id="banner_info"></div>
+                                <ul>
+								#foreach($lanNewsDetail in $!{lanNewsTotal.newsdet_list})
+                                    <li>#set($velocityCount=$velocityCount+1)$velocityCount</li>
+                                #end
+                                </ul>
+                                <div id="banner_list">
+                                #foreach($lanNewsDetail in $!{lanNewsTotal.newsdet_list})
+                                    <a href="javascript:oneNews($!{lanNewsDetail.delail_id},'$!{lanNewsTotal.total_show}')">
+									<img src="$!{lanNewsDetail.news_file_url}" title="标题：$!{lanNewsDetail.delail_title}  创建者：$!{lanNewsDetail.delail_operator} 点击数：$!{lanNewsDetail.clicks_ratio}" alt="$!{lanNewsDetail.delail_title}    $!date.format('yyyy-MM-dd',$!{lanNewsDetail.detail_date}) " />
+									
+									</a>
+									<hr align="center" width="700px" style= "border:1px dotted   #ccc; " />
+								#end
+								</div>
+							</div>
+							#else
+							#if($!{lanNewsTotal.total_sign} == 'Y' )
+                            <marquee onMouseOut="this.start()" onMouseOver="this.stop()" direction="up" behavior="scroll" scrollamount="2">
+                            #end
+                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+							  #foreach($lanNewsDetail in $!{lanNewsTotal.newsdet_list})
+								#set($str=$!{lanNewsDetail.delail_title})
+								#set($size=$str.length())
+                                    <tr>
+                                        <td height="26">
+                                            <TABLE cellSpacing="0" cellPadding="2" width="100%" border="0">
+                                                <TR>
+													
+                                                    <TD align="left" width="420px">
+														<li>
+									
+                                                        <a style="text-decoration:none; " href="javascript:oneNews($!{lanNewsDetail.delail_id},'$!{lanNewsTotal.total_show}')" title="标题：$!{lanNewsDetail.delail_title}  创建者：$!{lanNewsDetail.delail_operator} 点击数：$!{lanNewsDetail.clicks_ratio}">&nbsp;
+															#if($size > 32)
+																#set($str1=$str.substring(0,30)) 
+																#if($!{lanNewsDetail.css_flag} == 'Y')
+                                                                    <FONT color="#ff0000">
+																		$str1
+                                                                        ...
+                                                                    </FONT>
+                                                                #else
+																		$str1
+																		...
+                                                                #end
+                                                            #else
+                                                               #if($!{lanNewsDetail.css_flag} == 'Y')
+                                                                    <FONT color="#ff0000">
+                                                                        $str
+                                                                    </FONT>
+																#else
+																		$str
+                                                                #end
+															#end
+                                                        </a>
+														
+														#if($!{lanNewsDetail.new_flag} == 'Y')
+                                                            <img src="$!{env.imgUrl}/images/actions/action_new.gif" border="0">
+														#end
+														
+														</li>
+                                                    </td>
+													
+                                                    <td align="left" width="100px">
+                                                        <span>
+                                                           $!date.format('yyyy-MM-dd',$!{lanNewsDetail.detail_date}) 
+                                                        </span>
+                                                    </td>
+													<TR>
+                                                     <TD align="left" colspan="2">
+														
+														<hr align="center" width="480px" style="height:1px;border:none;border-top:1px dashed #ccc;" />
+											
+													 </td>
+												</tr>
+                                                </tr>
+												
+                                             </table>
+                                        </td>
+                                    </tr>
+									
+							#end
+                            </table>
+							#if($!{lanNewsTotal.total_sign} == 'Y')
+                                </marquee>
+							#end
+							#end
+                </div>                    
+			   </td>
+				#if($velocityCount%2 == 1)
+                        </tr>
+                        </table>
+                        </td>
+                        </tr>
+					#end
+			#end
+            </table>
+			
+			<div id="searchMore"/> 	
+			
+    </body>
+    <script type="text/javascript" src="$!{env.imgUrl}/js/platform/news/newsIndex.js">
+    </script>
+</html>

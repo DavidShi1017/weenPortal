@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="materials">
+	<typeAlias alias="materials" type="com.jingtong.platform.sap.pojo.Material" />
+	<typeAlias alias="cate" type="com.jingtong.platform.sap.pojo.Categorys" />
+	<!-- <insert id="insertMaterials" parameterClass="materials" >
+	<![CDATA[
+	   insert into crm.crm_tb_material
+		(
+		 materialname,
+		 materialnumber,
+		 materialsort,
+		 materialunit,
+		 MATERIALWEIGHT,
+		 MATERIALVOLUME,
+		 MATERIALSKU,
+		 materialseries,
+		 state,
+		 vrkmeTxt,
+		 UMREZ
+		 )
+		 values
+		 (
+		 #materialName#,
+		 #materialNumber#,
+		 #materialSort#,
+		 #materialUnit#,
+		 #materialWeight#,
+		 #materialVolume#,
+		 #materialSku#,
+		 #materialSeries#,
+		 #state#,
+		 #vrkmeTxt#,
+		 #umrez#
+		 )
+	]]>
+	</insert>
+ 
+	<update id="updateMaterials" parameterClass="materials">
+		<![CDATA[
+			update crm.crm_tb_material a
+			   set a.materialname=#materialName#,a.materialnumber=#materialNumber#,a.materialsort=#materialSort#,a.materialunit=#materialUnit#,
+			   	   a.MATERIALWEIGHT=#materialWeight#,a.MATERIALVOLUME=#materialVolume#,a.MATERIALSKU=#materialSku#,
+			   	   a.materialseries=#materialSeries# , a.vrkmeTxt=#vrkmeTxt#,a.UMREZ=#umrez#
+			where   a.materialnumber=#materialNumber#
+		]]>
+	</update> 
+	
+	<select id="getMaterialsCount" parameterClass="materials" resultClass="java.lang.Integer">
+		<![CDATA[
+			   select 
+			   count( t.materialnumber)
+			   from crm.crm_tb_material t 
+			   where 1=1
+		]]>
+			<dynamic>
+			编码唯一	<isNotEmpty property="materialName" prepend="and">
+					<![CDATA[t.materialname=#materialName#]]>
+				</isNotEmpty> 
+				<isNotEmpty property="materialNumber" prepend="and">
+					<![CDATA[t.materialnumber=#materialNumber#]]>
+				</isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<insert id="insertCategorys" parameterClass="cate" >
+	<![CDATA[
+	   insert into crm.crm_tb_category
+		(
+		  categorynumber,
+		  categoryname,
+		  categorytype,
+		  categoryunit,
+		  categoryprice,
+		  state,
+		  categoryweight,
+		  categorysku,
+		  categoryvolume,
+		  vrkme_txt,
+		  umrez
+		 )
+		 values
+		 (
+		 #categoryNumber#,
+		 #categoryName#,
+		 #categoryType#,
+		 #categoryUnit#,
+		 #categoryPrice#,
+		 #state#,
+		 #categoryweight#,
+		 #categorySku#,
+		 #categoryVolume#,
+		 #vekmeTxt#,
+		 #umrez#
+		 )
+	]]>
+	</insert>
+ 
+	<update id="updateCategorys" parameterClass="cate">
+		<![CDATA[
+			update crm.crm_tb_category a
+			   set  a.categorynumber=#categoryNumber#,
+			   		a.categoryname=#categoryName#,
+			   		a.categorytype=#categoryType#,
+			   		a.categoryunit=#categoryUnit#,
+			   	   	a.categoryprice=#categoryPrice#,
+			   	   	a.state=#state#,
+			   	   	a.categoryweight=#categoryweight#,
+			   	   	a.categorysku=#categorySku#,
+			   	   	a.categoryvolume=#categoryVolume#,
+			   	   	a.vrkme_txt=#vekmeTxt#,
+			   	   	a.umrez=#umrez#
+			where a.categorynumber=#categoryNumber#  
+		]]>
+	</update> 
+	
+	<select id="getCategorysCount" parameterClass="cate" resultClass="java.lang.Integer">
+		<![CDATA[
+			   select 
+			   count( t.categorynumber)
+			   from crm.crm_tb_category t 
+			   where 1=1
+		]]>
+			<dynamic>
+				 <isNotEmpty property="categoryName" prepend="and">
+					<![CDATA[t.categoryname=#categoryName#]]>
+				</isNotEmpty> 
+				<isNotEmpty property="categoryNumber" prepend="and">
+					<![CDATA[t.categorynumber=#categoryNumber#]]>
+				</isNotEmpty>
+			</dynamic>
+	</select> -->
+</sqlMap>

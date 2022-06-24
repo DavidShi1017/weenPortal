@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="enquiry">
+	<typeAlias alias="enquiry" type="com.jingtong.platform.enquiry.pojo.Enquiry"/>
+	<typeAlias alias="enquiryDetail" type="com.jingtong.platform.enquiry.pojo.EnquiryDetail"/>		
+	<!-- 经销商客户信息主数据 -->
+	<select id="getEnquiryById" parameterClass="enquiry" resultClass="enquiry">
+		<![CDATA[
+			select 
+				  id,enquiry_id,type_id,currency_code,
+				  project_name,customer_id,endCustomer_id,cusGroup_id,ecGroup_id,isDelivery, 
+				  start_date,to_char(start_date,'YYYY-MM-DD') start_dateStr,
+				  latest_expire,to_char(latest_expire,'YYYY-MM-DD') latest_expireStr,state,remark,
+				  create_time,create_userId,
+				  latest_time,latest_userId,org_code
+			from basis.basis_tb_enquiryInfo 
+			where id=#id#
+		]]>	
+	</select>
+	
+	<select id="getEnquiryList" parameterClass="enquiry" resultClass="enquiry">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+				  id,enquiry_id,type_id,currency_code,
+				  project_name,customer_id,endCustomer_id,cusGroup_id,ecGroup_id,isDelivery, 
+				  start_date,to_char(start_date,'YYYY-MM-DD') start_dateStr,
+				  latest_expire,to_char(latest_expire,'YYYY-MM-DD') latest_expireStr,state,remark,
+				  create_time,create_userId,
+				  latest_time,latest_userId,org_code
+		from basis.basis_tb_enquiryInfo
+	 	where 1=1  
+	]]>
+		<dynamic>
+			<isNotEmpty property="enquiry_id" prepend="and">
+				<![CDATA[ enquiry_id = #enquiry_id#]]>
+			</isNotEmpty>	
+			<isNotEmpty property="project_name" prepend="and">
+				<![CDATA[ project_name like #project_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+		</dynamic>
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	<select id="getEnquiryListCount" parameterClass="enquiry"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.basis_tb_enquiryInfo   			
+			where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="enquiry_id" prepend="and">
+				<![CDATA[ enquiry_id = #enquiry_id#]]>
+			</isNotEmpty>	
+			<isNotEmpty property="project_name" prepend="and">
+				<![CDATA[ project_name like #project_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 			 
+		</dynamic>
+	</select>
+	
+	
+	<insert id="createEnquiry" parameterClass="enquiry">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_end_customeInfo.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_enquiryInfo   
+			(
+			 	  id,enquiry_id,type_id,cusGroup_id,ecGroup_id,currency_code,
+				  project_name,customer_id,endCustomer_id,isDelivery, 
+				  start_date,latest_expire,state,remark,
+				  create_time,create_userId,
+				  latest_time,latest_userId,org_code
+			)
+			values
+			(
+			  #id#,#enquiry_id#,#type_id#,#cusGroup_id#,#ecGroup_id#,#currency_code#,
+			  #project_name#,#customer_id#,#endCustomer_id#,#isDelivery#,
+			  #start_date#,#latest_expire#,#state#,#remark#,
+			  sysdate,#create_userId#,
+			  sysdate,#latest_userId#,#org_code#
+			)
+		
+		]]>
+	</insert>
+	
+	<update  id="updateEnquiry" parameterClass="enquiry">
+		update basis.basis_tb_enquiryInfo   set 
+			  enquiry_id=#enquiry_id#,type_id=#type_id#,cusGroup_id=#cusGroup_id#,ecGroup_id=#cusGroup_id#,currency_code=#currency_code#,
+			  project_name=#project_name#,customer_id=#customer_id#,endCustomer_id=#endCustomer_id#,isDelivery=#isDelivery#,
+			  start_date=#start_date#,latest_expire=#latest_expire#,remark=#remark#,
+			  latest_time=sysdate,latest_userId=#latest_userId#,org_code=#org_code#
+		where id=#id#
+	</update>
+
+	
+	<delete id="deleteEnquiry" parameterClass="enquiry">
+		delete from basis.basis_tb_enquiryInfo   
+		where id=#id#
+	</delete>
+	
+	
+	
+<!-- 订单明细 -->	
+	
+	<select id="getEnquiryDetailList" parameterClass="enquiryDetail" resultClass="enquiryDetail">
+	<![CDATA[
+		select 
+			  id,enquiry_id,row_no,material_id,drNum,qty,
+			  target_resale,target_cost,amount,reason,competitor,
+			  start_date,to_char(start_date,'YYYY-MM-DD') start_dateStr,cus_remark,
+			  remark
+		from basis.basis_tb_enquiry_detail
+	 	where enquiry_id=#enquiry_id#  
+	]]>
+		<include refid="global.orderBy"/>
+	</select>
+	
+	
+	<insert id="createEnquiryDetail" parameterClass="enquiryDetail">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_end_customeInfo.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_enquiry_detail   
+			(
+			  id,enquiry_id,row_no,material_id,drNum,qty,main_id,
+			  target_resale,target_cost,amount,reason,competitor,
+			  start_date,cus_remark,
+			  remark
+			)
+			values
+			(
+			  #id#,#enquiry_id#,#row_no#,#material_id#,#drNum#,#qty#,#main_id#,
+			  #target_resale#,#target_cost#,#amount#,#reason#,#competitor#,
+			  #start_date#,#cus_remark#,
+			  #remark#
+			)
+		
+		]]>
+	</insert>
+	
+	<update  id="updateEnquiryDetail" parameterClass="enquiryDetail">
+		update basis.basis_tb_enquiry_detail   set 
+			  material_id=#material_id#,drNum=#drNum#,qty=#qty#,
+			  target_resale=#target_resale#,target_cost=#target_cost#,
+			  amount=#amount#,reason=#reason#,competitor=#competitor#,
+			  start_date=#start_date#,cus_remark=#cus_remark#,
+			  remark=#remark#
+		where id=#id#
+	</update>
+
+	<delete id="deleteEDByMain" parameterClass="enquiryDetail">
+		delete from basis.basis_tb_enquiry_detail   
+		where main_id=#main_id#
+	</delete>
+		
+	<delete id="deleteEnquiryDetail" parameterClass="enquiryDetail">
+		delete from basis.basis_tb_enquiry_detail   
+		where id in $ids$
+	</delete>
+	
+</sqlMap>

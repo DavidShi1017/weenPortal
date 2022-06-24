@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sampleOrder">
+	<typeAlias alias="sampleOrder" type="com.jingtong.platform.sampleOrder.pojo.SampleOrder"/>
+	<typeAlias alias="sampleDetail" type="com.jingtong.platform.sampleOrder.pojo.SampleOrderDetail"/>	
+	<typeAlias alias="accountManager" type="com.jingtong.platform.sampleOrder.pojo.AccountManager"/>
+    <typeAlias alias="role" type="com.jingtong.platform.role.pojo.Role"/>
+
+	<!-- 经销商客户信息主数据 -->
+	<select id="getSampleOrderById" parameterClass="sampleOrder" resultClass="sampleOrder">
+		<![CDATA[
+		select aa.id
+		     , aa.order_id
+		     , aa.type_id
+		     , aa.branch_id
+		     , bb.customer_name
+		     , aa.sale_to
+		     , (cc.partnerName||'  --  '||cc.address) shipToName
+		     , aa.ship_to
+		     , dd.partnerName payerToName
+		     , aa.payer_to
+		     , ee.partnerName billingToName
+		     , aa.billing_to
+		     , aa.saler
+		     , aa.sale_company
+		     , aa.end_customer
+		     , aa.zip
+		     , aa.country
+		     , aa.city
+		     , aa.street
+		     , aa.application_desc
+		     , aa.project_name
+		     , aa.contact_info
+		     , aa.contact_name
+		     , aa.contact_tel
+		     , aa.state
+		     , aa.remark
+		     , aa.company
+		     , aa.create_time
+		     , aa.create_userId
+		     , aa.sync_state
+		     , sap_order_id
+		     , aa.latest_time
+		     , aa.latest_userId
+		     , aa.org_code
+		     , aa.ship_to_region
+		     , aa.applicant_name
+		     , aa.applicant_company
+             , CASE WHEN S.EMP_EMAIL IS NULL THEN aa.account_manager
+                    WHEN INSTR(S.EMP_EMAIL, '@', 1, 1) < 1 THEN S.EMP_EMAIL 
+                    ELSE SUBSTR(S.EMP_EMAIL, 1, INSTR(S.EMP_EMAIL, '@', 1, 1) - 1) 
+               END AS account_manager
+		     , aa.manager_id
+		     , aa.comments
+		from basis.basis_tb_orderInfo aa
+            left outer join basis.BASIS_TB_SALESEMP_INFO S ON S.EMP_ID = aa.manager_id
+			left outer join basis.basis_tb_customerInfo bb  on aa.branch_id = bb.customer_code
+			left outer join basis.basis_tb_cus_relationship cc  on aa.ship_to = cc.partnerId and cc.partnerType='WE' and aa.branch_id=cc.customer_code
+			left outer join basis.basis_tb_cus_relationship dd  on aa.payer_to = dd.partnerId and dd.partnerType='RG' and aa.branch_id=dd.customer_code
+			left outer join basis.basis_tb_cus_relationship ee  on aa.billing_to = ee.partnerId and ee.partnerType='RE' and aa.branch_id=ee.customer_code
+			left outer join basis.basis_tb_end_customeInfo ff  on aa.end_customer = ff.end_customer_id
+		where aa.id = #id#
+		]]>	
+	</select>
+	
+	<select id="getSampleOrderList" parameterClass="sampleOrder" resultClass="sampleOrder">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select aa.id
+		     , aa.order_id
+		     , aa.type_id
+		     , bb.customer_name branch_id
+		     , aa.sale_to
+		     , (cc.partnerName||'  --  '||cc.address) ship_to
+		     , dd.partnerName payer_to
+		     , ee.partnerName billing_to
+		     , aa.saler
+		     , aa.sale_company
+		     , aa.end_customer
+		     , aa.zip
+		     , aa.country
+		     , aa.city
+		     , aa.street
+		     , aa.application_desc
+		     , aa.project_name
+		     , aa.contact_info
+		     , aa.contact_name
+		     , aa.contact_tel
+		     , aa.state
+		     , aa.remark
+		     , aa.company
+		     , aa.create_time
+		     , ff.emp_name create_userId
+		     , aa.sync_state
+		     , aa.sap_order_id
+		     , aa.latest_time
+		     , gg.emp_name latest_userId
+		     , aa.org_code
+		     , aa.ship_to_region
+		     , aa.applicant_name
+		     , aa.applicant_company
+		     , CASE WHEN S.EMP_EMAIL IS NULL THEN aa.account_manager
+                    WHEN INSTR(S.EMP_EMAIL, '@', 1, 1) < 1 THEN S.EMP_EMAIL 
+                    ELSE SUBSTR(S.EMP_EMAIL, 1, INSTR(S.EMP_EMAIL, '@', 1, 1) - 1) 
+               END AS account_manager
+		     , aa.manager_id
+             , aa.comments
+		from basis.basis_tb_orderInfo aa
+			left outer join basis.BASIS_TB_SALESEMP_INFO S ON S.EMP_ID = aa.manager_id
+            left outer join basis.basis_tb_customerInfo bb on aa.branch_id = bb.customer_code
+			left outer join basis.basis_tb_cus_relationship cc on aa.ship_to = cc.partnerId and cc.partnerType='WE' and aa.branch_id=cc.customer_code
+			left outer join basis.basis_tb_cus_relationship dd on aa.payer_to = dd.partnerId and dd.partnerType='RG' and aa.branch_id=dd.customer_code
+			left outer join basis.basis_tb_cus_relationship ee on aa.billing_to = ee.partnerId and ee.partnerType='RE' and aa.branch_id=ee.customer_code
+			left outer join basis.basis_tb_end_customeInfo ff on aa.end_customer = ff.end_customer_id
+			left outer join basis.basis_tb_salesemp_info ff on aa.create_userId = ff.emp_id
+			left outer join basis.basis_tb_salesemp_info gg on aa.latest_userId = gg.emp_id
+	 	where aa.type_id = 'ZFD1'  
+	]]>
+		<dynamic>
+			<isNotEmpty property="order_id" prepend="and">
+				<![CDATA[ aa.order_id like #order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>		
+			<isNotEmpty property="branch_id" prepend="and">
+				<![CDATA[ aa.branch_id = #branch_id#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="sap_order_id" prepend="and">
+				<![CDATA[ aa.sap_order_id like #sap_order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="company" prepend="and">
+				<![CDATA[ upper(aa.company) like #company,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="contact_name" prepend="and">
+				<![CDATA[ upper(aa.contact_name) like #contact_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty>  
+            <isNotEmpty property="states" prepend="and">
+                <![CDATA[aa.state IN $states$]]>
+            </isNotEmpty>
+            <isNotEmpty property="manager_id" prepend="and">
+                <![CDATA[aa.manager_id = #manager_id#]]>
+            </isNotEmpty>
+            <isEqual property="roleType" compareValue="Disti">
+                <isNotEmpty property="create_userId" prepend="and">
+                     <![CDATA[aa.create_userId =#create_userId#]]>
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="roleType" compareValue="R">
+                <isNotEmpty property="shipToRegions" prepend="and">
+                    <![CDATA[aa.ship_to_region IN $shipToRegions$]]>
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="roleType" compareValue="Y">
+                <isNotEmpty property="create_userId" prepend="and">
+                    <![CDATA[aa.create_userId =#create_userId#]]>
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="roleType" compareValue="RY">
+                <isNotEmpty property="shipToRegions" prepend="and">
+                    <![CDATA[(aa.ship_to_region IN $shipToRegions$ OR aa.create_userId =#create_userId#)]]>
+                </isNotEmpty>
+            </isEqual> 
+		</dynamic>
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	<select id="getSampleOrderListCount" parameterClass="sampleOrder"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.basis_tb_orderInfo aa
+			left outer join basis.BASIS_TB_SALESEMP_INFO S ON S.EMP_ID = aa.manager_id
+            left outer join basis.basis_tb_customerInfo bb on aa.branch_id = bb.customer_code
+			left outer join basis.basis_tb_cus_relationship cc on aa.ship_to = cc.partnerId and cc.partnerType='WE' and aa.branch_id=cc.customer_code
+			left outer join basis.basis_tb_cus_relationship dd on aa.payer_to = dd.partnerId and dd.partnerType='RG' and aa.branch_id=dd.customer_code
+			left outer join basis.basis_tb_cus_relationship ee on aa.billing_to = ee.partnerId and ee.partnerType='RE' and aa.branch_id=ee.customer_code
+			left outer join basis.basis_tb_end_customeInfo ff on aa.end_customer = ff.end_customer_id
+	 	where aa.type_id = 'ZFD1'  
+	]]>
+		<dynamic>
+			<isNotEmpty property="order_id" prepend="and">
+				<![CDATA[ aa.order_id like #order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>		
+			<isNotEmpty property="branch_id" prepend="and">
+				<![CDATA[ aa.branch_id = #branch_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="sap_order_id" prepend="and">
+				<![CDATA[ aa.sap_order_id like #sap_order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  
+			<isNotEmpty property="company" prepend="and">
+				<![CDATA[ upper(aa.company) like #company,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="contact_name" prepend="and">
+				<![CDATA[ upper(aa.contact_name) like #contact_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+            <isNotEmpty property="states" prepend="and">
+                <![CDATA[aa.state IN $states$]]>
+            </isNotEmpty>
+            <isNotEmpty property="manager_id" prepend="and">
+                <![CDATA[aa.manager_id = #manager_id#]]>
+            </isNotEmpty>
+            <isEqual property="roleType" compareValue="Disti">
+                <isNotEmpty property="create_userId" prepend="and">
+                     <![CDATA[aa.create_userId =#create_userId#]]>
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="roleType" compareValue="R">
+                <isNotEmpty property="shipToRegions" prepend="and">
+                    <![CDATA[aa.ship_to_region IN $shipToRegions$]]>
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="roleType" compareValue="Y">
+                <isNotEmpty property="create_userId" prepend="and">
+                    <![CDATA[aa.create_userId =#create_userId#]]>
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="roleType" compareValue="RY">
+                <isNotEmpty property="shipToRegions" prepend="and">
+                    <![CDATA[(aa.ship_to_region IN $shipToRegions$ OR aa.create_userId =#create_userId#)]]>
+                </isNotEmpty>
+            </isEqual> 
+		</dynamic> 			
+	</select>
+	
+	
+	<insert id="createSampleOrder" parameterClass="sampleOrder">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_orderInfo.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_orderInfo  
+			(
+			  id,order_id,type_id,branch_id,sale_to,
+			  ship_to,payer_to,billing_to,saler,sale_company,end_customer,
+			  project_name,contact_info,contact_name,contact_tel,state,remark,company,
+			  country,city,street,application_desc,
+			  create_time,create_userId,sale_group,distri_channel,product_groupId,
+			  latest_time,latest_userId,org_code,zip,
+			  ship_to_region, applicant_name,
+			  applicant_company, account_manager, manager_id
+			)
+			values
+			(
+			  #id#,#order_id#,#type_id#,#branch_id#,#sale_to#,
+			  #ship_to#,#payer_to#,#billing_to#,#saler#,#sale_company#,#end_customer#,
+			  #project_name#,#contact_info#,#contact_name#,#contact_tel#,#state#,#remark#,#company#,
+			  #country#,#city#,#street#,#application_desc#,
+			  sysdate,#create_userId#,#sale_group#,'00','00',
+			  sysdate,#latest_userId#,#org_code#,#zip#,
+              #ship_to_region#, #applicant_name#,
+              #applicant_company#, #account_manager#, #manager_id#
+			)
+		
+		]]>
+	</insert>
+	
+	<update  id="updateSampleOrder" parameterClass="sampleOrder">
+		update basis.basis_tb_orderInfo  set 
+			  branch_id=#branch_id#,sale_to=#sale_to#,
+			  ship_to=#ship_to#,payer_to=#payer_to#,billing_to=#billing_to#,
+			  saler=#saler#,sale_company=#sale_company#,company=#company#,end_customer=#end_customer#,
+			  project_name=#project_name#,contact_info=#contact_info#,zip=#zip#,
+			  country=#country#,city=#city#,street=#street#,application_desc=#application_desc#,
+			  remark=#remark#,contact_name=#contact_name#,contact_tel=#contact_tel#,
+			  latest_time=sysdate,latest_userId=#latest_userId#,org_code=#org_code#
+		where id=#id#
+	</update>
+
+	
+	<delete id="deleteSampleOrder" parameterClass="sampleOrder">
+		delete from basis.basis_tb_orderInfo  
+		where id=#id#
+	</delete>
+	<delete id="deleteSODofMain" parameterClass="sampleDetail">
+		delete from basis.basis_tb_order_detail   
+		where main_id =#main_id#
+	</delete>
+	
+	
+	
+	
+<!-- 订单明细 -->	
+	
+	<select id="getSampleOrderDetailList" parameterClass="sampleDetail" resultClass="sampleDetail">
+	<![CDATA[
+		select 
+			  id,order_id,row_no,material_id,material_name,material_typeId,po_item,
+			  material_groupId,sale_unit,pq,limited_QTY,order_QTY,lead_time,stock_status,
+			  delivery_date,to_char(delivery_date,'YYYY-MM-DD') delivery_dateStr,status,
+			  confirm_date,to_char(confirm_date,'YYYY-MM-DD') confirm_dateStr,remark,ween_remark,
+			  expressage_info,ship_date,invoice,ween_remark
+		from basis.basis_tb_order_detail
+	 	where main_id=#main_id#  
+	]]>
+		<include refid="global.orderBy"/>
+	</select>
+	
+	<!-- 导出样品订单单头和明细 -->	
+	<select id="getSampleOrderAndDetailListCount" parameterClass="sampleOrder"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.basis_tb_orderInfo aa
+			left outer join basis.BASIS_TB_SALESEMP_INFO S ON S.EMP_ID = aa.manager_id
+			left outer join basis.basis_tb_order_detail detail on aa.id =detail.main_id
+			left outer join basis.basis_tb_customerInfo bb  on aa.branch_id=bb.customer_code
+			left outer join basis.basis_tb_cus_relationship cc  on aa.ship_to=cc.partnerId and cc.partnerType='WE' and aa.branch_id=cc.customer_code
+			left outer join basis.basis_tb_cus_relationship dd  on aa.payer_to=dd.partnerId and dd.partnerType='RG' and aa.branch_id=dd.customer_code
+			left outer join basis.basis_tb_cus_relationship ee  on aa.billing_to=ee.partnerId and ee.partnerType='RE' and aa.branch_id=ee.customer_code
+			left outer join basis.basis_tb_end_customeInfo ff  on aa.end_customer=ff.end_customer_id
+	 	where aa.type_id='ZFD1'  
+	]]>
+		<dynamic>
+			<isNotEmpty property="order_id" prepend="and">
+				<![CDATA[ aa.order_id like #order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>		
+			<isNotEmpty property="branch_id" prepend="and">
+				<![CDATA[ aa.branch_id = #branch_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="sap_order_id" prepend="and">
+				<![CDATA[ aa.sap_order_id like #sap_order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  
+			<isNotEmpty property="company" prepend="and">
+				<![CDATA[ upper(aa.company) like #company,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="contact_name" prepend="and">
+				<![CDATA[ upper(aa.contact_name) like #contact_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+            <isNotEmpty property="manager_id" prepend="and">
+                <![CDATA[aa.manager_id = #manager_id#]]>
+            </isNotEmpty>
+            <isEqual property="roleType" compareValue="Disti">
+                <isNotEmpty property="create_userId" prepend="and">
+                     <![CDATA[aa.create_userId =#create_userId#]]>
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="roleType" compareValue="R">
+                <isNotEmpty property="shipToRegions" prepend="and">
+                    <![CDATA[aa.ship_to_region IN $shipToRegions$]]>
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="roleType" compareValue="Y">
+                <isNotEmpty property="create_userId" prepend="and">
+                    <![CDATA[aa.create_userId =#create_userId#]]>
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="roleType" compareValue="RY">
+                <isNotEmpty property="shipToRegions" prepend="and">
+                    <![CDATA[(aa.ship_to_region IN $shipToRegions$ OR aa.create_userId =#create_userId#)]]>
+                </isNotEmpty>
+            </isEqual>   
+		</dynamic> 			
+	</select>
+	
+	
+	<select id="getSampleOrderAndDetailList" parameterClass="sampleOrder" resultClass="com.jingtong.platform.sampleOrder.pojo.SampleOrderAndDetail">
+		<include refid="global.paginationStart" />
+		<![CDATA[
+			select 
+			  aa.id,
+			  aa.order_id,
+			  aa.type_id,
+			  bb.customer_name branch_id,
+			  aa.sale_to,
+			  (cc.partnerName||'  --  '||cc.address) ship_to,
+			  dd.partnerName payer_to,
+			  ee.partnerName billing_to,
+			  aa.saler,
+			  aa.sale_company,
+			  aa.end_customer,
+			  aa.zip,
+			  aa.country,
+			  aa.city,
+			  aa.street,
+			  aa.application_desc,
+			  aa.project_name,
+			  aa.contact_info,
+			  aa.contact_name,
+			  aa.contact_tel,
+			  aa.state,
+			  CASE WHEN aa.state = '0' THEN 'Approved'
+			       WHEN aa.state = '1' THEN 'Pending'
+			       WHEN aa.state = '2' THEN 'Rejected'
+                   ELSE ''
+              END AS orderState,
+			  aa.remark,
+			  aa.company,
+			  aa.ship_to_region,
+			  aa.applicant_name,
+			  aa.applicant_company,
+			  CASE WHEN S.EMP_EMAIL IS NULL THEN aa.account_manager
+			       WHEN INSTR(S.EMP_EMAIL, '@', 1, 1) < 1 THEN S.EMP_EMAIL 
+			       ELSE SUBSTR(S.EMP_EMAIL, 1, INSTR(S.EMP_EMAIL, '@', 1, 1) - 1) 
+			  END AS account_manager,
+			  aa.comments,
+              aa.create_time,
+			  to_char(aa.create_time,'YYYY-MM-DD') create_timeString,ff.emp_name create_userId,aa.sync_state,ltrim(aa.sap_order_id,'0') sap_order_id ,
+			  aa.latest_time,
+			  gg.emp_name latest_userId,
+			  aa.org_code,
+			  detail.id detail_id,detail.row_no,detail.material_id,detail.material_name,detail.material_typeId,detail.po_item,
+			  detail.material_groupId,detail.sale_unit,detail.pq,detail.limited_QTY,detail.order_QTY,detail.lead_time,detail.stock_status,
+			  detail.delivery_date,to_char(detail.delivery_date,'YYYY-MM-DD') delivery_dateStr,detail.status,
+			  detail.confirm_date,to_char(detail.confirm_date,'YYYY-MM-DD') confirm_dateStr,detail.remark detail_remark,
+			  detail.expressage_info,detail.ship_date,detail.invoice,
+			  CASE WHEN aa.state = '0' THEN decode(nvl(detail.expressage_info ,''),'','Processing' ,'Shipped')
+			       WHEN aa.state = '1' THEN 'Processing'
+                   ELSE 'Not shipped'
+			  END AS detail_state,
+			  detail.ween_remark
+		from basis.basis_tb_orderInfo aa
+		    left outer join basis.BASIS_TB_SALESEMP_INFO S ON S.EMP_ID = aa.manager_id
+			left outer join basis.basis_tb_order_detail detail on aa.id =detail.main_id
+			left outer join basis.basis_tb_customerInfo bb  on aa.branch_id=bb.customer_code
+			left outer join basis.basis_tb_cus_relationship cc  on aa.ship_to=cc.partnerId and cc.partnerType='WE' and aa.branch_id=cc.customer_code
+			left outer join basis.basis_tb_cus_relationship dd  on aa.payer_to=dd.partnerId and dd.partnerType='RG' and aa.branch_id=dd.customer_code
+			left outer join basis.basis_tb_cus_relationship ee  on aa.billing_to=ee.partnerId and ee.partnerType='RE' and aa.branch_id=ee.customer_code
+			left outer join basis.basis_tb_end_customeInfo ff  on aa.end_customer=ff.end_customer_id
+			left outer join basis.basis_tb_salesemp_info ff on aa.create_userId = ff.emp_id
+			left outer join basis.basis_tb_salesemp_info gg on aa.latest_userId = gg.emp_id
+	 	where aa.type_id='ZFD1'  
+	]]>
+		<dynamic>
+			<isNotEmpty property="order_id" prepend="and">
+				<![CDATA[ aa.order_id like #order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>		
+			<isNotEmpty property="branch_id" prepend="and">
+				<![CDATA[ aa.branch_id = #branch_id#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="sap_order_id" prepend="and">
+				<![CDATA[ aa.sap_order_id like #sap_order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="company" prepend="and">
+				<![CDATA[ upper(aa.company) like #company,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="contact_name" prepend="and">
+				<![CDATA[ upper(aa.contact_name) like #contact_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty>  
+            <isNotEmpty property="manager_id" prepend="and">
+                <![CDATA[aa.manager_id = #manager_id#]]>
+            </isNotEmpty>
+            <isEqual property="roleType" compareValue="Disti">
+                <isNotEmpty property="create_userId" prepend="and">
+                     <![CDATA[aa.create_userId =#create_userId#]]>
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="roleType" compareValue="R">
+                <isNotEmpty property="shipToRegions" prepend="and">
+                    <![CDATA[aa.ship_to_region IN $shipToRegions$]]>
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="roleType" compareValue="Y">
+                <isNotEmpty property="create_userId" prepend="and">
+                    <![CDATA[aa.create_userId =#create_userId#]]>
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="roleType" compareValue="RY">
+                <isNotEmpty property="shipToRegions" prepend="and">
+                    <![CDATA[(aa.ship_to_region IN $shipToRegions$ OR aa.create_userId =#create_userId#)]]>
+                </isNotEmpty>
+            </isEqual>                                
+		</dynamic>
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	<select id="getRoleByLoginId" parameterClass="sampleOrder" resultClass="java.lang.Integer">
+		<![CDATA[
+				select count(*) from basis.BASIS_TB_SALESEMP_INFO aa , basis.BASIS_TB_USER_ROLE cc
+	 		where aa.EMP_CODE=#loginId# and aa.emp_id = cc.emp_code and cc.role_id ='YPDD_MANAGER'
+		]]>
+	</select>
+	<insert id="createSampleOrderDetail" parameterClass="sampleDetail">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_order_detail.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_order_detail   
+			(
+			  id,order_id,row_no,material_id,material_name,material_typeId,main_id,
+			  material_groupId,sale_unit,pq,limited_QTY,order_QTY,po_item,
+			  lead_time,delivery_date,confirm_date,remark,stock_status
+			)
+			values
+			(
+			  #id#,#order_id#,#row_no#,#material_id#,#material_name#,#material_typeId#,#main_id#,
+			  #material_groupId#,#sale_unit#,#pq#,#limited_QTY#,#order_QTY#,#po_item#,
+			  #lead_time#,#delivery_date#,#confirm_date#,#remark#,#stock_status#
+			)
+		
+		]]>
+	</insert>
+	
+	<update  id="updateSampleOrderDetail" parameterClass="sampleDetail">
+		update basis.basis_tb_order_detail   set 
+			  material_id=#material_id#,material_name=#material_name#,material_typeId=#material_typeId#,
+			  material_groupId=#material_groupId#,sale_unit=#sale_unit#,
+			  limited_QTY= #limited_QTY#,order_QTY=#order_QTY#,pq=#pq#,
+			  lead_time=#lead_time#,delivery_date=#delivery_date#,po_item=#po_item#,
+			  remark=#remark#,stock_status=#stock_status#
+		where id=#id#
+	</update>
+	
+	<delete id="deleteSampleOrderDetail" parameterClass="sampleDetail">
+		delete from basis.basis_tb_order_detail   
+		where id in $ids$
+	</delete>
+	
+	<!-- 存储过程参数声明列表 -->
+	<parameterMap id="parameterMap" class="java.util.HashMap">
+		<!-- 默认填 6 -->
+		<parameter property="incount" javaType="java.lang.String"
+			jdbcType="VARCHAR" mode="IN" />
+		<!-- 模块类型编码 -->
+		<parameter property="intype" javaType="java.lang.String"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="RESULTCODE" jdbcType="VARCHAR"
+			javaType="java.lang.String" mode="OUT" />
+	</parameterMap>
+
+	<procedure id="getSystemIdPrc" parameterMap="parameterMap"
+		resultClass="java.lang.String">
+	<![CDATA[
+		{ call basis.prc_getSysGenkey(?,?,?) }
+	]]>
+	</procedure>
+
+	<update id="importUpdate" parameterClass="sampleDetail">
+		update basis.basis_tb_order_detail   set 
+			expressage_info=#expressage_info#,
+			ship_date=#ship_date#,
+			invoice=#invoice#,
+			ween_remark=#ween_remark#
+		where 
+			main_id in (select od.id from basis_tb_orderInfo od where ltrim(od.sap_order_id,'0')=ltrim(#sap_order_id#,'0') and od.type_id='ZFD1') 
+			and ltrim(material_id,'0') =ltrim(#material_id#,'0')
+	</update>
+	
+	<select id="importUpdateCount" parameterClass="sampleDetail"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+		select
+			count(*) from basis.basis_tb_order_detail 
+	 	where 
+	 		main_id in (select od.id from basis_tb_orderInfo od where ltrim(od.sap_order_id,'0')=ltrim(#sap_order_id#,'0') and od.type_id='ZFD1'  ) 
+			and ltrim(material_id,'0') =ltrim(#material_id#,'0')
+		]]>			
+	</select>
+	
+    <select id="getAccountManagers" parameterClass="accountManager"
+        resultClass="accountManager">
+        <![CDATA[
+        SELECT S.EMP_ID AS userId
+             , S.EMP_EMAIL AS userName
+             , O.ORG_NAME AS shipToRegion
+        FROM BASIS_TB_SALESEMP_INFO S,
+             BASIS_TB_USER_ROLE R,
+             BASIS_TB_ORG O
+        WHERE S.EMP_ID = R.EMP_CODE 
+          AND UPPER(R.ROLE_ID) = UPPER('HK10_H_Sale_Mgmt')
+          AND S.EMP_STATE = 'Y'
+          AND S.ORG_ID = O.ORG_ID
+          AND O.ORG_NAME IN $shipToRegion$
+        ]]>         
+    </select>
+    
+    <select id="getRoleForSampleOrder" parameterClass="java.lang.String"
+        resultClass="role">
+        <![CDATA[
+        SELECT R.ROLE_ID AS roleId
+             , O.ORG_NAME AS orgName 
+        FROM BASIS_TB_USER_ROLE R,
+             BASIS_TB_SALESEMP_INFO S,
+             BASIS_TB_ORG O
+        WHERE R.EMP_CODE = S.EMP_ID
+          AND S.ORG_ID = O.ORG_ID 
+          AND UPPER(ROLE_ID) IN (UPPER('HK10_H_Sale_Mgmt'),UPPER('YPDD_MANAGER'), UPPER('YPDD')) 
+          AND R.EMP_CODE = #UserId#
+        ]]>
+    </select>
+    
+    <update id="auditSampleOrder" parameterClass="sampleOrder">
+        update basis.basis_tb_orderInfo
+           set state = #state#
+             , comments=#comments#
+         where id = #id#
+    </update>
+    
+    <update id="updateSampleOrderDetailRemark" parameterClass="sampleDetail">
+        update basis.basis_tb_order_detail
+           set ween_remark=#ween_remark#
+         where id = #id#
+    </update>
+	
+</sqlMap>

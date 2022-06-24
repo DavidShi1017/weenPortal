@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	
+	<bean id="cusInventroyAction" class="com.jingtong.platform.cusInventroy.action.CusInventroyAction"
+		parent="baseAction" scope="request">
+		<property name="cusInventroyService" ref="cusInventroyService" />
+		<property name="dictService" ref="dictService" />
+	</bean>
+		
+	<bean id="cusInventroyService" class="com.jingtong.platform.cusInventroy.service.impl.CusInventroyServiceImpl">
+		<property name="cusInventroyDao" ref="cusInventroyDao" />
+	</bean>
+
+	<bean id="cusInventroyDao" class="com.jingtong.platform.cusInventroy.dao.impl.CusInventroyDaoImpl"
+		parent="baseDao">
+	</bean>
+
+	
+</beans>

@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui", "upload"])
+		#JS_ENV_VAL()	
+	</head>
+	<body>
+		<form method="post" enctype="multipart/form-data" target="hideFrame">
+		<input id="orgIdIn" name="orgIdIn" type="hidden"  value="$!{userId}"/>
+		
+		<input id="detailJsonStr" name="detailJsonStr" type="hidden" />
+		<input id="nextUserId" name="nextUserId" type="hidden" />
+		<input id="travelId" name="travelTotal.travelId"  value="$!{travelTotal.travelId}" type="hidden" />
+		<input type="hidden" id="size"  value="$travelTotal.travelDetailList.size()" />
+		<input id="flag" name="flag" type="hidden" value="$!{flag}"/>
+		<div class="easyui-panel" title="职能费用申请" data-options="iconCls:'icon-edit'" style="width:1150px;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+				<tr>
+    				<td class="head" noWrap style="text-align: right">
+    					事务标题
+    				</td>
+					<td noWrap>
+						<input  type='text' size="30" id='title' name="travelTotal.title" data-options ="required:true"/>
+					</td>
+                </tr>
+				<tr>
+    				<td class="head" noWrap style="text-align: right">
+    					提交人
+    				</td>
+					<td noWrap>
+						<input id="curUserName" name="travelTotal.userName" size="30" class="easyui-validatebox" type='text' value='$!{userName}' readonly />
+						<input id="curUserId" name="travelTotal.userId" type="hidden" value="userId" />
+					</td>
+                 </tr>
+				 <tr>
+					<td class="head" noWrap style="text-align: right">
+						提交人部门
+                    </td>
+					<td>
+						<input name="travelTotal.orgName" type='text' size="30" value='$!{orgName}' class="easyui-validatebox" readonly/>
+						<input name="travelTotal.orgId" type='hidden' value='$!{orgId}' />
+                    </td>
+				 </tr>
+				 <tr>
+    				<td class="head" noWrap style="text-align: right">
+    					附件上传
+    				</td>
+					<td colspan="3">
+						<div id="input">
+							<input class="easyui-validatebox" size="30" name="upload" id="file0" type="file" value="添加附件" onchange="addFile()" />
+						</div>
+						<div id="_file"></div>
+					</td>
+				 </tr>
+		    </table>
+		</div>
+		
+		<div region="south" border="false" style="height:12px;"></div>
+		
+		<div class="easyui-panel" title="核销--总单信息"  style="width:1150px;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+				<tr>
+    				<td class="head" noWrap style="text-align: right">
+    					&nbsp;&nbsp;&nbsp;&nbsp;收款人
+    				</td>
+					<td>
+						<input type="text" id="payee" name="payee" value="$!{travelTotal.payee}"/>
+						<input type="hidden" id="pay_ee" name="travelTotal.payee" />
+					</td>
+					<td class="head" noWrap style="text-align: right">
+						开户行
+                    </td>
+					<td>
+						<input id="payBank" name="payBank" type='text' class="easyui-combobox" value="$!{travelTotal.payBank}"/>
+						<input type="hidden" id="pay_bank" name="travelTotal.payBank" />
+                    </td>
+					<td class="head" noWrap style="text-align: right">
+						收款账号
+                    </td>
+					<td>
+						<input id="payAccount" name="payAccount" type='text' class="easyui-combobox" value="$!{travelTotal.payaccount}"/>
+						<input type="hidden" id="pay_account" name="travelTotal.payaccount" />
+                    </td>
+					
+					<td class="head" noWrap style="text-align: right">
+    					支付类型
+    				</td>
+					<td>
+                        <input type='radio' value="1" name="travelTotal.payType" >&nbsp;现金&nbsp;</input>
+                        <input type='radio' value="2" name="travelTotal.payType" >&nbsp;银行&nbsp;</input>
+                        <input type='radio' value="3" name="travelTotal.payType" >&nbsp;其他</input>
+					</td>
+				</tr>
+				<tr>
+					<td class="head" noWrap style="text-align: right">
+						费用类型
+                    </td>
+					<td class="even">
+						$!{travelTotal.costTypeName}
+						<input id="costTypeName"  type='hidden' name="travelTotal.costTypeName" value="$!{travelTotal.costTypeName}" readonly/>
+					</td>
+					<td class="head" noWrap style="text-align: right">
+						成本中心	
+                    </td>
+					<td class="even">
+						$!{travelTotal.costOrgName}
+						<input id="costOrgName" name="travelTotal.costOrgName"  value="$!{travelTotal.costOrgName}" type='hidden'  readonly/>
+					</td>
+					<td class="head" noWrap style="text-align: right">
+    					预算编号
+    				</td>
+					<td class="even">
+						$!{travelTotal.budgetNumber}
+						<input id="budgetNumber" name="travelTotal.budgetNumber" value="$!{travelTotal.budgetNumber}" type='hidden'  readonly/>
+					</td>
+					<td class="head" noWrap style="text-align: right">
+    					合计申请金额
+    				</td>
+					<td >
+						<input id="totalMoney" name="travelTotal.totalMoney" class="easyui-validatebox" type='text'  value="$!{travelTotal.totalMoney}"  readonly />
+					</td>
+                </tr>	
+				 <tr>
+					<td class="head" noWrap style="text-align: right">
+    					合计核销金额
+    				</td>
+					<td>
+						<input id="auditMoney" name="travelTotal.auditMoney" value="$!{travelTotal.totalMoney}" class="easyui-validatebox" type='text' readonly />
+					</td>
+    				<td class="head" noWrap style="text-align: right">
+    					出差事由
+    				</td>
+					<td colspan="5" class="even">
+						$!{travelTotal.memo}
+						<input id="memo" name="travelTotal.memo" type="hidden" value="$!{travelTotal.memo}" class="easyui-validatebox" validType="length[0,80]"  data-options ="required:true" size="95" readonly/>
+					</td>
+                 </tr>	
+		    </table>
+		</div>
+		
+		<div region="south" border="false" style="height:6px;"></div>
+		
+		<div class="easyui-panel" title="核销--明细信息" style="width:1150px;">
+			<table id="myTab" width="100%" cellpadding="0" border="1px" bordercolor="#cccccc" cellspacing="0px" style="border-collapse:collapse">
+				<tr style="height:25px;BACKGROUND-COLOR:#f4f4f4">
+					<td width="5%" style="text-align: center">
+						出差起始日期
+                    </td>
+					<td width="5%" style="text-align: center">
+						出差结束日期
+                    </td>
+					<td width="5%"style="text-align: center">
+						出差天数
+                    </td>
+					<td width="8%"style="text-align: center">
+						同行人
+                    </td>
+					<td width="18%"style="text-align: center">
+						出差目的地
+                    </td>
+					<td width="10%" style="text-align: center">
+						申请金额
+                    </td>
+					<td width="10%" style="text-align: center">
+						核销金额
+                    </td>
+					<td width="30%" style="text-align: center">
+						申请报销详细说明
+                    </td>
+                </tr>
+				#foreach($travelDetail in $travelTotal.travelDetailList)
+				#set($num = $velocityCount%2+1)
+				<input type="hidden" id="travleDtId_$velocityCount" value="$!{travelDetail.travleDtId}" />
+				<tr id="tr_$velocityCount" style="height:23px" class="even$num">
+					<td>
+						<input id="travelStartDateSt_$velocityCount" size="10" class="easyui-datebox" value="$dateUtil.datetime($!{travelDetail.travelStartDate},"yyyy-MM-dd")" />
+					</td>
+					<td>
+						<input id="travelEndDateSt_$velocityCount" size="10" class="easyui-datebox" value="$dateUtil.datetime($!{travelDetail.travelEndDate},"yyyy-MM-dd")" />
+					</td>
+					<td>
+							<input id="travelNum_$velocityCount" style="text-align: center" size="5" type="text" value="$!{travelDetail.travelNum}" readonly/>
+					</td>
+					<td>
+							<input id="peerPerson_$velocityCount" type="hidden" value="$!{travelDetail.peerPerson}" />
+							$!{travelDetail.peerPerson}
+					</td>
+					<td>
+							<input id="travelPlace_$velocityCount" type="hidden" value="$!{travelDetail.travelPlace}" />
+							$!{travelDetail.travelPlace}
+					</td>
+					<td>
+							<input id="invoiceAmount_$velocityCount" type="hidden" value="$!{travelDetail.invoiceAmount}" />
+							$!{travelDetail.invoiceAmount}
+					</td>
+					<td>
+						 <input id="auditMoney_$velocityCount" onblur="checkIsNumber('$velocityCount', 'auditMoney');" type="text" style="text-align: center" value="$!{travelDetail.invoiceAmount}" size="8" />
+					</td>
+					<td>
+						<input id="costMemo_$velocityCount" type="text" validType="length[0,75]" class="easyui-validatebox" size="45" value="$!{travelDetail.meno}" />
+					</td>
+				</tr> 
+				#end
+		    </table>
+		</div>
+		<br/>
+		<div region="" border="false" style="text-align:right;height:100px;line-height:100px;">
+			<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">提交</a>
+		</div>
+		
+		<div id="expTypeToolBar">
+        </div>
+		
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		</form>
+		<div id="userRoleDialog"/>
+        <div id="maintDiv"/>
+	</body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/travelapp/travelWtr.js"></script>
+	<script type="text/javascript">
+		var payBank = "$!{travelTotal.payBank}";
+		var payee = "$!{travelTotal.payee}";
+		var payAccount="$!{travelTotal.payaccount}";
+		var payType="$!{travelTotal.payType}";
+		var totalMoney="$!{travelTotal.totalMoney}";
+    </script>
+</html>

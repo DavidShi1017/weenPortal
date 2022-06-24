@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="exlog">
+	<typeAlias alias="exlog" type="com.jingtong.platform.sap.pojo.ExceptionLog" />
+	<typeAlias alias="message" type="com.jingtong.platform.message.pojo.Message" />
+	
+	<insert id="insertLogInfo" parameterClass="exlog">
+	   <selectKey resultClass="java.lang.Long" keyProperty="eId">
+		  <![CDATA[select basis.basis_sq_log_info.NEXTVAL as eId from dual]]>
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_TB_log_info (
+			  e_Id,
+			  interface_Name,
+			  operate_User,
+			  operate_Time,
+			  log_Info,
+			  log_desc
+				)
+			values (
+				#eId#,
+				#interfaceName#,
+				#operateUser#,
+				#operateTime#,
+				#logInfo#,
+				#logDesc#
+				)
+		]]>
+	</insert>
+	
+	<select id="searchLogInfo" parameterClass="exlog" resultClass="exlog">
+	 <include refid="global.paginationStart" />
+	    <![CDATA[SELECT  
+	      e.E_ID as  eId,
+	      e.INTERFACE_NAME as interfaceName, 
+	      e.OPERATE_USER as operateUser,
+	      e.OPERATE_TIME as  operateTime,
+	      e.LOG_INFO  as logInfo,
+	      e.LOG_DESC as logDesc
+	     FROM basis.basis_TB_log_info e where 1=1 ]]>
+	    
+	    <dynamic>
+	       <isNotEmpty property="interfaceName" prepend="and">
+	          <![CDATA[ e.interface_name like'%' || #interfaceName# || '%']]>
+	       </isNotEmpty>
+	       <isNotEmpty property="operateUser" prepend="and">
+	          <![CDATA[ e.operate_user like #operateUser,handler=wildcard# escape '\']]>
+	       </isNotEmpty>
+	       <isNotEmpty property="operateTime" prepend="and">
+	          <![CDATA[ e.operate_time=#operateTime#]]>
+	       </isNotEmpty>
+	       <isNotEmpty property="logInfo" prepend="and">
+	          <![CDATA[ e.log_info=#logInfo#]]>
+	       </isNotEmpty>
+	    </dynamic>
+	     <include refid="global.paginationEnd" />
+	</select>
+	
+	
+	<select id="searchLogInfoCount" parameterClass="exlog" resultClass="java.lang.Integer">
+	    <![CDATA[SELECT  
+	      e.E_ID as  eId,
+	      e.INTERFACE_NAME as interfaceName, 
+	      e.OPERATE_USER as operateUser,
+	      e.OPERATE_TIME as  operateTime,
+	      e.LOG_INFO  as logInfo,
+	      e.LOG_DESC as logDesc
+	     FROM basis.basis_TB_log_info e where 1=1 ]]>
+	    
+	    <dynamic>
+	       <isNotEmpty property="interfaceName" prepend="and">
+	          <![CDATA[ e.interface_name like'%' || #interfaceName# || '%']]>
+	       </isNotEmpty>
+	       <isNotEmpty property="operateUser" prepend="and">
+	          <![CDATA[ e.operate_user like #operateUser,handler=wildcard# escape '\']]>
+	       </isNotEmpty>
+	       <isNotEmpty property="operateTime" prepend="and">
+	          <![CDATA[ e.operate_time=#operateTime#]]>
+	       </isNotEmpty>
+	       <isNotEmpty property="logInfo" prepend="and">
+	          <![CDATA[ e.log_info=#logInfo#]]>
+	       </isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<insert id="saveMessage" parameterClass="message">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		<![CDATA[
+			SELECT basis.basis_sq_message.nextval as id from dual
+		]]>
+		</selectKey> 
+	<![CDATA[
+		insert into basis.basis_tb_message(id,smsid,name,sendNumber,content,state,createTime,type)
+		values(#id#,#smsid#,#name#,#sendNumber#,#content#,'0',sysdate,#type#)
+	]]>
+	</insert>
+	
+    <insert id="insertJobLog" parameterClass="exlog">
+       <selectKey resultClass="java.lang.Long" keyProperty="eId">
+          <![CDATA[select basis.basis_seq_job_log.NEXTVAL as eId from dual]]>
+        </selectKey>
+        <![CDATA[
+            insert into basis.basis_TB_JOB_LOG (
+              JOB_FLOW_ID,
+              INTERFACE_NAME,
+              OPERATE_USER,
+              OPERATE_TIME,
+              LOG_INFO
+                )
+            values (
+                #eId#,
+                #interfaceName#,
+                'Job',
+                sysdate,
+                #logInfo#
+                )
+        ]]>
+    </insert>
+</sqlMap>

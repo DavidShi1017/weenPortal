@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="product">
+	<typeAlias alias="product" type="com.jingtong.platform.product.pojo.Product"/>	
+	<!-- 经销商客户信息主数据 -->
+	<select id="getProductById" parameterClass="product" resultClass="product">
+		<![CDATA[
+			select 
+				  id,
+				  material_id,
+				  material_name,
+				  material_exp,
+				  material_type,
+				  material_groupId,
+				  lead_time,
+				  base_unit,
+				  sale_unit,
+				  unit_change,
+				  isOrderItem,
+				  isQuoteItem,
+				  isDRItem,
+				  limited_qty,
+				  moq,
+				  cost,
+				  customer_id,
+				  state,
+				  isDeleted,
+				  sortId,
+				  create_time,
+				  create_userId,
+				  customer_group,
+				  latest_time,
+				  latest_userId,
+				  latest_deptId,
+				  numerator,
+				  denominator,
+				  pq,
+				  to_char(rfs_date,'YYYY-MM-DD') rfs_dateStr
+			from basis.basis_tb_productInfo 
+			where id=#id#
+		]]>
+	</select>
+	
+	<select id="getProductList" parameterClass="product" resultClass="product">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+			  distinct(aa.material_id),
+			  aa.id,
+			  aa.material_name,
+			  aa.material_exp,
+			  aa.material_type,
+			  aa.material_groupId,
+			  aa.lead_time,
+			  aa.base_unit,
+			  aa.sale_unit,
+			  aa.unit_change,
+			  aa.isOrderItem,
+			  aa.isQuoteItem,
+			  aa.isDRItem,
+			  aa.limited_qty,
+			  aa.moq,
+			  aa.cost,
+			  aa.customer_id,
+			  aa.state,
+			  aa.isDeleted,
+			  aa.sortId,
+			  aa.create_time,
+			  bb.emp_name create_userId,
+			  aa.customer_group,
+			  aa.latest_time,
+			  cc.emp_name latest_userId,
+			  aa.latest_deptId,
+			  aa.numerator,
+			  aa.denominator,
+			  aa.pq,
+			  aa.isLocked,
+			  aa.rfs_date
+		from basis.basis_tb_productInfo aa
+			left outer join basis.basis_tb_salesemp_info bb on aa.create_userId = bb.emp_id
+			left outer join basis.basis_tb_salesemp_info cc on aa.latest_userId = cc.emp_id
+	 	where (aa.isDeleted !='X'  or aa.isDeleted is null) and aa.material_type='Packed End Product' 
+	]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(aa.material_name) like '%$material_name$%']]>
+			</isNotEmpty> 
+			<isNotEmpty property="isOrderItem" prepend="and">
+				<![CDATA[ aa.isOrderItem =#isOrderItem# and aa.state=1]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isQuoteItem" prepend="and">
+				<![CDATA[ aa.isQuoteItem =#isQuoteItem#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isDRItem" prepend="and">
+				<![CDATA[ aa.isDRItem =#isDRItem# ]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isDownLoad" prepend="and">
+				<![CDATA[ aa.limited_qty=0]]>
+			</isNotEmpty> 	
+			<isNotEmpty property="useFor" prepend="and">
+				<![CDATA[ aa.factory ='HK11'  ]]>
+			</isNotEmpty> 	
+			<isEmpty property="useFor" prepend="and">
+				<![CDATA[ aa.factory = 'HK10' ]]>
+			</isEmpty>		
+		</dynamic>
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	<select id="getProductListCount" parameterClass="product"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(distinct(material_id)) from basis.basis_tb_productInfo  			
+			where (isDeleted !='X'  or isDeleted is null) and material_type='Packed End Product' 
+		]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="isOrderItem" prepend="and">
+				<![CDATA[ isOrderItem =#isOrderItem# and state=1]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isQuoteItem" prepend="and">
+				<![CDATA[ isQuoteItem =#isQuoteItem# ]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isDRItem" prepend="and">
+				<![CDATA[ isDRItem =#isDRItem# ]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isDownLoad" prepend="and">
+				<![CDATA[ limited_qty!=0]]>
+			</isNotEmpty> 	
+			<isNotEmpty property="useFor" prepend="and">
+				<![CDATA[ factory ='HK11'  ]]>
+			</isNotEmpty> 	
+			<isEmpty property="useFor" prepend="and">
+				<![CDATA[ factory = 'HK10' ]]>
+			</isEmpty>		 
+		</dynamic>
+	</select>
+	
+	<select id="getProductListNoPage" parameterClass="product" resultClass="product">
+	<![CDATA[
+		select 
+			  id,material_id,material_name,material_exp,material_type,
+			  material_groupId,lead_time,base_unit,sale_unit,unit_change,isOrderItem,
+			  isQuoteItem,isDRItem,limited_qty,moq,cost,customer_id,state,
+			  isDeleted,sortId,create_time,create_userId,customer_group,
+			  latest_time,latest_userId,latest_deptId,numerator,denominator,pq,isLocked
+		from basis.basis_tb_productInfo 
+	 	where (isDeleted !='X'  or isDeleted is null) and material_type='Packed End Product'  
+	]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ material_name like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="isOrderItem" prepend="and">
+				<![CDATA[ isOrderItem =#isOrderItem# and state=1]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isQuoteItem" prepend="and">
+				<![CDATA[ isQuoteItem =#isQuoteItem# ]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isDRItem" prepend="and">
+				<![CDATA[ isDRItem =#isDRItem# ]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isDownLoad" prepend="and">
+				<![CDATA[ latest_time is null]]>
+			</isNotEmpty> 
+			<isNotEmpty property="useFor" prepend="and">
+				<![CDATA[ factory ='HK11'  ]]>
+			</isNotEmpty> 	
+			<isEmpty property="useFor" prepend="and">
+				<![CDATA[ factory = 'HK10' ]]>
+			</isEmpty>				
+		</dynamic>
+		<include refid="global.orderBy"/>
+	</select>
+	<insert id="createProduct" parameterClass="product">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_end_customeInfo.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_productInfo   
+			(
+			  id,material_id,material_name,material_exp,material_type,
+			  material_groupId,lead_time,base_unit,sale_unit,unit_change,isOrderItem,
+			  isQuoteItem,isDRItem,limited_qty,moq,cost,customer_id,state,
+			  isDeleted,sortId,create_time,create_userId,customer_group,
+			)
+			values
+			(
+			  #id#,#material_id#,#material_name#,#material_exp#,#material_type#,
+			  #material_groupId#,#lead_time#,#base_unit#,#sale_unit#,#unit_change#,#isOrderItem#,
+			  #isQuoteItem#,#isDRItem#,#limited_qty#,#moq#,#cost#,#customer_id#,0,
+			  0,#sortId#,sysdate,#create_userId#,#customer_group#
+			)
+		
+		]]>
+	</insert>
+	
+	<update  id="updateProduct" parameterClass="product">
+		update basis.basis_tb_productInfo   
+		set   latest_time=sysdate
+				<isGreaterThan prepend="," property="lead_time" compareValue="0">  
+				  lead_time=#lead_time#
+				 </isGreaterThan>
+			<isNotEmpty property="isOrderItem" prepend=",">
+				  isOrderItem=#isOrderItem#
+			</isNotEmpty> 
+			<isNotEmpty property="isQuoteItem" prepend=",">
+				  isQuoteItem=#isQuoteItem#
+			</isNotEmpty>
+			  <isNotEmpty property="isDRItem" prepend=",">
+				  isDRItem=#isDRItem#
+			</isNotEmpty>
+		 	<isGreaterThan prepend="," property="limited_qty" compareValue="0">  
+			 	limited_qty=#limited_qty#
+			 </isGreaterThan>
+			 , customer_group=#customer_group#,
+			  latest_userId=#latest_userId#,
+			  latest_deptId=#latest_deptId#
+		where material_id=#material_id#
+	</update>
+
+	
+	<delete id="deleteProduct" parameterClass="product">
+		delete from basis.basis_tb_productInfo   
+		where id=#id#
+	</delete>
+	
+<!-- DR ProductList -->		
+	<select id="getDRProductList" parameterClass="product" resultClass="product">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+			  aa.material_id,aa.id,aa.material_name,aa.material_exp,aa.material_type,decode(decode(ee.sale_price,null,dd.sale_price/dd.perUnit,ee.sale_price/ee.perUnit),null,0,decode(ee.sale_price,null,dd.sale_price/dd.perUnit,ee.sale_price/ee.perUnit)) pbPrice,
+			  aa.material_groupId,aa.lead_time,aa.base_unit,aa.sale_unit,aa.unit_change,aa.isOrderItem,dd.perUnit,
+			  aa.isQuoteItem,aa.isDRItem,aa.limited_qty,aa.moq,aa.cost,aa.customer_id,aa.state,
+			  aa.isDeleted,aa.sortId,aa.create_time,bb.emp_name create_userId,aa.customer_group,
+			  aa.latest_time,cc.emp_name latest_userId,aa.latest_deptId,aa.numerator,aa.denominator,aa.pq,aa.isLocked
+		from basis.basis_tb_productInfo aa
+			left outer join basis.basis_tb_salesemp_info bb on aa.create_userId = bb.emp_id
+			left outer join basis.basis_tb_salesemp_info cc on aa.latest_userId = cc.emp_id
+			
+				
+			left outer join basis.basis_tb_price_rule dd on ltrim(aa.material_id,'0') = ltrim(dd.material_id,'0') 			
+				and dd.price_type='ZPB1'  and dd.currency_code = #currency_code# and dd.office_id = #office_id# and dd.start_date<sysdate and dd.end_date>sysdate
+			
+			left outer join basis.basis_tb_price_rule ee on ltrim(aa.material_id,'0') = ltrim(ee.material_id,'0') 			
+			 	and ee.price_type='ZMP1'  and ee.currency_code = #currency_code# and ltrim(#customer_id#,'0') = ltrim(ee.customer_code,'0')and ee.start_date<sysdate and ee.end_date>sysdate 
+			 	 
+		 	where (aa.isDeleted !='X'    or aa.isDeleted is null) and aa.material_type='Packed End Product'
+		 		 and aa.factory = 'HK10'
+		]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 	
+			<isNotEmpty property="isOrderItem" prepend="and">
+				<![CDATA[ aa.isOrderItem =#isOrderItem# and aa.state=1]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isQuoteItem" prepend="and">
+				<![CDATA[ aa.isQuoteItem =#isQuoteItem# ]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isDRItem" prepend="and">
+				<![CDATA[ aa.isDRItem =#isDRItem# ]]>
+			</isNotEmpty> 
+		</dynamic>
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	<select id="getDRProductListCount" parameterClass="product"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(distinct(material_id)) from basis.basis_tb_productInfo  			
+			where (isDeleted !='X'  or isDeleted is null) and material_type='Packed End Product'
+			 and factory = 'HK10' 
+		]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 	
+			<isNotEmpty property="isOrderItem" prepend="and">
+				<![CDATA[ isOrderItem =#isOrderItem# and state=1]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isQuoteItem" prepend="and">
+				<![CDATA[ isQuoteItem =#isQuoteItem# ]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isDRItem" prepend="and">
+				<![CDATA[ isDRItem =#isDRItem# ]]>
+			</isNotEmpty> 
+		</dynamic>
+	</select>
+	
+<!-- Quote ProductList -->		
+	<select id="getQuoteProductList" parameterClass="product" resultClass="product">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+			  aa.material_id,aa.id,aa.material_name,aa.material_exp,aa.material_type,decode(decode(ee.sale_price,null,dd.sale_price/dd.perUnit,ee.sale_price/ee.perUnit),null,0,decode(ee.sale_price,null,dd.sale_price/dd.perUnit,ee.sale_price/ee.perUnit)) pbPrice,
+			  aa.material_groupId,aa.lead_time,aa.base_unit,aa.sale_unit,aa.unit_change,aa.isOrderItem,dd.perUnit,
+			  aa.isQuoteItem,aa.isDRItem,aa.limited_qty,aa.moq,aa.cost,aa.customer_id,aa.state,
+			  aa.isDeleted,aa.sortId,aa.create_time,bb.emp_name create_userId,aa.customer_group,
+			  aa.latest_time,cc.emp_name latest_userId,aa.latest_deptId,aa.numerator,aa.denominator,aa.pq,aa.isLocked
+		from basis.basis_tb_productInfo aa
+			left outer join basis.basis_tb_salesemp_info bb on aa.create_userId = bb.emp_id
+			left outer join basis.basis_tb_salesemp_info cc on aa.latest_userId = cc.emp_id
+			
+			left outer join basis.basis_tb_price_rule dd on ltrim(aa.material_id,'0') = ltrim(dd.material_id,'0') 			
+				and dd.price_type='ZPB1'  and dd.currency_code = #currency_code# and dd.office_id = #office_id# and dd.start_date<sysdate and dd.end_date>sysdate
+			
+			left outer join basis.basis_tb_price_rule ee on ltrim(aa.material_id,'0') = ltrim(ee.material_id,'0') 			
+			 	and ee.price_type='ZMP1' and ee.currency_code = #currency_code# and ltrim(#customer_id#,'0') = ltrim(ee.customer_code,'0')and ee.start_date<sysdate and ee.end_date>sysdate 
+			 	 
+		 	where (aa.isDeleted !='X'    or aa.isDeleted is null) and aa.material_type='Packed End Product'
+		 		and aa.isQuoteItem ='Y' and aa.factory = 'HK10'
+		]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 	
+		</dynamic>
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	<select id="getQuoteProductListCount" parameterClass="product"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(distinct(material_id)) from basis.basis_tb_productInfo  			
+			where (isDeleted !='X'  or isDeleted is null) and material_type='Packed End Product'
+			and  isQuoteItem ='Y' and factory = 'HK10' 
+		]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 	 
+		</dynamic>
+	</select>	
+		
+	<select id="getDRQuoteProductListNoPage" parameterClass="product" resultClass="product">
+	<![CDATA[
+		select 
+			  aa.id,aa.material_id,aa.material_name,aa.material_exp,aa.material_type,decode(decode(ee.sale_price,null,dd.sale_price/dd.perUnit,ee.sale_price/ee.perUnit),null,0,decode(ee.sale_price,null,dd.sale_price/dd.perUnit,ee.sale_price/ee.perUnit)) pbPrice,
+			  aa.material_groupId,aa.lead_time,aa.base_unit,aa.sale_unit,aa.unit_change,aa.isOrderItem,
+			  aa.isQuoteItem,aa.isDRItem,aa.limited_qty,aa.moq,aa.cost,aa.customer_id,aa.state,
+			  aa.isDeleted,aa.sortId,aa.create_time,aa.create_userId,aa.customer_group,
+			  aa.latest_time,aa.latest_userId,aa.latest_deptId,aa.numerator,aa.denominator,aa.pq,aa.isLocked
+		from basis.basis_tb_productInfo  aa
+			left outer join basis.basis_tb_price_rule dd on ltrim(aa.material_id,'0') = ltrim(dd.material_id,'0') 			
+				 and dd.price_type='ZPB1'  and dd.currency_code = #currency_code# and dd.office_id = #office_id#  and dd.start_date<sysdate and dd.end_date>sysdate 
+		
+			left outer join basis.basis_tb_price_rule ee on ltrim(aa.material_id,'0') = ltrim(ee.material_id,'0') 			
+			 	and ee.price_type='ZMP1'  and ee.currency_code = #currency_code# and ltrim(#customer_id#,'0') = ltrim(ee.customer_code,'0')and ee.start_date<sysdate and ee.end_date>sysdate 
+			 	 
+		 	where (aa.isDeleted !='X'    or aa.isDeleted is null) and aa.material_type='Packed End Product' and aa.factory = 'HK10'
+		]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ aa.material_name like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="isOrderItem" prepend="and">
+				<![CDATA[ aa.isOrderItem =#isOrderItem# and aa.state=1]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isQuoteItem" prepend="and">
+				<![CDATA[ aa.isQuoteItem =#isQuoteItem# ]]>
+			</isNotEmpty> 
+			<isNotEmpty property="isDRItem" prepend="and">
+				<![CDATA[ aa.isDRItem =#isDRItem# ]]>
+			</isNotEmpty> 		
+		</dynamic>
+		<include refid="global.orderBy"/>
+	</select>
+	   
+	<select id="getProductByMaterialIdOrName" parameterClass="product" resultClass="product">
+        <![CDATA[
+            SELECT 
+                  
+                  material_id,
+                  material_name,
+                  material_exp,
+                  material_type,
+                  material_groupId,
+                  lead_time,
+                  base_unit,
+                  sale_unit,
+                  unit_change,
+                  isOrderItem,
+                  isQuoteItem,
+                  isDRItem,
+                  limited_qty,
+                  moq,
+                  cost,
+                  customer_id,
+                  state,
+                  isDeleted,
+                  sortId,
+                  create_time,
+                  create_userId,
+                  customer_group,
+                  latest_time,
+                  latest_userId,
+                  latest_deptId,
+                  numerator,
+                  denominator,
+                  pq,
+                  rfs_date
+             FROM basis.basis_tb_productInfo 
+             where  rownum=1 
+             
+        ]]>
+        <dynamic>
+            <isNotEmpty property="material_id" prepend="and">
+                <![CDATA[ material_id = #material_id#]]>
+            </isNotEmpty>   
+            <isNotEmpty property="material_name" prepend="and">
+                <![CDATA[ upper(material_name)  = #material_name#]]>
+            </isNotEmpty>
+        </dynamic>  
+    </select>
+</sqlMap>

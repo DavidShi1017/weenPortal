@@ -1,0 +1,2359 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="pos">
+	<typeAlias alias="pos" type="com.jingtong.platform.pos.pojo.Pos" />
+	<typeAlias alias="qd" type="com.jingtong.platform.quote.pojo.QuoteDetail" />
+	<typeAlias alias="ec" type="com.jingtong.platform.endCustomer.pojo.ECAlias" />
+	<typeAlias alias="cmsTbDict" type="com.jingtong.platform.dict.pojo.CmsTbDict" />
+	<typeAlias alias="cmsTbDictType"
+		type="com.jingtong.platform.dict.pojo.CmsTbDictType" />
+
+	<insert id="createPosInfo" parameterClass="pos">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			SELECT
+			basis.BASIS_SEQ_POS.nextval AS id FROM DUAL
+		</selectKey>
+		<![CDATA[
+		insert into basis.basis_tb_cus_pos
+		(id,
+		transAction_code,
+		disti_num,
+		disti_name,
+		disti_branch,
+		disti_city,
+		book_part,
+		m_12nc,
+		ship_date,
+		quote_sdate,
+		quote_edate,
+		ship_qty,
+		quote_totalqty,
+		rebate_qty,
+		debit_number,
+		disti_claimnbr,
+		oppreg_nbr,
+		cpn,
+		disti_invoice_nbr,
+		disti_invoice_item_number,
+		disti_cost,
+		disti_cost_denom,
+		disti_cost_currency,
+		disti_cost_exchangerate,
+		disti_bookcost,
+		dbc_denom,
+		dbc_currency_code,
+		dbc_exchange_rate,
+		disti_resale,
+		disti_resale_denom,
+		disti_resale_currency,
+		disti_resale_exchange_rate,
+		purchasing_customer_name,
+		purchasing_cust_country,
+		purchasing_cust_state,
+		purchasing_cust_city,
+		purchasing_cust_zip,
+		endcust_name,
+		endcust_country,
+		endcust_state,
+		endcust_city,
+		endcust_loc,
+		endcust_zip,
+		status,
+		data_from,
+		created_time,
+		created_user,
+		update_time,
+		update_user,
+		tips,
+		status_num,
+		file_url,
+		file_id,
+ 		type,
+ 		disti_accounting_nbr
+		)
+		values
+		(
+      #id#,
+	  #transaction_code#,
+      #disti_num#,
+      #disti_name#,
+      #disti_branch#,
+      #disti_city#,
+      #book_part#,
+      #m_12nc#,
+      #ship_date#,
+      #quote_sdate#,
+      #quote_edate#,
+      #ship_qty#,
+      #quote_totalqty#,
+      #ship_qty#,
+      #debit_number#,
+      #disti_claimnbr#,
+      #oppreg_nbr#,
+      #cpn#,
+      #disti_invoice_nbr#,
+      #disti_invoice_item_number#,
+      #disti_cost#,
+      #cost_denom#,
+      #disti_cost_currency#,
+      #disti_cost_exchangeRate#,
+      #disti_bookcost#,
+      #dbc_denom#,
+      #dbc_currency_code#,
+      #dbc_exchange_rate#,
+      #disti_resale#,
+      #disti_resale_denom#,
+      #disti_resale_currency#,
+      #disti_resale_exchange_rate#,
+      #purchasing_customer_name#,
+      #purchasing_cust_country#,
+      #purchasing_cust_state#,
+      #purchasing_cust_city#,
+      #purchasing_cust_zip#,
+      #endcust_name#,
+      #endcust_country#,
+      #endcust_state#,
+      #endcust_city#,
+      #endcust_loc#,
+      #endcust_zip#,
+      #status#,
+      #data_from#,
+      sysdate,
+      #created_user#,
+      sysdate,
+      #update_user#,
+    #tips#,
+    #status_num#,
+	#file_url#,
+	#file_id#,
+    #type#,
+    #disti_accounting_nbr#
+        )
+		
+		]]>
+	</insert>
+
+
+	<select id="searchPosListCount" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+		select count(distinct file_id) from basis.basis_tb_cus_pos b  
+		where b.TYPE = #type# and 
+		not exists(select 1 from basis_tb_cus_pos aa
+		where file_id =b.file_id and id<b.id and type =#type#
+  	  ]]>
+	  	  <isNotEmpty property="status" prepend="and">
+						<![CDATA[ aa.status in $status$]]>
+			</isNotEmpty>
+		) 
+		<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(b.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_cost_currency" prepend="and">
+				<![CDATA[ b.disti_cost_currency =#disti_cost_currency#]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+				<![CDATA[ (upper(b.file_url) like #file_url,handler=wildcard# escape '\' or upper(b.file_id) like #file_url,handler=wildcard# escape '\')]]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+					<![CDATA[ b.status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="flag" prepend="and">
+			<![CDATA[ b.debit_number is not null]]>
+		</isNotEmpty>
+		<isNotEmpty property="debit_number" prepend="and">
+			<![CDATA[ b.debit_number =#debit_number#]]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_accounting_nbr" prepend="and">
+			<![CDATA[ ltrim(b.disti_accounting_nbr,'0') =ltrim(#disti_accounting_nbr#,'0')]]>
+		</isNotEmpty>
+		<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ b.book_part =#book_part#]]>
+		</isNotEmpty>
+		<isNotEmpty property="created_user" prepend="and">
+					<![CDATA[ aa.created_user =#created_user#]]>
+		</isNotEmpty>
+
+		<isNotEmpty property="disti_invoice_nbr" prepend="and">
+			<![CDATA[ b.disti_invoice_nbr =#disti_invoice_nbr# and b.status = 3]]>
+		</isNotEmpty>
+		<!-- Rebeat Order
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ to_date(TO_char(b.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') >=to_date(TO_char(#start_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ to_date(TO_char(b.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(TO_char(#end_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd')]]>
+		</isNotEmpty>
+		 -->
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ b.ship_date >= #ship_dateStart# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ b.ship_date <= #ship_dateEnd# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="type" prepend="and">
+			<![CDATA[ b.type =#type#]]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_branch" prepend="and">
+			<![CDATA[ ltrim(b.disti_branch,'0') =ltrim(#disti_branch#,'0')]]>
+		</isNotEmpty>
+		<isNotEmpty property="mark" prepend="and">
+			<![CDATA[b.disti_invoice_nbr||b.disti_invoice_item_number =#mark# and b.status = 3 and id!=#id# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="created_time_start" prepend="and">
+			<![CDATA[ to_date(TO_char(b.created_time,'yyyy-mm-dd'),'yyyy-mm-dd')  >= to_date(TO_char( #created_time_start#  ,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="created_time_end" prepend="and">
+			<![CDATA[ to_date(TO_char(b.created_time,'yyyy-mm-dd'),'yyyy-mm-dd')   <= to_date(TO_char( #created_time_end#  ,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+	</select>
+
+
+	<select id="searchPosListCountForAll" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+		select count(*) from basis.basis_tb_cus_pos aa  
+		where 1=1 
+		
+  	  ]]>
+		<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_cost_currency" prepend="and">
+				<![CDATA[ aa.disti_cost_currency =#disti_cost_currency#]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+				<![CDATA[ aa.file_url like #file_url,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="flag" prepend="and">
+			<![CDATA[ aa.debit_number is not null]]>
+		</isNotEmpty>
+		<isNotEmpty property="debit_number" prepend="and">
+			<![CDATA[ aa.debit_number =#debit_number#]]>
+		</isNotEmpty>
+		<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ aa.book_part =#book_part#]]>
+		</isNotEmpty>
+		<isNotEmpty property="created_user" prepend="and">
+					<![CDATA[ aa.created_user =#created_user#]]>
+		</isNotEmpty>
+
+		<isNotEmpty property="disti_invoice_nbr" prepend="and">
+			<![CDATA[ aa.disti_invoice_nbr =#disti_invoice_nbr#]]>
+		</isNotEmpty>
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ to_date(TO_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') >=to_date(TO_char(#start_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ to_date(TO_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(TO_char(#end_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd')]]>
+		</isNotEmpty>
+		<isNotEmpty property="type" prepend="and">
+			<![CDATA[ aa.type =#type#]]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_branch" prepend="and">
+			<![CDATA[ ltrim(aa.disti_branch,'0') =ltrim(#disti_branch#,'0')]]>
+		</isNotEmpty>
+		<!--<isNotEmpty property="ship_to" prepend="and">
+				<![CDATA[ cc.partnerId = #ship_to#]]>
+		</isNotEmpty> -->
+		<isEqual property="debitsOrRedits" compareValue="Debits" prepend="and">
+			<![CDATA[ to_number(aa.ship_qty) > 0 ]]>
+		</isEqual>
+		<isEqual property="debitsOrRedits" compareValue="Redits" prepend="and">
+			<![CDATA[ to_number(aa.ship_qty) < 0 ]]>
+		</isEqual>
+		<isNotEmpty property="mark" prepend="and">
+			<![CDATA[aa.disti_invoice_nbr||aa.disti_invoice_item_number =#mark# and aa.status in $status$ and aa.id!=#id# ]]>
+		</isNotEmpty>
+	</select>
+
+	<!-- Rebeat Order查询页面(同步claim数据到SAP) 
+	20170407以前取billingto shipto payerto
+	(select cc.partnerId  from basis.basis_tb_cus_relationship cc  where  cc.partnerType='WE' and ltrim(aa.disti_branch,'0')=ltrim(cc.customer_code,'0') and rownum = 1) ship_to ,
+				dd.partnerId payer_to,
+				ee.partnerId billing_to,
+	-->
+	<select id="searchPosListForAll" parameterClass="pos"
+		resultClass="pos">
+		<![CDATA[
+		select distinct(aa.id),aa.row_no,aa.sapClaimNbr,aa.transaction_code,aa.disti_name,aa.disti_branch,aa.disti_city,aa.book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+			aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+			aa.disti_cost,aa.disti_cost_denom cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+			aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+			aa.disti_resale_currency,aa.disti_resale_exchange_rate,aa.purchasing_customer_name,aa.purchasing_cust_city,
+			aa.purchasing_cust_zip,aa.purchasing_cust_state,aa.purchasing_cust_country,aa.endcust_name,aa.endcust_city,aa.endcust_loc,
+			aa.endcust_zip,aa.endcust_state,aa.endcust_country,decode(aa.status,0,'Reject',1,'Pending',3,'Approved',4,'Rebated',9,'Transfer',aa.status) status,
+			aa.tips,aa.rejecttoapprove_remark,
+			ff.emp_name created_user,aa.created_time,aa.file_id,aa.file_url,aa.disti_accounting_nbr,
+			aa.disti_branch ship_to ,
+            aa.disti_branch payer_to,
+            aa.disti_branch billing_to,
+			bb.MATERIAL_ID m_12nc,
+			aa.status_num from basis.basis_tb_cus_pos aa 
+			left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id
+			left outer join basis.BASIS_TB_PRODUCTINFO bb on aa.book_part = bb.MATERIAL_NAME
+			left outer join basis.basis_tb_cus_relationship dd  on  dd.partnerType='RG' and ltrim(aa.disti_branch,'0')=ltrim(dd.customer_code,'0')
+			left outer join basis.basis_tb_cus_relationship ee  on  ee.partnerType='RE' and ltrim(aa.disti_branch,'0')=ltrim(ee.customer_code,'0')
+			where 1=1 
+  	  ]]>
+		<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_cost_currency" prepend="and">
+				<![CDATA[ aa.disti_cost_currency =#disti_cost_currency#]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+				<![CDATA[ aa.file_url like #file_url,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="flag" prepend="and">
+			<![CDATA[ aa.debit_number is not null]]>
+		</isNotEmpty>
+		<isNotEmpty property="debit_number" prepend="and">
+			<![CDATA[ aa.debit_number =#debit_number#]]>
+		</isNotEmpty>
+		<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ aa.book_part =#book_part#]]>
+		</isNotEmpty>
+		<isNotEmpty property="created_user" prepend="and">
+					<![CDATA[ aa.created_user =#created_user#]]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_invoice_nbr" prepend="and">
+			<![CDATA[ aa.disti_invoice_nbr =#disti_invoice_nbr#]]>
+		</isNotEmpty>
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ to_date(TO_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') >=to_date(TO_char(#start_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ to_date(TO_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(TO_char(#end_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd')]]>
+		</isNotEmpty>
+		<isNotEmpty property="type" prepend="and">
+			<![CDATA[ aa.type =#type#]]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_branch" prepend="and">
+			<![CDATA[ ltrim(aa.disti_branch,'0') =ltrim(#disti_branch#,'0')]]>
+		</isNotEmpty>
+		<isNotEmpty property="ship_to" prepend="and">
+				<![CDATA[ cc.partnerId = #ship_to#]]>
+		</isNotEmpty>
+		order by disti_name , disti_branch  , disti_claimnbr
+	</select>
+
+<select id="searchPosListForPosCheckInvoice" parameterClass="pos"
+		resultClass="pos">
+		<![CDATA[
+		select distinct(aa.id),aa.row_no,aa.sapClaimNbr,aa.transaction_code,aa.disti_name,aa.disti_branch,aa.disti_city,aa.book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+			aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+			aa.disti_cost,aa.disti_cost_denom cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+			aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+			aa.disti_resale_currency,aa.disti_resale_exchange_rate,aa.purchasing_customer_name,aa.purchasing_cust_city,
+			aa.purchasing_cust_zip,aa.purchasing_cust_state,aa.purchasing_cust_country,aa.endcust_name,aa.endcust_city,aa.endcust_loc,
+			aa.endcust_zip,aa.endcust_state,aa.endcust_country,decode(aa.status,0,'Reject',1,'Pending',3,'Approved',4,'Rebated',9,'Transfer',aa.status) status,aa.tips,
+			ff.emp_name created_user,aa.created_time,aa.file_id,aa.file_url,aa.disti_accounting_nbr,
+			
+			aa.disti_branch ship_to ,
+            aa.disti_branch payer_to,
+            aa.disti_branch billing_to,
+			bb.MATERIAL_ID m_12nc,
+			aa.status_num from basis.basis_tb_cus_pos aa 
+			left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id
+			left outer join basis.BASIS_TB_PRODUCTINFO bb on aa.book_part = bb.MATERIAL_NAME
+			
+			left outer join basis.basis_tb_cus_relationship dd  on  dd.partnerType='RG' and ltrim(aa.disti_branch,'0')=ltrim(dd.customer_code,'0')
+			left outer join basis.basis_tb_cus_relationship ee  on  ee.partnerType='RE' and ltrim(aa.disti_branch,'0')=ltrim(ee.customer_code,'0')
+			where 1=1 
+			
+		
+  	  ]]>
+		<isNotEmpty property="disti_name" prepend="and">
+				(
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+				<isNotEmpty property="disti_alias" prepend="OR">
+				    <![CDATA[ upper(aa.disti_name) like #disti_alias,handler=wildcard# escape '\']]>
+                </isNotEmpty>
+				)
+		</isNotEmpty>
+		<isNotEmpty property="disti_cost_currency" prepend="and">
+				<![CDATA[ aa.disti_cost_currency =#disti_cost_currency#]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+				<![CDATA[ aa.file_url like #file_url,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="flag" prepend="and">
+			<![CDATA[ aa.debit_number is not null]]>
+		</isNotEmpty>
+		<isNotEmpty property="debit_number" prepend="and">
+			<![CDATA[ aa.debit_number =#debit_number#]]>
+		</isNotEmpty>
+		<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ aa.book_part =#book_part#]]>
+		</isNotEmpty>
+		<isNotEmpty property="created_user" prepend="and">
+					<![CDATA[ aa.created_user =#created_user#]]>
+		</isNotEmpty>
+
+		<isNotEmpty property="disti_invoice_nbr" prepend="and">
+			<![CDATA[ aa.disti_invoice_nbr =#disti_invoice_nbr#]]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_invoice_item_number" prepend="and">
+			<![CDATA[ aa.disti_invoice_item_number =#disti_invoice_item_number#]]>
+		</isNotEmpty>
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ to_date(TO_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') >=to_date(TO_char(#start_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ to_date(TO_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(TO_char(#end_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd')]]>
+		</isNotEmpty>
+		<isNotEmpty property="type" prepend="and">
+			<![CDATA[ aa.type =#type#]]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_branch" prepend="and">
+			<![CDATA[ ltrim(aa.disti_branch,'0') =ltrim(#disti_branch#,'0')]]>
+		</isNotEmpty>
+		<isNotEmpty property="ship_to" prepend="and">
+				<![CDATA[ cc.partnerId = #ship_to#]]>
+		</isNotEmpty>
+		<isEqual property="debitsOrRedits" compareValue="Debits" prepend="and">
+			<![CDATA[ to_number(aa.ship_qty) > 0 ]]>
+		</isEqual>
+		<isEqual property="debitsOrRedits" compareValue="Redits" prepend="and">
+			<![CDATA[ to_number(aa.ship_qty) < 0 ]]>
+		</isEqual>
+		<isNotEmpty property="mark" prepend="and">
+			<![CDATA[ upper(aa.transaction_code) = 'S' and aa.disti_invoice_nbr||aa.disti_invoice_item_number =#mark# and aa.status in $status$ and aa.id!=#id# ]]>
+		</isNotEmpty>
+		
+		order by ship_date , disti_name  , book_part ,ship_qty
+		
+	</select>
+
+
+
+
+	<select id="getPosDebitNumber" parameterClass="pos" resultClass="pos">
+		<![CDATA[
+		select distinct debit_number,book_part  from basis.basis_tb_cus_pos    where 1=1 and status='3'and type = '2' and debit_number is not null
+		 
+  	  ]]>
+		<isNotEmpty property="disti_name" prepend="and">
+					<![CDATA[  disti_name =#disti_name#]]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_cost_currency" prepend="and">
+					<![CDATA[  disti_cost_currency =#disti_cost_currency#]]>
+		</isNotEmpty>
+	</select>
+
+<!-- Claim Data/ pos import summary页面查询   1pos，2Claim -->
+
+
+
+	<select id="getPosByfileId" parameterClass="pos" resultClass="pos">
+		<![CDATA[
+			SELECT
+				((select count(1) from basis_tb_cus_pos i where i.file_id = #file_id# and status = 1 and i.TYPE = #type# ) ||'/'||
+				 (select count(1) from basis_tb_cus_pos i where i.file_id = #file_id# and status = 0 and i.TYPE = #type# ) ||'/'||
+				(select count(1) from basis_tb_cus_pos i where i.file_id = #file_id# and i.TYPE = #type# )) status_num,
+				(select nvl(sum(ship_qty),0) from basis_tb_cus_pos where file_id = #file_id# and status = 3 and TYPE = #type# ) qty ,
+				(select round(nvl(sum(ship_qty * disti_resale_denom) ,0),4) from basis_tb_cus_pos where file_id = #file_id# and status = 3 and  TYPE = #type#) amount
+			FROM dual
+	   	  ]]>
+	</select>
+	
+	<select id="getPosByfileIds" parameterClass="pos" resultClass="pos">
+            SELECT 
+                file_id, 
+                status, 
+                NVL(ship_qty,0) as ship_qty, 
+                NVL(disti_resale_denom, 0) as disti_resale_denom
+              FROM basis_tb_cus_pos
+             WHERE file_id IN $fileIds$ 
+               AND TYPE = #type#
+             ORDER BY file_id, status
+    </select>
+	
+	<select id="searchPosList" parameterClass="pos" resultClass="pos">
+		<include refid="global.paginationStart" />
+		<![CDATA[
+		SELECT	DISTINCT aa.file_id,
+ 		aa.disti_name,
+		ff.emp_name created_user,
+		(TO_CHAR (
+						aa.created_time,
+						'YYYY-MM-DD'
+					)||' 00:00:00' ) created_time,
+		aa.file_url,
+		'' status_num,
+		aa.data_from ,
+		0 qty ,
+        '0' amount
+		FROM
+		basis.basis_tb_cus_pos aa
+		LEFT OUTER JOIN basis.basis_tb_salesemp_info ff ON aa.created_user = ff.emp_id
+		WHERE
+		aa. TYPE = #type# and not exists(select 1 from basis_tb_cus_pos bb where file_id =aa.file_id and id<aa.id and type =#type#
+	   	  ]]>
+	   	   <isNotEmpty property="status" prepend="and">
+						<![CDATA[ bb.status in $status$]]>
+			</isNotEmpty>
+		) 
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+					<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_cost_currency" prepend="and">
+					<![CDATA[ aa.disti_cost_currency =#disti_cost_currency#]]>
+			</isNotEmpty>
+			<isNotEmpty property="file_url" prepend="and">
+				<![CDATA[ (upper(aa.file_url) like #file_url,handler=wildcard# escape '\'   or upper(aa.file_id) like #file_url,handler=wildcard# escape '\')]]> 
+			</isNotEmpty>
+			<isNotEmpty property="file_id_str" prepend="and">
+				<![CDATA[ aa.file_id  = #file_id_str#]]>
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status in $status$]]>
+			</isNotEmpty>
+			<isNotEmpty property="flag" prepend="and">
+					<![CDATA[ aa.debit_number is not null]]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+					<![CDATA[ aa.debit_number =#debit_number#]]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ aa.book_part =#book_part#]]>
+			</isNotEmpty>
+			<isNotEmpty property="created_user" prepend="and">
+					<![CDATA[ aa.created_user =#created_user#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_nbr" prepend="and">
+  		          <![CDATA[ aa.disti_invoice_nbr =#disti_invoice_nbr#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_accounting_nbr" prepend="and">
+				<![CDATA[ ltrim(aa.disti_accounting_nbr,'0') =ltrim(#disti_accounting_nbr#,'0')]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_item_number" prepend="and">
+				<![CDATA[ aa.disti_invoice_item_number =#disti_invoice_item_number#]]>
+			</isNotEmpty>
+			<isNotEmpty property="transaction_code" prepend="and">
+		         <![CDATA[
+		             upper(aa.transaction_code) = upper(#transaction_code# )
+ 		         ]]>
+			</isNotEmpty>
+			<!-- 
+			<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ to_date(TO_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') >=to_date(TO_char(#start_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ to_date(TO_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(TO_char(#end_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd')]]>
+			</isNotEmpty>
+			-->
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= #ship_dateStart# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <= #ship_dateEnd# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="created_time_start" prepend="and">
+				<![CDATA[ to_date(TO_char(aa.created_time,'yyyy-mm-dd'),'yyyy-mm-dd')  >= to_date(TO_char( #created_time_start#  ,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="created_time_end" prepend="and">
+				<![CDATA[ to_date(TO_char(aa.created_time,'yyyy-mm-dd'),'yyyy-mm-dd')   <= to_date(TO_char( #created_time_end#  ,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+		</dynamic>
+	 	   <![CDATA[
+	 	       order by aa.file_id desc 
+  
+	 	   ]]>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+
+
+
+	<select id="searchPosListById" parameterClass="pos" resultClass="pos">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+		select aa.id,aa.row_no,aa.sapClaimNbr,aa.transaction_code,aa.disti_name,aa.disti_branch,aa.disti_city,aa.book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+			aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+			aa.disti_cost,aa.disti_cost_denom cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+			aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+			aa.disti_resale_currency,aa.disti_resale_exchange_rate,aa.purchasing_customer_name,aa.purchasing_cust_city,
+			aa.purchasing_cust_zip,aa.purchasing_cust_state,aa.purchasing_cust_country,aa.endcust_name,aa.endcust_city,aa.endcust_loc,
+			aa.endcust_zip,aa.endcust_state,aa.endcust_country,aa.status,aa.tips ,aa.rejecttoapprove_remark ,aa.m_12nc,
+			ff.emp_name created_user,aa.created_time,aa.file_id,aa.file_url,aa.disti_accounting_nbr,
+			aa.status_num from basis.basis_tb_cus_pos aa 
+			left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id
+			where 1=1
+	   	  ]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+					<![CDATA[  disti_name =#disti_name#]]>
+			</isNotEmpty>
+			<isNotEmpty property="file_id" prepend="and">
+				<![CDATA[ aa.file_id =#file_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_cost_currency" prepend="and">
+					<![CDATA[ aa.disti_cost_currency =#disti_cost_currency#]]>
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status in $status$]]>
+			</isNotEmpty>
+			<isNotEmpty property="flag" prepend="and">
+					<![CDATA[ aa.debit_number is not null]]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+					<![CDATA[ aa.debit_number =#debit_number#]]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="created_user" prepend="and">
+					<![CDATA[ aa.created_user =#created_user#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_nbr" prepend="and">
+  		          <![CDATA[ aa.disti_invoice_nbr =#disti_invoice_nbr#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_item_number" prepend="and">
+				<![CDATA[ aa.disti_invoice_item_number =#disti_invoice_item_number#]]>
+			</isNotEmpty>
+			<isNotEmpty property="transaction_code" prepend="and">
+		         <![CDATA[
+		             upper(aa.transaction_code) = upper(#transaction_code#)
+ 		         ]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <= to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+			<isNotEmpty property="type" prepend="and">
+			<![CDATA[ aa.type =#type#]]>
+			</isNotEmpty>
+
+			<isNotEmpty property="debit_number" prepend="and">
+				<![CDATA[  upper(aa.debit_number) like  #debit_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="pc_ec_name" prepend="and">
+				<![CDATA[ ( upper(aa.PURCHASING_CUSTOMER_NAME) like  #pc_ec_name,handler=wildcard# escape '\' or upper(aa.ENDCUST_NAME) like  #pc_ec_name,handler=wildcard# escape '\' ) ]]>
+			</isNotEmpty>
+			<isNotEmpty property="error_code" prepend="and">
+				<![CDATA[  upper(aa.tips) like  #error_code,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="invoice_number" prepend="and">
+				<![CDATA[ upper(aa.disti_invoice_nbr) like  #invoice_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+	 	   <![CDATA[
+	 	       order by aa.id  
+  
+	 	   ]]>
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	
+	<select id="searchPosListByIdForOne" parameterClass="pos" resultClass="pos">
+		<![CDATA[
+			select aa.id,aa.row_no,aa.sapClaimNbr,aa.transaction_code,aa.disti_name,aa.disti_branch,aa.disti_city,aa.book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+				aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+				aa.disti_cost,aa.disti_cost_denom cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+				aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+				aa.disti_resale_currency,aa.disti_resale_exchange_rate,aa.purchasing_customer_name,aa.purchasing_cust_city,
+				aa.purchasing_cust_zip,aa.purchasing_cust_state,aa.purchasing_cust_country,aa.endcust_name,aa.endcust_city,aa.endcust_loc,
+				aa.endcust_zip,aa.endcust_state,aa.endcust_country,decode(aa.status,0,'Reject',1,'Pending',3,'Approved',4,'Rebated',9,'Transfer',aa.status) status,aa.tips ,aa.rejecttoapprove_remark,aa.m_12nc,
+				ff.emp_name created_user,aa.created_time,aa.file_id,aa.file_url,aa.disti_accounting_nbr,
+				aa.status_num 
+			from basis.basis_tb_cus_pos aa 
+				 left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id
+			where 1=1
+	   	  ]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+					<![CDATA[  disti_name =#disti_name#]]>
+			</isNotEmpty>
+			<isNotEmpty property="file_id" prepend="and">
+				<![CDATA[ aa.file_id =#file_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_cost_currency" prepend="and">
+					<![CDATA[ aa.disti_cost_currency =#disti_cost_currency#]]>
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status in $status$]]>
+			</isNotEmpty>
+			<isNotEmpty property="flag" prepend="and">
+					<![CDATA[ aa.debit_number is not null]]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+					<![CDATA[ aa.debit_number =#debit_number#]]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="created_user" prepend="and">
+					<![CDATA[ aa.created_user =#created_user#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_nbr" prepend="and">
+  		          <![CDATA[ aa.disti_invoice_nbr =#disti_invoice_nbr#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_item_number" prepend="and">
+				<![CDATA[ aa.disti_invoice_item_number =#disti_invoice_item_number#]]>
+			</isNotEmpty>
+			<isNotEmpty property="transaction_code" prepend="and">
+		         <![CDATA[upper(aa.transaction_code) = upper(#transaction_code#)]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <= to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+			<isNotEmpty property="type" prepend="and">
+			<![CDATA[ aa.type =#type#]]>
+			</isNotEmpty>
+
+		</dynamic>
+	 	   <![CDATA[
+	 	       order by aa.id  
+	 	   ]]>
+	</select>
+	
+
+
+	<select id="searchPosListCountById" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+		select count(*) from basis.basis_tb_cus_pos b  where 1=1
+  	  ]]>
+  	  <dynamic>
+  	  <isNotEmpty property="disti_name" prepend="and">
+					<![CDATA[  disti_name =#disti_name#]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_id" prepend="and">
+				<![CDATA[ b.file_id =#file_id#]]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_cost_currency" prepend="and">
+				<![CDATA[ b.disti_cost_currency =#disti_cost_currency#]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+				<![CDATA[ b.file_url like #file_url,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+					<![CDATA[ b.status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="flag" prepend="and">
+			<![CDATA[ b.debit_number is not null]]>
+		</isNotEmpty>
+		<isNotEmpty property="debit_number" prepend="and">
+			<![CDATA[  upper(b.debit_number) like  #debit_number,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="pc_ec_name" prepend="and">
+			<![CDATA[ ( upper(b.PURCHASING_CUSTOMER_NAME) like  #pc_ec_name,handler=wildcard# escape '\' or upper(b.ENDCUST_NAME) like  #pc_ec_name,handler=wildcard# escape '\' ) ]]>
+		</isNotEmpty>
+		<isNotEmpty property="error_code" prepend="and">
+			<![CDATA[  upper(b.tips) like  #error_code,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="invoice_number" prepend="and">
+			<![CDATA[ upper(b.disti_invoice_nbr) like  #invoice_number,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		
+		<isNotEmpty property="book_part" prepend="and">
+				<![CDATA[ upper(b.book_part) like #book_part,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="created_user" prepend="and">
+					<![CDATA[ aa.created_user =#created_user#]]>
+		</isNotEmpty>
+
+		<isNotEmpty property="disti_invoice_nbr" prepend="and">
+			<![CDATA[ b.disti_invoice_nbr =#disti_invoice_nbr#]]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_invoice_item_number" prepend="and">
+				<![CDATA[ b.disti_invoice_item_number =#disti_invoice_item_number#]]>
+		</isNotEmpty>
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ b.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ b.ship_date <= to_char(#end_time#,'yyyymmdd') ]]> 
+		</isNotEmpty>
+		<isNotEmpty property="type" prepend="and">
+			<![CDATA[ b.type =#type#]]>
+		</isNotEmpty>
+	</dynamic>
+
+	</select>
+
+
+
+	<select id="searchPosListByPos" parameterClass="pos"
+		resultClass="pos">
+		
+		<![CDATA[
+		select aa.id,aa.row_no,aa.sapClaimNbr,aa.transaction_code,aa.disti_name,aa.disti_branch,aa.disti_city,aa.book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+			aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+			aa.disti_cost,aa.disti_cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+			aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+			aa.disti_resale_currency,aa.disti_resale_exchange_rate,aa.purchasing_customer_name,aa.purchasing_cust_city,
+			aa.purchasing_cust_zip,aa.purchasing_cust_state,aa.purchasing_cust_country,aa.endcust_name,aa.endcust_city,aa.endcust_loc,
+			aa.endcust_zip,aa.endcust_state,aa.endcust_country,aa.status,aa.tips,aa.disti_accounting_nbr from basis.basis_tb_cus_pos aa where 1=1 
+	   	  ]]>
+		<dynamic>
+		<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_cost_currency" prepend="and">
+				<![CDATA[ aa.disti_cost_currency =#disti_cost_currency#]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+				<![CDATA[ aa.file_url like #file_url,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status = #status#]]>
+		</isNotEmpty>
+		<isNotEmpty property="flag" prepend="and">
+			<![CDATA[ aa.debit_number is not null]]>
+		</isNotEmpty>
+		<isNotEmpty property="debit_number" prepend="and">
+			<![CDATA[ aa.debit_number =#debit_number#]]>
+		</isNotEmpty>
+		<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ aa.book_part =#book_part#]]>
+		</isNotEmpty>
+		<isNotEmpty property="created_user" prepend="and">
+					<![CDATA[ aa.created_user =#created_user#]]>
+		</isNotEmpty>
+
+		<isNotEmpty property="disti_invoice_nbr" prepend="and">
+			<![CDATA[ aa.disti_invoice_nbr =#disti_invoice_nbr#]]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_invoice_item_number" prepend="and">
+				<![CDATA[ aa.disti_invoice_item_number =#disti_invoice_item_number#]]>
+		</isNotEmpty>
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ to_date(TO_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') >=to_date(TO_char(#start_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ to_date(TO_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(TO_char(#end_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd')]]>
+		</isNotEmpty>
+		<isNotEmpty property="type" prepend="and">
+			<![CDATA[ aa.type =#type#]]>
+		</isNotEmpty>
+		<isNotEmpty property="disti_branch" prepend="and">
+			<![CDATA[ ltrim(aa.disti_branch,'0') =ltrim(#disti_branch#,'0')]]>
+		</isNotEmpty>
+		<isNotEmpty property="mark" prepend="and">
+			<![CDATA[aa.disti_invoice_nbr||aa.disti_invoice_item_number =#mark#  ]]>
+		</isNotEmpty>
+		
+		</dynamic>
+	 	   <![CDATA[
+	 	       order by aa.debit_number,aa.book_part
+	 	   ]]>
+		<include refid="global.orderBy" />
+
+	</select>
+
+
+
+	<select id="getDistiName" parameterClass="pos" resultClass="pos">
+	 <![CDATA[
+ 	 select disti_name from basis.basis_tb_edi_distiname where sold_to = #disti_num#
+	 ]]>
+	</select>	
+
+
+	<select id="getClaimDistiName" parameterClass="pos" resultClass="pos">
+	 <![CDATA[
+ 		 select disti_name from basis.BASIS_TB_DISTI_BRANCH where payer_to = #disti_branch# and rownum =1
+	 ]]>
+	</select>	
+
+
+
+
+
+
+
+	<select id="getquote" parameterClass="pos" resultClass="pos">
+	 <![CDATA[
+ 	 select bb.qty quote_totalqty,bb.suggest_cost disti_cost, bb.start_date  quote_sdate, aa.latest_expire  quote_edate from basis.basis_tb_quote_detail bb 
+			left outer join basis.basis_tb_quoteinfo aa on aa.quote_id=bb.quote_id
+			left outer join basis.basis_tb_customerinfo cc on aa.customer_id=cc.customer_code
+			left outer join basis.basis_tb_end_customeinfo dd on aa.endcustomer_id=dd.end_customer_id
+			left outer join basis.basis_tb_productinfo  ee on bb.material_id=ee.material_id 
+			where isagree = 1 and cc.customer_name=#disti_name# and dd.end_customer_name=#purchasing_customer_name#
+			and ee.material_name=#book_part# and ee.factory = 'HK10' 
+
+			and aa.QUOTE_ID=#debit_number#	 
+	 ]]>
+	</select>
+
+<select id="getquoListBydebitNumBook" parameterClass="pos"
+		resultClass="pos">
+		<![CDATA[
+ 		select distinct aa.res_qty quote_totalqty,aa.qty quoteQty,aa.suggest_cost disti_cost ,decode(ll.sale_price,null,oo.sale_price/oo.perUnit,ll.sale_price/ll.perUnit) pbMpp
+ 		  from basis.basis_tb_quote_detail aa 
+	      left outer join basis.basis_tb_quoteinfo bb on aa.quote_id=bb.quote_id
+	      left outer join basis.basis_tb_productinfo dd on aa.material_id =dd.material_id  
+        left outer join basis.basis_tb_quoteInfo ff on bb.quote_id=ff.quote_id
+        left outer join basis.basis_tb_disti_branch ee  on bb.cusgroup_id=ee.disti_Name
+	      left outer join basis.basis_tb_price_rule ll on ltrim(aa.material_id,'0')=ltrim(ll.material_id,'0') and ll.office_id = ee.Pricing_region and ll.currency_code=ff.currency_code and ee.PAYER_TO = ll.customer_code  and ll.price_type='ZMP1'  and ll.start_date<=sysdate  and ll.end_date>=sysdate
+			left outer join basis.basis_tb_price_rule oo on ltrim(aa.material_id,'0')=ltrim(oo.material_id,'0') and oo.office_id = ee.Pricing_region and oo.currency_code=ff.currency_code and oo.price_type='ZPB1'  and oo.start_date<=sysdate  and oo.end_date>=sysdate
+ 		  where dd.factory = 'HK10' and bb.cusgroup_id=#disti_name# and dd.material_name=#book_part# 
+ 		  and aa.quote_id=#debit_number#
+ 		]]>
+	</select>
+
+
+	<select id="getMinPrice" parameterClass="pos" resultClass="java.lang.Double">
+	 <![CDATA[
+	select nvl(min(dbc),0) from (
+		 select aa.sale_price/aa.perUnit dbc
+		 from basis_tb_price_rule aa  
+		  left outer join BASIS_TB_DISTI_BRANCH cc on ltrim(cc.PAYER_TO,'0') =ltrim(aa.customer_code,'0')
+		 left outer join basis.basis_tb_productinfo dd on dd.material_name =#book_part# 
+		 where  ltrim(aa.customer_code,'0')=ltrim(#disti_branch#,'0') and upper(aa.currency_code)=#dbc_currency_code# and ltrim(aa.material_id,'0')=dd.material_id and aa.price_type='ZMP1' and aa.start_date<to_date(#ship_date#,'yyyy-mm-dd') and aa.end_date>to_date(#ship_date#,'yyyy-mm-dd')
+		 and dd.factory = 'HK10'
+		 union all
+		select aa.sale_price/aa.perUnit dbc
+		 from basis_tb_price_rule aa  
+		 left outer join BASIS_TB_DISTI_BRANCH cc on ltrim(cc.PAYER_TO,'0') =ltrim(#disti_branch#,'0')
+		 left outer join basis.basis_tb_productinfo dd on dd.material_name =#book_part# 
+		 where ltrim(aa.material_id,'0')=ltrim(dd.material_id,'0') and  upper(aa.currency_code)=#dbc_currency_code#  and  aa.price_type='ZPB1'  and aa.start_date<to_date(#ship_date#,'yyyy-mm-dd') and aa.end_date>to_date(#ship_date#,'yyyy-mm-dd')
+		  and aa.office_id = cc.PRICING_REGION and dd.factory = 'HK10'
+		 )
+ 	 ]]>
+	</select>
+
+	<select id="searchCustomerCount" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		 <![CDATA[
+		      select count(*) from basis_tb_disti_branch 
+                   where 1=1    
+		 ]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+					<![CDATA[    upper(disti_name)=#disti_name#]]>
+			</isNotEmpty>
+
+			<!-- <isNotEmpty property="purchasing_customer_name" prepend="and"> <![CDATA[ 
+				purchasing_customer_name=#purchasing_customer_name# ]]> </isNotEmpty> -->
+		</dynamic>
+	</select>
+
+
+	<select id="searchRelationshipCount" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		 <![CDATA[
+		      select count(*) from  basis.basis_tb_disti_branch 
+		      where  ltrim(PAYER_TO ,'0') =ltrim(#disti_branch#,'0')
+		      		and upper(disti_name)=#disti_name#
+		 ]]>
+	</select>
+	
+	<select id="searchDistiBranch" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		 <![CDATA[
+		      select count(*) from  basis.basis_tb_disti_branch where upper(disti_branch) =#disti_branch#
+		 ]]>
+	</select>
+
+	<select id="searchDRCount" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		 <![CDATA[
+		      select count(*) from  basis.BASIS_TB_DESIGN_REG where  upper(CUS_GROUPID) =#disti_name# and drnum = #oppreg_nbr#
+		 ]]>
+	</select>
+	
+	
+	<select id="searchProductCount" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		 <![CDATA[
+		       select  count(*)  from basis.basis_tb_productinfo
+                       where   factory='HK10'  and upper(material_name)=#book_part#
+
+		 ]]>
+	</select>
+
+	<select id="getQuoteInfoCount" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.BASIS_TB_QUOTEINFO aa
+				left outer join basis.BASIS_TB_CUSTOMERINFO bb on aa.customer_id=bb.customer_code
+				left outer join basis.BASIS_TB_CUSTOMERINFO cc on aa.ENDCUSTOMER_ID=cc.customer_code
+				left outer join basis.BASIS_TB_END_CUSTOMEINFO ee on aa.PURCHASECUSTOMER_ID=ee.end_customer_id
+				left outer join basis.BASIS_TB_END_CUSTOMEINFO ff on aa.ENDCUSTOMER_ID=ff.end_customer_id
+				where  1=1 
+		]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+					<![CDATA[ upper(bb.customer_name) =#disti_name#]]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+					<![CDATA[ upper(ff.END_CUSTOMER_NAME) =#endcust_name#]]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+					<![CDATA[ aa.quote_id =#debit_number#]]>
+			</isNotEmpty>
+
+			<isNotEmpty property="disti_branch" prepend="and">
+					<![CDATA[  ltrim(aa.customer_id,'0') =ltrim(#disti_branch#,'0')]]>
+			</isNotEmpty>
+
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+  		          <![CDATA[ ee.END_CUSTOMER_NAME =#purchasing_customer_name#]]>
+			</isNotEmpty>
+			<isNotEmpty property="startShip_date" prepend="and">
+				  <![CDATA[ aa.START_DATE >= to_date(#startShip_date#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+
+			<isNotEmpty property="endShip_date" prepend="and">
+				  <![CDATA[ aa.LATEST_EXPIRE <= to_date(#endShip_date#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+
+	<select id="getReQuoteDetailCount" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.BASIS_TB_Quoteinfo aa
+				left outer join basis.basis_tb_customerinfo bb on aa.customer_id=bb.customer_code 
+ 				left outer join basis.BASIS_TB_Quote_Detail cc on aa.quote_id=cc.quote_id
+				where  cc.isagree = 1 and cc.state in (3,4,5)
+ 		]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+					<![CDATA[ bb.customer_name =#disti_name#]]>
+			</isNotEmpty>
+
+
+
+			<isNotEmpty property="debit_number" prepend="and">
+					<![CDATA[ aa.quote_id =#debit_number#]]>
+			</isNotEmpty>
+
+			<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ cc.MATERIAL_NAME =#book_part#]]>
+			</isNotEmpty>
+
+		</dynamic>
+	</select>
+
+	<select id="getQuoteDetailCount" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.BASIS_TB_Quoteinfo aa
+ 				left outer join basis.BASIS_TB_Quote_Detail cc on aa.quote_id=cc.quote_id
+				where  1=1
+				
+  		]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+				(	
+					<![CDATA[  upper(aa.cusgroup_id) =#disti_name#]]>
+					<isNotEmpty property="disti_alias" prepend="OR">
+                        UPPER(aa.cus_groupId) = #disti_alias#
+                    </isNotEmpty>
+				)	
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+					<![CDATA[ cc.debit_num =#debit_number#]]>
+			</isNotEmpty>
+
+			<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ cc.MATERIAL_NAME =#book_part#]]>
+			</isNotEmpty>
+			<isNotEmpty property="cost_denom" prepend="and">
+					<![CDATA[ cc.SUGGEST_COST <= to_number(#cost_denom#)]]>
+			</isNotEmpty>
+			<isNotEmpty property="startShip_date" prepend="and">
+				  <![CDATA[ cc.START_DATE <= to_date(#startShip_date#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+
+			<isNotEmpty property="endShip_date" prepend="and">
+				  <![CDATA[ cc.LATEST_TIME >= to_date(#endShip_date#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<select id="searchEndCustomerCount" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		 <![CDATA[
+		     select count(*) from basis.BASIS_TB_ECALIAS aa
+              where 1=1
+		 ]]>
+		<dynamic>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+					<![CDATA[ upper(aa.EC_ALIAS_NAME) =  upper(#purchasing_customer_name#)  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+					<![CDATA[ upper(aa.EC_ALIAS_NAME)  = upper(#endcust_name#) ]]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_cust_city" prepend="and">
+					<![CDATA[   upper(aa.ALIAS_CITY)= upper(#purchasing_cust_city#)  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_city" prepend="and">
+					<![CDATA[   upper(aa.ALIAS_CITY)= upper(#endcust_city#)  ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getDictCount" parameterClass="pos" resultClass="java.lang.Integer">
+	<![CDATA[
+		select 
+				count(e.item_id)
+			from basis.basis_tb_dict e
+			  where e.item_state ='U'
+	]]>
+		<dynamic>
+			<isNotEmpty property="disti_resale_currency" prepend="and">
+			<![CDATA[ e.item_value = #disti_resale_currency# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<select id="getFileId" resultClass="java.lang.Long">
+ 	<![CDATA[
+		SELECT basis.BASIS_SEQ_POS_FILE_ID.nextval AS id FROM DUAL	
+	]]>
+	</select>
+
+	<select id="searchPosDetailListCount" parameterClass="pos"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_cus_pos
+ 		where file_id = #file_id#
+	]]>
+		<dynamic>
+			<isNotEmpty property="type" prepend="and">
+			<![CDATA[ type = #type# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="searchPosDetailListCountForError" parameterClass="pos"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_cus_pos
+ 		where file_id = #file_id# and status in (0,1) 
+	]]>
+		<dynamic>
+			<isNotEmpty property="type" prepend="and">
+			<![CDATA[ type = #type# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<update id="updatePos" parameterClass="pos">
+		update
+		basis.basis_tb_cus_pos set
+		status_num = #status_num#
+		where file_id=#file_id# 
+	</update>
+	
+	<update id="updateClaimEcInfo" parameterClass="pos">
+		update basis.basis_tb_cus_pos
+		  set endcust_name  = #endcust_name#,
+			  endcust_city = #endcust_city#,
+			  endcust_loc = #endcust_loc#,
+			  endcust_zip = #endcust_zip#,
+			  endcust_state = #endcust_state#,
+			  endcust_country = #endcust_country#
+		where  id=#id#
+	</update>
+	
+	<update id="updatePosTips" parameterClass="pos">
+		update basis.basis_tb_cus_pos set
+		tips = #tips# ,m_12nc=#m_12nc#, status = #status# ,disti_name = #disti_name#
+		where id=#id#
+		<dynamic>
+			<isNotEmpty property="type" prepend="and">
+					<![CDATA[type=#type#]]>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+
+<update id="resetPos" parameterClass="pos">
+		update
+		basis.basis_tb_cus_pos set
+		status= '9'
+		where id = #id#
+	</update>
+
+
+<update id="approvePos" parameterClass="pos">
+		update
+		basis.basis_tb_cus_pos 
+		set edi_state='0',
+		status= #status#
+		<isNotEmpty property="tips" prepend=",">
+					<![CDATA[rejecttoapprove_remark=#tips#]]>
+			</isNotEmpty>
+		where id = #id#
+	</update>
+
+<update id="approvePosTipsSuccess" parameterClass="pos">
+		update
+		basis.basis_tb_cus_pos set
+		status= #status#,
+		edi_state='0',
+		tips='Success!'
+		<isNotEmpty property="tips" prepend=",">
+					<![CDATA[rejecttoapprove_remark=#tips#]]>
+			</isNotEmpty>
+		where id = #id#
+	</update>
+
+	<select id="getClaimFileId" resultClass="java.lang.Long">
+ 	<![CDATA[
+		SELECT basis.BASIS_SEQ_CLAIM_FILE_ID.nextval AS id FROM DUAL	
+	]]>
+	</select>
+
+	<select id="searchQuoteList" parameterClass="pos"
+		resultClass="qd">
+		<![CDATA[
+				
+				select gg.quote_id,gg.row_no,gg.material_id,gg.drNum,gg.qty,gg.state,gg.isAgree,
+			  gg.target_resale,gg.target_cost,gg.amount,gg.reason,gg.competitor,
+			  gg.product_date,to_char(gg.product_date,'YYYY-MM-DD') product_dateStr,
+			  gg.debit_start start_date,
+			  gg.debit_end end_date,
+			  gg.cus_remark,gg.suggest_resale,gg.suggest_cost,		  
+			  gg.cus_profits_percent,gg.profits_percent,gg.remark,aa.currency_code currency_code,
+			gg.material_name , ff.END_CUSTOMER_NAME endCustomer_name, ee.END_CUSTOMER_NAME purchaseCustomer_name ,
+			aa.ENDCUSTOMER_ID  endcustomer_id  , aa.PURCHASECUSTOMER_ID purchasecustomer_id
+				from basis.BASIS_TB_Quote_Detail gg
+				left outer join basis.BASIS_TB_Quoteinfo aa on aa.quote_id=gg.quote_id
+				left outer join basis.BASIS_TB_END_CUSTOMEINFO ee on aa.PURCHASECUSTOMER_ID=ee.end_customer_id
+				left outer join basis.BASIS_TB_END_CUSTOMEINFO ff on aa.ENDCUSTOMER_ID=ff.end_customer_id
+				where  1=1 
+				
+  		]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+				(
+					<![CDATA[ upper(aa.cusgroup_id) = upper(#disti_name#)]]>
+				    <isNotEmpty property="disti_alias" prepend="OR">
+                        UPPER(aa.cus_groupId) = UPPER(#disti_alias#)
+                    </isNotEmpty>
+				)
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+					<![CDATA[ upper(ff.END_CUSTOMER_NAME) = upper(#endcust_name#)]]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+					<![CDATA[ gg.debit_num =#debit_number#]]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ upper(gg.MATERIAL_NAME) = upper(#book_part#)]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_branch" prepend="and">
+					<![CDATA[  ltrim(aa.customer_id,'0') =ltrim(#disti_branch#,'0')]]>
+			</isNotEmpty>
+
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+  		          <![CDATA[ ee.END_CUSTOMER_NAME =#purchasing_customer_name#]]>
+			</isNotEmpty>
+			<isNotEmpty property="startShip_date" prepend="and">
+				  <![CDATA[ gg.debit_start >= to_date(#startShip_date#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+
+			<isNotEmpty property="endShip_date" prepend="and">
+				  <![CDATA[ gg.debit_end <= to_date(#endShip_date#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 检查通过和已返利的总数量（用于计算剩余数量） -->	
+	<select id="getPassedQty" parameterClass="pos"
+		resultClass="java.lang.Double">
+ 	<![CDATA[
+		select nvl(sum(ship_qty),0.00) from basis.basis_tb_cus_pos
+ 		where type=2  and (status = 3 or status = 4) and debit_number = #debit_number# and book_part=#book_part#
+	]]>
+	</select>
+	
+	<select id="getPassedQtys" resultClass="pos">
+    <![CDATA[
+        select nvl(sum(ship_qty),0.00) as sumShipQty,
+               debit_number,
+               book_part
+          from basis.basis_tb_cus_pos
+         where type=2
+           and (status = 3 or status = 4)
+           and debit_number is not null
+         group by debit_number, book_part
+    ]]>
+    </select>
+    
+	<!-- 更新sap返回信息 -->  	
+  <update id="sapRebackToPos" parameterClass="pos">
+	<![CDATA[
+	          update basis.BASIS_TB_CUS_POS 
+			   set DISTI_CLAIMNBR=#disti_claimnbr#,status=1,REBATE_QTY=#rebate_qty#
+			where debit_number=#debit_number#
+		]]>
+  	</update>  
+  	
+  <!-- 更新quote剩余数量 -->
+  <update id="updateQuoteResQty" parameterClass="pos">
+	<![CDATA[
+	          update basis.basis_tb_quote_detail 
+			   set res_qty = #res_qty#
+			where quote_id=#debit_number# and material_name=#book_part#
+		]]>
+  	</update>
+	
+	
+	<!-- EDI检查 -->
+	<select id="searchPosFileId" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select distinct file_id from basis_tb_cus_pos where status = '9'
+	 	]]>
+	 	<dynamic>
+			<isNotEmpty property="type" prepend="and">
+					<![CDATA[type =#type#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="searchPosFileIdCount" parameterClass="pos"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(distinct file_id) from basis.basis_tb_cus_pos
+ 		where status = '9'
+	]]>
+		<dynamic>
+			<isNotEmpty property="type" prepend="and">
+			<![CDATA[ type = #type# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+	
+	<select id="searchPosListForEDI" parameterClass="pos" resultClass="pos">
+		
+		<![CDATA[
+		select aa.id,aa.row_no,aa.sapClaimNbr,
+		    aa.transaction_code,nvl(aa.disti_name,'') disti_name ,nvl(aa.disti_branch,'') disti_branch,
+		    nvl(aa.disti_city,'') disti_city,nvl(aa.book_part,'') book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+			aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+			aa.disti_cost,aa.disti_cost_denom cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+			aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+			aa.disti_resale_currency,aa.disti_resale_exchange_rate,
+			nvl(aa.purchasing_customer_name,'') purchasing_customer_name, nvl(aa.purchasing_cust_city,'') purchasing_cust_city,
+			nvl(aa.purchasing_cust_zip,'') purchasing_cust_zip,nvl(aa.purchasing_cust_state,'') purchasing_cust_state,
+			nvl(aa.purchasing_cust_country,'') purchasing_cust_country,
+			nvl(aa.endcust_name,'') endcust_name,nvl(aa.endcust_city,'') endcust_city,nvl(aa.endcust_loc,'') endcust_loc ,
+			nvl(aa.endcust_zip,'') endcust_zip,nvl(aa.endcust_state,'') endcust_state,nvl(aa.endcust_country,'') endcust_country,
+			aa.status,aa.tips ,
+			ff.emp_name created_user,aa.created_time,aa.file_id,aa.file_url,aa.disti_accounting_nbr,
+			aa.status_num,aa.disti_num,aa.data_from from basis.basis_tb_cus_pos aa 
+			left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id
+			where 1=1
+	   	  ]]>
+		<dynamic>
+			<isNotEmpty property="file_id" prepend="and">
+				<![CDATA[ aa.file_id =#file_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="type" prepend="and">
+				<![CDATA[ aa.type =#type#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="searchPosByIdForOneCheck" parameterClass="pos" resultClass="pos">
+		
+		<![CDATA[
+		select aa.id,aa.row_no,aa.sapClaimNbr,
+		    aa.transaction_code,nvl(aa.disti_name,'') disti_name ,nvl(aa.disti_branch,'') disti_branch,
+		    nvl(aa.disti_city,'') disti_city,nvl(aa.book_part,'') book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+			aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+			aa.disti_cost,aa.disti_cost_denom cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+			aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+			aa.disti_resale_currency,aa.disti_resale_exchange_rate,
+			nvl(aa.purchasing_customer_name,'') purchasing_customer_name, nvl(aa.purchasing_cust_city,'') purchasing_cust_city,
+			nvl(aa.purchasing_cust_zip,'') purchasing_cust_zip,nvl(aa.purchasing_cust_state,'') purchasing_cust_state,
+			nvl(aa.purchasing_cust_country,'') purchasing_cust_country,
+			nvl(aa.endcust_name,'') endcust_name,nvl(aa.endcust_city,'') endcust_city,nvl(aa.endcust_loc,'') endcust_loc ,
+			nvl(aa.endcust_zip,'') endcust_zip,nvl(aa.endcust_state,'') endcust_state,nvl(aa.endcust_country,'') endcust_country,
+			aa.status,aa.tips ,
+			ff.emp_name created_user,aa.created_time,aa.file_id,aa.file_url,aa.disti_accounting_nbr,
+			aa.status_num,aa.disti_num,aa.data_from from basis.basis_tb_cus_pos aa 
+			left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id
+			where 1=1
+	   	  ]]>
+		<dynamic>
+			<isNotEmpty property="id" prepend="and">
+				<![CDATA[ aa.id =#id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="transaction_code" prepend="and">
+		         <![CDATA[
+		             upper(aa.transaction_code) = upper(#transaction_code#)
+ 		         ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<select id="searchEcList" parameterClass="pos" resultClass="ec">
+		
+		<![CDATA[
+		
+		select END_CUSTOMER_NAME EC_NAME from basis_tb_end_customeInfo aad
+		   where  end_customer_id in (
+			        select aa.ec_id  from basis.BASIS_TB_ECALIAS aa
+			              where 1=1 
+	   	  ]]>
+		<dynamic>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+					<![CDATA[    upper(aa.EC_ALIAS_NAME)= upper(#purchasing_customer_name#)  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+					<![CDATA[    upper(aa.EC_ALIAS_NAME)= upper(#endcust_name#)  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_cust_city" prepend="and">
+					<![CDATA[   upper(aa.ALIAS_CITY)= upper(#purchasing_cust_city#)  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_city" prepend="and">
+					<![CDATA[   upper(aa.ALIAS_CITY)= upper(#endcust_city#)  ]]>
+			</isNotEmpty>
+			 
+			) 
+
+			<isNotEmpty property="purchasing_customer_id" prepend="and">
+					<![CDATA[   decode(upper(AAD.COUNTRY),'HK','CN','CN','CN','MO','CN',upper(COUNTRY)) = (select decode(upper(COUNTRY),'HK','CN','CN','CN','MO','CN',upper(COUNTRY)) from basis_tb_end_customeInfo where end_customer_id = upper(#purchasing_customer_id#) )  ]]>
+			</isNotEmpty>
+			<!-- 
+			<isNotEmpty property="endcust_id" prepend="and">
+					<![CDATA[  decode(upper(AAD.COUNTRY),'HK','CN','CN','CN','MO','CN',upper(COUNTRY)) = 
+							(select decode(upper(COUNTRY),'HK','CN','CN','CN','MO','CN',upper(COUNTRY))
+									 from basis_tb_end_customeInfo where end_customer_id = upper(#endcust_id#) )    ]]>
+			</isNotEmpty>
+			-->
+		</dynamic>
+	</select>
+	
+	
+	<select id="searchPosListByIds" parameterClass="pos" resultClass="pos">
+		<![CDATA[
+		select aa.id,aa.row_no,aa.sapClaimNbr,aa.transaction_code,aa.disti_name,aa.disti_branch,aa.disti_city,aa.book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+			aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+			aa.disti_cost,aa.disti_cost_denom cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+			aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+			aa.disti_resale_currency,aa.disti_resale_exchange_rate,aa.purchasing_customer_name,aa.purchasing_cust_city,
+			aa.purchasing_cust_zip,aa.purchasing_cust_state,aa.purchasing_cust_country,aa.endcust_name,aa.endcust_city,aa.endcust_loc,
+			aa.endcust_zip,aa.endcust_state,aa.endcust_country,aa.status,aa.tips ,aa.m_12nc,
+			ff.emp_name created_user,aa.created_time,aa.file_id,aa.file_url,aa.disti_accounting_nbr,
+			aa.status_num,aa.data_from,aa.disti_num
+	   from basis.basis_tb_cus_pos aa 
+			left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id
+	  where aa.id = #id#
+	   	  ]]>
+	</select>
+
+
+	<select id="searchPosListCountByIds" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+		select count(*) from basis.basis_tb_cus_pos   where id = #id#
+  	  ]]>
+	</select>
+	
+	<select id="searchPosListCountForBb" parameterClass="pos"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+ 		select sum(cnt) from (
+			select count(DISTINCT AA.id) cnt
+			 from basis.basis_tb_cus_pos aa 
+				left outer join basis.basis_tb_productinfo bb on bb.MATERIAL_NAME = aa.book_part
+	 		where type = '1' and status = '3' and bb.factory = 'HK10'
+	]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ upper(aa.disti_branch) like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+				<![CDATA[ upper(aa.debit_number) like #debit_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+				<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+				<![CDATA[ upper(aa.purchasing_customer_name) like #purchasing_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+				<![CDATA[ upper(aa.endcust_name) like #endcust_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <= to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+		</dynamic>
+		union all
+ 		select count(DISTINCT AA.id) cnt
+		 from basis.basis_tb_cus_pos_mn aa 
+			left outer join basis.basis_tb_productinfo bb on bb.MATERIAL_NAME = aa.book_part
+ 		where type = '1' and status = '3' and bb.factory = 'HK10'
+ 		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ upper(aa.disti_branch) like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+				<![CDATA[ upper(aa.debit_number) like #debit_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+				<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+				<![CDATA[ upper(aa.purchasing_customer_name) like #purchasing_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+				<![CDATA[ upper(aa.endcust_name) like #endcust_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <=  to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+		</dynamic>
+ 		 ) aa 
+	</select>
+	
+	
+	
+<!-- Pos Report页面查询 -->	
+	<select id="searchPosListForBb" parameterClass="pos" resultClass="pos">
+		<include refid="global.paginationStart" />
+		<![CDATA[
+				select * from (
+					select distinct aa.id, aa.file_id,aa.transaction_code,aa.ship_date,aa.book_part,bb.MATERIAL_ID material_id,
+					bb.MATERIAL_EXP material_exp,bb.state material_state,
+				aa.ship_qty,aa.debit_number,aa.disti_cost_currency ,aa.disti_cost_denom cost_denom,
+				aa.disti_name,
+				(select org_name from  basis.basis_tb_org ee where dd.org_code = ee.sap_org_id )  org_name_pc,
+				(select org_name from  basis.basis_tb_org ii where hh.org_code = ii.sap_org_id )  org_name_ec,
+				aa.disti_branch,
+				nvl( cc.END_CUSTOMER_NAME,aa.purchasing_customer_name) purchasing_customer_name,
+                 nvl(cc.CITY,aa.purchasing_cust_city) purchasing_cust_city,
+                 nvl(cc.ZIP,aa.purchasing_cust_zip) purchasing_cust_zip,
+                nvl( cc.PROVINCE,aa.purchasing_cust_state) purchasing_cust_state,
+                 nvl(cc.COUNTRY,aa.purchasing_cust_country) purchasing_cust_country,
+                 nvl(gg.CITY,aa.endcust_city) endcust_city,
+                 nvl(gg.CITY,aa.endcust_city) endcust_loc,
+                nvl( gg.ZIP,aa.endcust_zip) endcust_zip,
+                 nvl(gg.PROVINCE,aa.endcust_state) endcust_state,
+                nvl( gg.COUNTRY,aa.endcust_country) endcust_country,
+                nvl( gg.END_CUSTOMER_NAME,aa.endcust_name) endcust_name,
+				aa.disti_resale_denom,aa.disti_resale_currency,aa.status,
+				aa.disti_invoice_nbr,aa.disti_invoice_item_number			
+				 from basis.basis_tb_cus_pos aa 
+                left join basis.basis_tb_productinfo bb on bb.MATERIAL_NAME = aa.book_part
+                left outer join basis.BASIS_TB_ECALIAS pea  on  upper(aa.purchasing_customer_name) =  upper(pea.EC_ALIAS_NAME)    and  upper(pea.ALIAS_CITY) =  upper(aa.purchasing_cust_city)
+                left outer join basis.basis_tb_end_customeInfo cc  on pea.ec_id =cc.end_customer_id
+                left outer join basis.basis_tb_country dd on cc.country = dd.country_code 
+                left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id    
+                left outer join basis.BASIS_TB_ECALIAS eea  on  upper(aa.endcust_name) =  upper(eea.EC_ALIAS_NAME)    and  upper(eea.ALIAS_CITY) =  upper(aa.endcust_city)        
+                left outer join basis.basis_tb_end_customeInfo gg  on eea.ec_id =gg.end_customer_id
+                left outer join basis.basis_tb_country hh on gg.country = hh.country_code 
+                where type = '1' and status in '3' and bb.factory = 'HK10' 
+	   	  ]]>
+	   	  
+	   	   
+	   	  <dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ upper(aa.disti_branch) like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+				<![CDATA[ upper(aa.debit_number) like #debit_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+				<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+				<![CDATA[ upper(aa.purchasing_customer_name) like #purchasing_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+				<![CDATA[ upper(aa.endcust_name) like #endcust_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <= to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+		</dynamic>
+		union all
+				select distinct aa.id, aa.file_id,aa.transaction_code,aa.ship_date,aa.book_part,bb.MATERIAL_ID material_id,
+					bb.MATERIAL_EXP material_exp,bb.state material_state,
+				aa.ship_qty,aa.debit_number,aa.disti_cost_currency ,aa.disti_cost_denom cost_denom,
+				aa.disti_name,
+				(select org_name from  basis.basis_tb_org ee where dd.org_code = ee.sap_org_id )  org_name_pc,
+				(select org_name from  basis.basis_tb_org ii where hh.org_code = ii.sap_org_id )  org_name_ec,
+				aa.disti_branch,
+				cc.END_CUSTOMER_NAME purchasing_customer_name,
+				cc.CITY purchasing_cust_city,
+				cc.ZIP purchasing_cust_zip,
+				cc.PROVINCE purchasing_cust_state,
+				cc.COUNTRY purchasing_cust_country,
+				gg.CITY endcust_city,
+				gg.CITY endcust_loc,
+				gg.ZIP endcust_zip,
+				gg.PROVINCE endcust_state,
+				gg.COUNTRY endcust_country,
+				gg.END_CUSTOMER_NAME endcust_name,
+				aa.disti_resale_denom,aa.disti_resale_currency,aa.status,
+				aa.disti_invoice_nbr,aa.disti_invoice_item_number			
+				from basis.basis_tb_cus_pos_mn aa 
+				left join basis.basis_tb_productinfo bb on bb.MATERIAL_NAME = aa.book_part
+				left outer join basis.basis_tb_end_customeInfo cc  on aa.purchasing_customer_name=cc.end_customer_name	and cc.city = aa.purchasing_cust_city
+				left outer join basis.basis_tb_country dd on cc.country = dd.country_code 
+				left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id			
+				left outer join basis.basis_tb_end_customeInfo gg  on aa.endcust_name=gg.end_customer_name	and gg.city = aa.endcust_city
+				left outer join basis.basis_tb_country hh on gg.country = hh.country_code 
+				where type = '1' and status in '3' and bb.factory = 'HK10' 
+		 <dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ upper(aa.disti_branch) like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+				<![CDATA[ upper(aa.debit_number) like #debit_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+				<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+				<![CDATA[ upper(aa.purchasing_customer_name) like #purchasing_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+				<![CDATA[ upper(aa.endcust_name) like #endcust_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <= to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+		</dynamic>		
+		<![CDATA[
+	 	       ) bbb  order by bbb.id desc 
+  
+	 	   ]]>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	
+	<update id="updatePCEC" parameterClass="pos">
+		update basis.basis_tb_cus_pos set
+		purchasing_cust_zip = #purchasing_cust_zip# ,purchasing_cust_state=#purchasing_cust_state#, purchasing_cust_country = #purchasing_cust_country#,
+		endcust_zip = #endcust_zip#,endcust_state = #endcust_state#,endcust_country = #endcust_country#
+		where id=#id#
+	</update>
+	
+	<select id="getPosById" parameterClass="pos"
+		resultClass="pos">
+		<![CDATA[
+			select   
+			aa.*
+			from basis.basis_tb_cus_pos aa
+			where  aa.id = #id#
+			
+		]]>
+		<isNotEmpty property="transaction_code" prepend="and">
+	         <![CDATA[
+	             upper(aa.transaction_code) = upper(#transaction_code#)
+		         ]]>
+		</isNotEmpty>
+	</select>
+	
+	
+	
+	<select id="searchClaimListCountForBb" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+		select count( aa.id) from basis.basis_tb_cus_pos aa  
+		where type = '2'
+  	  ]]>
+  	 <dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ upper(aa.disti_branch) like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+				<![CDATA[ upper(aa.debit_number) like #debit_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+				<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+				<![CDATA[ upper(aa.purchasing_customer_name) like #purchasing_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+				<![CDATA[ upper(aa.endcust_name) like #endcust_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="sapClaimNbr" prepend="and">
+				<![CDATA[ upper(aa.sapClaimNbr) like #sapClaimNbr,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status in $status$]]>
+			</isNotEmpty>
+			<isNotEmpty property="data_from" prepend="and">
+					<![CDATA[ aa.data_from = $data_from$]]>
+			</isNotEmpty>
+		    <isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <= to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+			<isNotEmpty property="created_time_start" prepend="and">
+				<![CDATA[ to_date(to_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(to_char(#created_time_start#,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="created_time_end" prepend="and">
+				<![CDATA[ to_date(to_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(to_char(#created_time_end#,'yyyy-mm-dd'),'yyyy-mm-dd') ]]> 
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_nbr" prepend="and">
+				<![CDATA[  upper(aa.disti_invoice_nbr||aa.DISTI_INVOICE_ITEM_NUMBER) like #disti_invoice_nbr,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+<!-- Claim Import Summary 页面查询 searchClaimListForBb-->	
+	<select id="searchClaimListForBb" parameterClass="pos" resultClass="pos">
+		<include refid="global.paginationStart" />
+		<![CDATA[
+		select distinct aa.id,aa.row_no,aa.sapClaimNbr,aa.transaction_code,aa.disti_name,aa.disti_branch,aa.disti_city,aa.book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+			aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+			aa.disti_cost,aa.disti_cost_denom cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+			aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+			aa.disti_resale_currency,aa.disti_resale_exchange_rate,aa.purchasing_customer_name||' - '||aa.purchasing_cust_city purchasing_customer_name,
+			aa.purchasing_cust_zip,aa.purchasing_cust_state,aa.purchasing_cust_country,aa.endcust_name||' - '||aa.endcust_city endcust_name,aa.endcust_loc,
+			aa.endcust_zip,aa.endcust_state,aa.endcust_country,aa.status,aa.tips ,aa.rejecttoapprove_remark,
+			ff.emp_name created_user,aa.created_time,aa.update_time,aa.file_id,aa.file_url,aa.disti_accounting_nbr,
+			aa.status_num  from basis.basis_tb_cus_pos aa 
+			left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id
+			where type = '2' 
+	   	  ]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ upper(aa.disti_branch) like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+				<![CDATA[ upper(aa.debit_number) like #debit_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+				<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+				<![CDATA[ upper(aa.purchasing_customer_name) like #purchasing_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+				<![CDATA[ upper(aa.endcust_name) like #endcust_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="sapClaimNbr" prepend="and">
+				<![CDATA[ upper(aa.sapClaimNbr) like #sapClaimNbr,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status in $status$]]>
+			</isNotEmpty>
+			<isNotEmpty property="data_from" prepend="and">
+					<![CDATA[ aa.data_from = $data_from$]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <= to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+			<isNotEmpty property="created_time_start" prepend="and">
+				<![CDATA[ to_date(to_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(to_char(#created_time_start#,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="created_time_end" prepend="and">
+				<![CDATA[ to_date(to_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(to_char(#created_time_end#,'yyyy-mm-dd'),'yyyy-mm-dd') ]]> 
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_nbr" prepend="and">
+				<![CDATA[  upper(aa.disti_invoice_nbr||aa.DISTI_INVOICE_ITEM_NUMBER) like #disti_invoice_nbr,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+	 	   <![CDATA[
+	 	       order by aa.file_id desc 
+  
+	 	   ]]>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	<!-- 导出pos excle数据 -->
+	<select id="searchPosListForBbAll" parameterClass="pos" resultClass="pos">
+		<![CDATA[
+			select distinct aa.id, aa.file_id,aa.transaction_code,aa.ship_date,aa.book_part,bb.MATERIAL_ID material_id,
+					bb.MATERIAL_EXP material_exp,bb.state material_state,
+				aa.ship_qty,aa.debit_number,aa.disti_cost_currency ,aa.disti_cost_denom cost_denom,
+				aa.disti_name,
+				(select org_name from  basis.basis_tb_org ee where dd.org_code = ee.sap_org_id )  org_name_pc,
+				(select org_name from  basis.basis_tb_org ii where hh.org_code = ii.sap_org_id )  org_name_ec,
+				aa.disti_branch,
+				nvl( cc.END_CUSTOMER_NAME,aa.purchasing_customer_name) purchasing_customer_name,
+                 nvl(cc.CITY,aa.purchasing_cust_city) purchasing_cust_city,
+                 nvl(cc.ZIP,aa.purchasing_cust_zip) purchasing_cust_zip,
+                nvl( cc.PROVINCE,aa.purchasing_cust_state) purchasing_cust_state,
+                 nvl(cc.COUNTRY,aa.purchasing_cust_country) purchasing_cust_country,
+                 nvl(gg.CITY,aa.endcust_city) endcust_city,
+                 nvl(gg.CITY,aa.endcust_city) endcust_loc,
+                nvl( gg.ZIP,aa.endcust_zip) endcust_zip,
+                 nvl(gg.PROVINCE,aa.endcust_state) endcust_state,
+                nvl( gg.COUNTRY,aa.endcust_country) endcust_country,
+                nvl( gg.END_CUSTOMER_NAME,aa.endcust_name) endcust_name,
+				aa.disti_resale_denom,aa.disti_resale_currency,
+				decode(aa.status,0,'Reject',1,'Pending',2,'Failure',3,'Approved',4,'Rebated',9,'Transfer',aa.status) status,
+				aa.disti_invoice_nbr,aa.disti_invoice_item_number			
+				 from basis.basis_tb_cus_pos aa 
+                left join basis.basis_tb_productinfo bb on bb.MATERIAL_NAME = aa.book_part
+                left outer join basis.BASIS_TB_ECALIAS pea  on  upper(aa.purchasing_customer_name) =  upper(pea.EC_ALIAS_NAME)    and  upper(pea.ALIAS_CITY) =  upper(aa.purchasing_cust_city)
+                left outer join basis.basis_tb_end_customeInfo cc  on pea.ec_id =cc.end_customer_id
+                left outer join basis.basis_tb_country dd on cc.country = dd.country_code 
+                left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id    
+                left outer join basis.BASIS_TB_ECALIAS eea  on  upper(aa.endcust_name) =  upper(eea.EC_ALIAS_NAME)    and  upper(eea.ALIAS_CITY) =  upper(aa.endcust_city)        
+                left outer join basis.basis_tb_end_customeInfo gg  on eea.ec_id =gg.end_customer_id
+                left outer join basis.basis_tb_country hh on gg.country = hh.country_code 
+                where type = '1' and status in '3' and bb.factory = 'HK10' 
+	   	  ]]>
+		 <dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ upper(aa.disti_branch) like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+				<![CDATA[ upper(aa.debit_number) like #debit_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+				<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+				<![CDATA[ upper(aa.purchasing_customer_name) like #purchasing_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+				<![CDATA[ upper(aa.endcust_name) like #endcust_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <= to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+		</dynamic>
+		<![CDATA[
+		union all
+			select distinct aa.id, aa.file_id,aa.transaction_code,aa.ship_date,aa.book_part,bb.MATERIAL_ID material_id,
+					bb.MATERIAL_EXP material_exp,bb.state material_state,
+				aa.ship_qty,aa.debit_number,aa.disti_cost_currency ,aa.disti_cost_denom cost_denom,
+				aa.disti_name,
+				(select org_name from  basis.basis_tb_org ee where dd.org_code = ee.sap_org_id )  org_name_pc,
+				(select org_name from  basis.basis_tb_org ii where hh.org_code = ii.sap_org_id )  org_name_ec,
+				aa.disti_branch,
+				aa.purchasing_customer_name,aa.purchasing_cust_city,
+				aa.purchasing_cust_zip,aa.purchasing_cust_state,aa.purchasing_cust_country,aa.endcust_city,aa.endcust_loc,
+				aa.endcust_zip,aa.endcust_state,aa.endcust_country,aa.endcust_name,aa.disti_resale_denom,aa.disti_resale_currency,
+				decode(aa.status,0,'Reject',1,'Pending',2,'Failure',3,'Approved',4,'Rebated',9,'Transfer',aa.status) status,
+				aa.disti_invoice_nbr,aa.disti_invoice_item_number			
+				from basis.basis_tb_cus_pos_mn aa 
+				left join basis.basis_tb_productinfo bb on bb.MATERIAL_NAME = aa.book_part
+				left outer join basis.basis_tb_end_customeInfo cc  on aa.purchasing_customer_name=cc.end_customer_name	and cc.city = aa.purchasing_cust_city
+				left outer join basis.basis_tb_country dd on cc.country = dd.country_code 
+				left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id			
+				left outer join basis.basis_tb_end_customeInfo gg  on aa.endcust_name=gg.end_customer_name	and gg.city = aa.endcust_city
+				left outer join basis.basis_tb_country hh on gg.country = hh.country_code 
+				where type = '1' and status in '3' and bb.factory = 'HK10'
+				 ]]>
+		 <dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ upper(aa.disti_branch) like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+				<![CDATA[ upper(aa.debit_number) like #debit_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+				<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+				<![CDATA[ upper(aa.purchasing_customer_name) like #purchasing_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+				<![CDATA[ upper(aa.endcust_name) like #endcust_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <=  to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+		</dynamic>		
+		
+	</select>
+	
+	<!-- 导出claim excle数据 -->
+	<select id="searchClaimListForBbAll" parameterClass="pos" resultClass="pos">
+		<![CDATA[
+		select distinct aa.id,aa.row_no,aa.sapClaimNbr,aa.transaction_code,aa.disti_name,aa.disti_branch,aa.disti_city,aa.book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+			aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+			aa.disti_cost,aa.disti_cost_denom cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+			aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+			aa.disti_resale_currency,aa.disti_resale_exchange_rate,
+			aa.purchasing_customer_name||' - '||aa.purchasing_cust_city purchasing_customer_name,
+			aa.purchasing_cust_zip,aa.purchasing_cust_state,
+			aa.purchasing_cust_country,aa.endcust_name||' - '||aa.endcust_city endcust_name,aa.endcust_loc,
+			aa.endcust_zip,aa.endcust_state,aa.endcust_country,
+			decode(aa.status,0,'Reject',1,'Pending',2,'Failure',3,'Approved',4,'Rebated',9,'Transfer',aa.status) status,
+			aa.tips ,aa.rejecttoapprove_remark,
+			ff.emp_name created_user,aa.created_time,aa.file_id,aa.file_url,aa.disti_accounting_nbr,
+			aa.status_num ,aa.update_time
+	   from basis.basis_tb_cus_pos aa 
+			left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id
+			where type = '2' 
+	   	  ]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ upper(aa.disti_branch) like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+				<![CDATA[ upper(aa.debit_number) like #debit_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+				<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+				<![CDATA[ upper(aa.purchasing_customer_name) like #purchasing_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_name" prepend="and">
+				<![CDATA[ upper(aa.endcust_name) like #endcust_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="sapClaimNbr" prepend="and">
+				<![CDATA[ upper(aa.sapClaimNbr) like #sapClaimNbr,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status in $status$]]>
+			</isNotEmpty>
+			<isNotEmpty property="data_from" prepend="and">
+					<![CDATA[ aa.data_from = $data_from$]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <= to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+			
+			<isNotEmpty property="created_time_start" prepend="and">
+				<![CDATA[ to_date(to_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(to_char(#created_time_start#,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="created_time_end" prepend="and">
+				<![CDATA[ to_date(to_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(to_char(#created_time_end#,'yyyy-mm-dd'),'yyyy-mm-dd') ]]> 
+			</isNotEmpty>
+			
+			<isNotEmpty property="disti_invoice_nbr" prepend="and">
+				<![CDATA[  upper(aa.disti_invoice_nbr||aa.DISTI_INVOICE_ITEM_NUMBER) like #disti_invoice_nbr,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			</dynamic>
+	 	   <![CDATA[
+	 	       order by aa.file_id desc 
+  
+	 	   ]]>
+		<include refid="global.orderBy" />
+		
+	</select>
+	
+<!--报表（POS Tracking detail）start   查询pos原始数据 *****************************************************************************************************************************-->
+	<select id="searchPosTrackingDetail" parameterClass="pos" resultClass="pos">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+		 select aa.id,aa.row_no,aa.sapClaimNbr,aa.transaction_code,aa.disti_name,aa.disti_branch,aa.disti_city,aa.book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+				aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+				aa.disti_cost,aa.disti_cost_denom cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+				aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+				aa.disti_resale_currency,aa.disti_resale_exchange_rate,aa.purchasing_customer_name,aa.purchasing_cust_city,
+				aa.purchasing_cust_zip,aa.purchasing_cust_state,aa.purchasing_cust_country,aa.endcust_name,aa.endcust_city,aa.endcust_loc,
+				aa.endcust_zip,aa.endcust_state,aa.endcust_country,aa.status,aa.tips ,aa.m_12nc,
+				decode(aa.data_from,1,'Protal',2,'EDI',aa.data_from) data_from,
+				ff.emp_name created_user,aa.created_time,aa.file_id,aa.file_url,aa.disti_accounting_nbr,
+				aa.status_num ,
+				decode(aa.status,0,'Reject',1,'Pending',2,'Failure',3,'Approved',4,'Rebated',9,'Transfer',aa.status) statusInfo
+		   from basis.basis_tb_cus_pos aa 
+				left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id
+		  where type=#type# 
+	   	  ]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+					<![CDATA[  upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+					<![CDATA[  upper(aa.purchasing_customer_name) like #purchasing_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+				<isNotEmpty property="endcust_name" prepend="and">
+					<![CDATA[  upper(aa.endcust_name) like #endcust_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="file_ids" prepend="and">
+				<![CDATA[ aa.file_id in $file_ids$]]>
+			</isNotEmpty>
+			<isNotEmpty property="ship_dateStart" prepend="and">
+				<![CDATA[ aa.ship_date >= #ship_dateStart# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="ship_dateEnd" prepend="and">
+				<![CDATA[ aa.ship_date <=  #ship_dateEnd# ]]> 
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status in $status$]]>
+			</isNotEmpty>
+			<isNotEmpty property="data_from" prepend="and">
+					<![CDATA[ aa.data_from in $data_from$]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_nbr" prepend="and">
+						<![CDATA[  upper(aa.disti_invoice_nbr||aa.DISTI_INVOICE_ITEM_NUMBER) like #disti_invoice_nbr,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+	 	   <![CDATA[
+	 	       order by aa.id  desc 
+	 	   ]]>
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<select id="searchPosTrackingDetailCount" parameterClass="pos" resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_cus_pos aa
+ 		where type=#type# 
+	]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+					<![CDATA[  upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+					<![CDATA[  upper(aa.purchasing_customer_name) like #purchasing_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+				<isNotEmpty property="endcust_name" prepend="and">
+					<![CDATA[  upper(aa.endcust_name) like #endcust_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="file_ids" prepend="and">
+				<![CDATA[ aa.file_id in $file_ids$]]>
+			</isNotEmpty>
+			<isNotEmpty property="ship_dateStart" prepend="and">
+				<![CDATA[ aa.ship_date >= #ship_dateStart# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="ship_dateEnd" prepend="and">
+				<![CDATA[ aa.ship_date <=  #ship_dateEnd# ]]> 
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status in $status$]]>
+			</isNotEmpty>
+			
+			<isNotEmpty property="disti_invoice_nbr" prepend="and">
+						<![CDATA[   upper(aa.disti_invoice_nbr||aa.DISTI_INVOICE_ITEM_NUMBER)  like #disti_invoice_nbr,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 获得导出excel数据-->
+	<select id="searchPosTrackingDetailNoPage" parameterClass="pos" resultClass="pos">
+		<![CDATA[
+			select aa.id,aa.row_no,aa.sapClaimNbr,aa.transaction_code,aa.disti_name,aa.disti_branch,aa.disti_city,aa.book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+				aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+				aa.disti_cost,aa.disti_cost_denom cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+				decode(aa.data_from,1,'Protal',2,'EDI',aa.data_from) data_from ,
+				aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+				aa.disti_resale_currency,aa.disti_resale_exchange_rate,aa.purchasing_customer_name,aa.purchasing_cust_city,
+				aa.purchasing_cust_zip,aa.purchasing_cust_state,aa.purchasing_cust_country,aa.endcust_name,aa.endcust_city,aa.endcust_loc,
+				aa.endcust_zip,aa.endcust_state,aa.endcust_country,aa.status,aa.tips ,aa.m_12nc,
+				ff.emp_name created_user,aa.created_time,aa.file_id,aa.file_url,aa.disti_accounting_nbr,
+				aa.status_num 
+			from basis.basis_tb_cus_pos aa 
+				left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id
+			where type=#type#
+	   	  ]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+					<![CDATA[  upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchasing_customer_name" prepend="and">
+					<![CDATA[  upper(aa.purchasing_customer_name) like #purchasing_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+				<isNotEmpty property="endcust_name" prepend="and">
+					<![CDATA[  upper(aa.endcust_name) like #endcust_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="file_ids" prepend="and">
+				<![CDATA[ aa.file_id in $file_ids$]]>
+			</isNotEmpty>
+			
+			<!-- cha ship date
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ to_date(aa.ship_date,'yyyymmdd') >= TO_DATE(to_char(#start_time#,'yyyymmdd'),'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ to_date(aa.ship_date,'yyyymmdd') <=  TO_DATE(to_char(#end_time#,'yyyymmdd'),'yyyymmdd') ]]> 
+			</isNotEmpty>
+			-->
+			<isNotEmpty property="ship_dateStart" prepend="and">
+				<![CDATA[ aa.ship_date >= #ship_dateStart# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="ship_dateEnd" prepend="and">
+				<![CDATA[ aa.ship_date <=  #ship_dateEnd# ]]> 
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+					<![CDATA[ aa.status in $status$]]>
+			</isNotEmpty>
+			<isNotEmpty property="data_from" prepend="and">
+					<![CDATA[ aa.data_from in $data_from$]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_nbr" prepend="and">
+						<![CDATA[   upper(aa.disti_invoice_nbr||aa.DISTI_INVOICE_ITEM_NUMBER)  like #disti_invoice_nbr,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+	 	   <![CDATA[
+	 	       order by aa.id  desc 
+	 	   ]]>
+	</select>
+	
+	<select id="searchEcMasterName" parameterClass="pos" resultClass="ec">
+		<![CDATA[
+			select aa.*,bb.country from BASIS_TB_ECALIAS  aa left join BASIS_TB_END_CUSTOMEINFO bb on aa.ec_id = bb.end_customer_id where  1=1
+	   	  ]]>
+		<dynamic>
+			<isNotEmpty property="endcust_name" prepend="and">
+					<![CDATA[    upper(aa.EC_ALIAS_NAME)= upper(#endcust_name#)  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="endcust_city" prepend="and">
+					<![CDATA[   upper(aa.ALIAS_CITY)= upper(#endcust_city#)  ]]>
+			</isNotEmpty>
+
+		</dynamic>
+	</select>
+	
+	
+	<select id="searchEcMasterNameByEcId" parameterClass="pos" resultClass="com.jingtong.platform.endCustomer.pojo.EndCustomer">
+		<![CDATA[
+			select bb.* from  BASIS_TB_END_CUSTOMEINFO bb 
+			where  1=1
+	   	  ]]>
+		<dynamic>
+			<isNotEmpty property="endcust_id" prepend="and">
+					<![CDATA[ upper(bb.END_CUSTOMER_ID)= upper(#endcust_id#)  ]]>
+			</isNotEmpty>
+and rownum = 1
+		</dynamic>
+	</select>
+	
+	<!-- 20171020 6q6t 查询 状态为pending的 6q ，6t 或者6q,6t -->
+	<select id="searchPosDetailListCount6q6t" parameterClass="pos"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+		select count(*) 
+		from basis.basis_tb_cus_pos b 
+		 where 1=1 and status = 1 and
+		 ( upper(b.tips) ='6Q' or upper(b.tips) ='6T' or upper(b.tips) ='6Q,6T')
+		 
+  	   ]]>
+  	  <dynamic>
+	  	  <isNotEmpty property="disti_name" prepend="and">
+						<![CDATA[  disti_name =#disti_name#]]>
+			</isNotEmpty>
+			<!-- <isNotEmpty property="file_id" prepend="and">
+					<![CDATA[ b.file_id =#file_id#]]>
+			</isNotEmpty> -->
+			<isNotEmpty property="disti_cost_currency" prepend="and">
+					<![CDATA[ b.disti_cost_currency =#disti_cost_currency#]]>
+			</isNotEmpty>
+			<isNotEmpty property="file_url" prepend="and">
+					<![CDATA[ b.file_url like #file_url,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<!-- <isNotEmpty property="status" prepend="and">
+						<![CDATA[ b.status in $status$]]>
+			</isNotEmpty> -->
+			<isNotEmpty property="flag" prepend="and">
+				<![CDATA[ b.debit_number is not null]]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+				<![CDATA[  upper(b.debit_number) like  #debit_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="pc_ec_name" prepend="and">
+				<![CDATA[ ( upper(b.PURCHASING_CUSTOMER_NAME) like  #pc_ec_name,handler=wildcard# escape '\' or upper(b.ENDCUST_NAME) like  #pc_ec_name,handler=wildcard# escape '\' ) ]]>
+			</isNotEmpty>
+			<!-- <isNotEmpty property="error_code" prepend="and">
+				<![CDATA[  upper(b.tips) like  #error_code,handler=wildcard# escape '\']]>
+			</isNotEmpty> -->
+			<isNotEmpty property="invoice_number" prepend="and">
+				<![CDATA[ upper(b.disti_invoice_nbr) like  #invoice_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			
+			<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ upper(b.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="created_user" prepend="and">
+						<![CDATA[ aa.created_user =#created_user#]]>
+			</isNotEmpty>
+	
+			<isNotEmpty property="disti_invoice_nbr" prepend="and">
+				<![CDATA[ b.disti_invoice_nbr =#disti_invoice_nbr#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_item_number" prepend="and">
+					<![CDATA[ b.disti_invoice_item_number =#disti_invoice_item_number#]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ b.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ b.ship_date <= to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+			<isNotEmpty property="type" prepend="and">
+				<![CDATA[ b.type =#type#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="searchPosDetailList6q6t" parameterClass="pos" resultClass="pos">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+		select aa.id,aa.row_no,aa.sapClaimNbr,aa.transaction_code,aa.disti_name,aa.disti_branch,aa.disti_city,aa.book_part,aa.ship_qty,aa.rebate_qty,aa.ship_date,
+			aa.debit_number,aa.disti_claimnbr,aa.oppreg_nbr,aa.cpn,aa.disti_invoice_nbr,aa.disti_invoice_item_number,
+			aa.disti_cost,aa.disti_cost_denom cost_denom,aa.disti_cost_currency,aa.disti_cost_exchangerate,
+			aa.disti_bookcost,aa.dbc_denom,aa.dbc_currency_code,aa.dbc_exchange_rate,aa.disti_resale,aa.disti_resale_denom,
+			aa.disti_resale_currency,aa.disti_resale_exchange_rate,aa.purchasing_customer_name,aa.purchasing_cust_city,
+			aa.purchasing_cust_zip,aa.purchasing_cust_state,aa.purchasing_cust_country,aa.endcust_name,aa.endcust_city,aa.endcust_loc,
+			aa.endcust_zip,aa.endcust_state,aa.endcust_country,aa.status,aa.tips ,aa.rejecttoapprove_remark ,aa.m_12nc,
+			ff.emp_name created_user,aa.created_time,aa.file_id,aa.file_url,aa.disti_accounting_nbr,
+			aa.status_num from basis.basis_tb_cus_pos aa 
+			left outer join basis.basis_tb_salesemp_info ff on aa.created_user = ff.emp_id
+			where 1=1 and status = 1 and ( upper(aa.tips) ='6Q' or upper(aa.tips) ='6T' or upper(aa.tips) ='6Q,6T')
+	   	  ]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+					<![CDATA[  disti_name =#disti_name#]]>
+			</isNotEmpty>
+		
+			<isNotEmpty property="disti_cost_currency" prepend="and">
+					<![CDATA[ aa.disti_cost_currency =#disti_cost_currency#]]>
+			</isNotEmpty>
+			
+			<isNotEmpty property="flag" prepend="and">
+					<![CDATA[ aa.debit_number is not null]]>
+			</isNotEmpty>
+			<isNotEmpty property="debit_number" prepend="and">
+					<![CDATA[ aa.debit_number =#debit_number#]]>
+			</isNotEmpty>
+			<isNotEmpty property="book_part" prepend="and">
+					<![CDATA[ upper(aa.book_part) like #book_part,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="created_user" prepend="and">
+					<![CDATA[ aa.created_user =#created_user#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_nbr" prepend="and">
+  		          <![CDATA[ aa.disti_invoice_nbr =#disti_invoice_nbr#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_invoice_item_number" prepend="and">
+				<![CDATA[ aa.disti_invoice_item_number =#disti_invoice_item_number#]]>
+			</isNotEmpty>
+			<isNotEmpty property="transaction_code" prepend="and">
+		         <![CDATA[
+		             upper(aa.transaction_code) = upper(#transaction_code#)
+ 		         ]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_time" prepend="and">
+				<![CDATA[ aa.ship_date >= to_char(#start_time#,'yyyymmdd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_time" prepend="and">
+				<![CDATA[ aa.ship_date <= to_char(#end_time#,'yyyymmdd') ]]> 
+			</isNotEmpty>
+			<isNotEmpty property="type" prepend="and">
+			<![CDATA[ aa.type =#type#]]>
+			</isNotEmpty>
+
+			<isNotEmpty property="debit_number" prepend="and">
+				<![CDATA[  upper(aa.debit_number) like  #debit_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="pc_ec_name" prepend="and">
+				<![CDATA[ ( upper(aa.PURCHASING_CUSTOMER_NAME) like  #pc_ec_name,handler=wildcard# escape '\' or upper(aa.ENDCUST_NAME) like  #pc_ec_name,handler=wildcard# escape '\' ) ]]>
+			</isNotEmpty>
+			<!-- <isNotEmpty property="error_code" prepend="and">
+				<![CDATA[  upper(aa.tips) like  #error_code,handler=wildcard# escape '\']]>
+			</isNotEmpty> -->
+			<isNotEmpty property="invoice_number" prepend="and">
+				<![CDATA[ upper(aa.disti_invoice_nbr) like  #invoice_number,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+	 	   <![CDATA[
+	 	       order by aa.id  
+	 	   ]]>
+		<include refid="global.paginationEnd" />
+	</select>
+	<!--报表（POS Tracking detail）end yaowei add 查询pos原始数据 *****************************************************************************************************************************-->
+    
+    <select id="getCustomerPos" parameterClass="pos"
+        resultClass="pos">
+        <![CDATA[
+            SELECT NVL(pos.ship_qty, 0)*NVL(pos.disti_resale_denom, 0) ship_qty
+                   , disti_resale_currency
+              FROM basis.basis_tb_cus_pos pos
+                 , basis.basis_tb_end_customeInfo ec
+                 , basis.BASIS_TB_ECALIAS alias
+             WHERE ec.end_customer_id=#endcust_id#
+               AND alias.ec_id = ec.end_customer_id
+               AND TO_CHAR(pos.CREATED_TIME, 'yyyyMMdd') < TO_CHAR(#created_time_end#, 'yyyyMMdd')
+               AND TO_CHAR(pos.CREATED_TIME, 'yyyyMMdd') >= TO_CHAR(#created_time_start#, 'yyyyMMdd')
+               AND UPPER(pos.ENDCUST_NAME) = UPPER(alias.EC_ALIAS_NAME)
+               AND UPPER(pos.ENDCUST_CITY) = UPPER(alias.ALIAS_CITY)
+               AND pos.STATUS = 3
+               AND pos.TRANSACTION_CODE = 'S'
+        ]]>
+    </select>
+</sqlMap>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ediDisti">
+
+	<typeAlias alias="ediDisti" type="com.jingtong.platform.ediDisti.pojo.EdiDisti" />
+	
+	
+	<select id="getEdiDistiList" parameterClass="ediDisti" resultClass="ediDisti">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+	 	select  aa.sold_to,aa.disti_name 
+	 	from basis.basis_tb_edi_distiname aa
+		where 1=1
+		]]>
+				<dynamic>
+			<isNotEmpty property="sold_to" prepend="and">
+				<![CDATA[ upper(aa.sold_to) = #sold_to#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.paginationEnd" />
+	</select>
+
+
+	<select id="getEdiDistiListCount" parameterClass="ediDisti" resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_edi_distiname aa
+ 		where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="sold_to" prepend="and">
+				<![CDATA[ upper(aa.sold_to) = #sold_to#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_name" prepend="and">
+				<![CDATA[ upper(aa.disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	
+
+	<insert id="createEdiDisti" parameterClass="ediDisti">
+	<![CDATA[
+		insert into basis.basis_tb_edi_distiname(sold_to,disti_name)
+		values(#sold_to#,#disti_name#)
+	]]>
+	</insert>
+
+
+	<delete id="deleteEdiDisti" parameterClass="ediDisti">
+	<![CDATA[
+		delete from basis.basis_tb_edi_distiname 
+		where sold_to = #sold_to# and disti_name = #disti_name#
+	]]>
+	</delete>
+
+</sqlMap>

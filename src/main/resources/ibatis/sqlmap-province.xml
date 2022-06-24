@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="province">
+
+	<typeAlias alias="province" type="com.jingtong.platform.province.pojo.Province" />
+
+	<select id="searchProvince" parameterClass="province"
+		resultClass="province">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+	 	select  aa.id,
+ 			aa.country_code,aa.province_code,aa.province_name,bb.country_name  
+		from basis.basis_tb_province aa
+		left outer join  basis.basis_tb_country bb on bb.country_code =aa.country_code
+		where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="country_name" prepend="and">
+				<![CDATA[ upper(bb.country_name) = #country_name#]]>
+			</isNotEmpty>
+			<isNotEmpty property="country_code" prepend="and">
+				<![CDATA[ upper(aa.country_code) = #country_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="province_code" prepend="and">
+				<![CDATA[ lower(aa.province_code) = #province_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="province_name" prepend="and">
+				<![CDATA[ lower(aa.province_name) like #province_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+				<![CDATA[ (lower(aa.province_name) like #search,handler=wildcard# escape '\' or lower(province_code) like #search,handler=wildcard# escape '\')]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+
+	<select id="getProvinceListCount" parameterClass="province"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_province aa
+		left outer join  basis.basis_tb_country bb on bb.country_code =aa.country_code
+ 		where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="country_name" prepend="and">
+				<![CDATA[ upper(bb.country_name) = #country_name#]]>
+			</isNotEmpty>
+			<isNotEmpty property="country_code" prepend="and">
+				<![CDATA[ upper(aa.country_code) = #country_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="province_code" prepend="and">
+				<![CDATA[ lower(aa.province_code) like #province_code,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="province_name" prepend="and">
+				<![CDATA[ lower(aa.province_name) like #province_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+				<![CDATA[ (lower(aa.province_name) like #search,handler=wildcard# escape '\' or lower(province_code) like #search,handler=wildcard# escape '\')]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getCountByCode" parameterClass="province"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_province
+		where upper(province_code) = #province_code#
+	]]>
+	</select>
+
+	<insert id="saveProvince" parameterClass="province">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		<![CDATA[
+			SELECT basis.basis_sq_province.nextval as id from dual
+		]]>
+		</selectKey> 
+	<![CDATA[
+		insert into basis.basis_tb_province(id,country_code,province_code,province_name)
+		values(#id#,#country_code#,#province_code#,#province_name#)
+	]]>
+	</insert>
+
+	<update id="updateProvince" parameterClass="province">
+	<![CDATA[
+		update basis.basis_tb_province 
+		set    
+				country_code = #country_code#,
+			   province_code=#province_code#,
+		       province_name=#province_name#
+		where  	id = #id#
+	]]>
+	</update>
+
+	<delete id="deleteProvinceById" parameterClass="province">
+	<![CDATA[
+		delete from basis.basis_tb_province 
+		where id=#id#
+	]]>
+	</delete>
+
+	<select id="getProvinceById" parameterClass="province"
+		resultClass="province">
+		<![CDATA[
+			select  id,
+			   country_code,province_code,province_name
+		from basis.basis_tb_province
+			where
+			 	 id = #id#
+		]]>
+
+	</select>
+
+</sqlMap>

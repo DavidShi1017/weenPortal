@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+        #CSSM(["easyui","style"])
+        #JSM(["jquery", "easyui"])
+        #JS_ENV_VAL()
+    </head>
+    <body>
+        <form action="" method="post">
+            <div class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+                <table border="0" cellpadding="0" cellspacing="5">
+                    <input type="hidden" id="id" name="dr.id" value="$!{dr.id}" />
+                    <input type="hidden" id="forWho" value="$!{forWho}" />
+                    <tr>                
+                        <td class="head" noWrap width='160'><label for="name">Disti :</label></td>
+                        <td noWrap class="context" width='220'>
+                            <label id="cus_groupId" >$!{dr.cus_groupId}</label>
+                            <input class="easyui-validatebox" type="hidden" id="customer_name" name="dr.customer_name" value='$!{dr.customer_name}' readonly />
+                            <input class="easyui-validatebox"  id="customer_id" name="dr.customer_id" value='$!{dr.customer_id}' type="hidden" />
+                        </td>
+                        <td class="head" noWrap width='160'><label for="name">DR number :</label></td>
+                        <td noWrap class="context" width='220'>
+                            <input class="easyui-validatebox"  id="drNum" name="dr.drNum" value='$!{dr.drNum}' readonly></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">Disti Branch :</label></td>
+                        <td noWrap class="context">
+                            <label id="disti_branch" name="dr.disti_branch" >$!{dr.disti_branch} </label> 
+                        </td>
+                        <td class="head" noWrap width='160'><label for="name">Registration Date :</label></td>
+                        <td noWrap class="context" width='220'>
+                            <input class="easyui-datebox" id="start_date" name="dr.start_date" value='$!{dr.start_dateStr}' readonly />
+                        </td>                            
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">End Customer :</label></td>
+                        <td noWrap class="context">
+                            <label>$!{endCustomer_name_city}</label>
+                            <input class="easyui-validatebox" id="endCus_name" name="dr.endCus_name" value="$!{dr.endCus_name}" type="hidden" />                    
+                            <input class="easyui-validatebox" id="endCus_id" name="dr.endCus_id" value="$!{dr.endCus_id}" type="hidden" />                    
+                        </td>
+                        <td class="head" noWrap><label for="name">Latest Expire :</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-validatebox" id="end_date" name="dr.end_dateStr" value='$!{dr.end_dateStr}' readonly />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="display:none" class="head" noWrap><label for="name">EC Group:</label></td>
+                        <td style="display:none" noWrap class="context">
+                            <input id="endCus_groupName" class="easyui-validatebox" name="dr.endCus_groupName" value='$!{dr.endCus_groupName}' readonly />  
+                            <input id="endCus_groupId" class="easyui-validatebox" name="dr.endCus_groupId" value='$!{dr.endCus_groupId}' type="hidden" />  
+                        </td>    
+                        <td class="head" noWrap><label for="name">EC City :</label></td>
+                        <td noWrap class="context">
+                            <input id="endCus_groupName" class="easyui-validatebox"  value='$!{dr.ec_city}' readonly />  
+                            <input id="endCus_groupId" type="hidden" name="dr.endCus_groupId" value='$!{dr.ec_city}' readonly />  
+                        </td>    
+                        <td class="head" noWrap><label for="name">MP Schedule :</label></td>
+                        <td noWrap class="context">
+                            <input  class="easyui-datebox" id="mp_schedule" name="dr.mp_schedule" value='$!{dr.mp_scheduleStr}' />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">EC Contact :</label></td>
+                        <td noWrap class="context">
+                            <input id="ec_contact" class="easyui-validatebox" name="dr.ec_contact" value='$!{dr.ec_contact}'  readonly />  
+                        </td>    
+                        <td class="head" noWrap><label for="name">Project :</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-validatebox" id="project_name" name="dr.project_name" value="$!{dr.project_name}" data-options="required:true" readonly />  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">EC Tel Number :</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-validatebox" id="tel" name="dr.tel" value="$!{dr.tel}" readonly />  
+                        </td>
+                        <td class="head" noWrap><label for="name">Annual Runrate :</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-numberbox" id="usage_amount" name="dr.usage_amount"  value="$!{dr.usage_amount}" readonly />
+                        </td>  
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">Application:</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-validatebox" id="equip_type" name="dr.equip_type" value="$!{dr.equip_type}" readonly />  
+                            <input type="hidden" id="total_type" name="dr.total_type" value="$!{dr.total_type}" />
+                            <input type="hidden" id="total_amount" name="dr.total_amount" value="$!{dr.total_amount}" />  
+                        </td>
+                        <td class="head" noWrap><label for="name">Estimated Share(%):</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-validatebox" id="estimated_share" name="dr.estimated_share" value="$!{dr.estimated_share}" />  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" >Remark:</td>
+                        <td colspan="3">
+                            <textarea style="width:650px ;height:60px;" id="remark" name="dr.remark"> $!{dr.remark}
+                            </textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap >Design Win File:</td>
+                        <td id="fileName"><label >$!{dr.file_name}</label>
+                            <img id="downImg" style="cursor:add" title="" onclick=downLoadFile() src="$!{env.imgUrl}/images/actions/down.png" align="absMiddle"></img>
+                            <input type='hidden' id="file_path" value="$!{dr.file_path}" />
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+            </div>
+            <div id="p_search" class="easyui-panel" title="" style="padding: 2px; background: #fafafa;" data-options="collapsible:true">
+                <input class="easyui-validatebox" data-options="required:true" id="quoteDetail" type="hidden" />
+                <table id="datagrid" border="0">
+                </table>            
+                <input class="easyui-validatebox" data-options="required:true" id="poDetailJson" name="poDetailJson" type="hidden">
+            </div>
+        </form>
+        <iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+        <div id="hiddenWin"/> 
+    </body>
+    <script type="text/javascript" src="$!{env.imgUrl}/js/platform/designReg/viewDesignReg.js?time=New Date()"></script>
+</html>

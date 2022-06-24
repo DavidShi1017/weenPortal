@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		<div id="cc" class="easyui-layout" data-options="fit:true">   
+        <div data-options="region:'north',split:true" style="height:38px;">
+    		<form method="post" target="hideFrame" id="searchCategory">
+    			<div class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-search'">
+    				<table width="100%" border="0" cellpadding="0" cellspacing="1">
+    					<tr>
+    							<td class="head" noWrap>装运点:</td>
+                				<td class="even">
+                					<input id="vstel" name="vstel" class="easyui-validatebox" />
+                			</td>
+    						<td class="head" noWrap>装运单:</td>
+                				<td>
+                				<input id="bolnr" name="bolnr" class="easyui-validatebox" />
+                			</td>
+    						 
+    						<td>
+    							<a href="javascript:searchList()" class="easyui-linkbutton" iconCls="icon-search">查询</a>
+    						</td>
+    					</tr>
+    				</table>
+    			</div>
+    		</form>
+    	</div>   
+        <div data-options="region:'center'" style="padding:2px;background:#eee;">
+    		<table id="datagrid">  
+    			</table> 
+    	</div>   
+</div>  
+		
+			<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+			<div id="werkPlan"/> 
+	</body>
+
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/schedulelist/viewshcedulelist.js"></script>
+</html>

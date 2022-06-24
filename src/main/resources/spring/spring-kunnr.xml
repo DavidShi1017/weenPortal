@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	
+	<bean id="kunnrAction" class="com.jingtong.platform.kunnr.action.KunnrAction"
+		parent="baseAction" scope="request">
+ 		<property name="kunnrService" ref="kunnrService" ></property>
+  		<property name="orgServiceHessian" ref="orgServiceHessian"/>
+ 		<property name="appUrl">
+			<value>${appUrl}</value>
+		</property>
+		 
+	</bean>
+	
+	<bean id="kunnrService" class="com.jingtong.platform.kunnr.service.impl.KunnrServiceImpl">
+		<property name="kunnrDao" ref="kunnrDao" ></property>
+ 	 
+	</bean>
+
+	<bean id="kunnrDao" class="com.jingtong.platform.kunnr.dao.impl.KunnrDaoImpl" parent="baseDao">
+	</bean>
+
+</beans>

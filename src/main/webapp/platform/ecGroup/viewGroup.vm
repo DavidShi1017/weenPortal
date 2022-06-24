@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" border="0" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="5">
+					<input type="hidden" id="id" name="g.id" value="$!{g.id}"/>
+						<tr>      
+							<td class="head" noWrap><label for="name">Group Id</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="ecGroup_id" name="g.ecGroup_id" value='$!{g.ecGroup_id}'></input>
+							</td>
+                           							
+						</tr>
+						<tr>
+						  <td class="head" noWrap><label for="name">Group Name</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="ecGroup_name" name="g.ecGroup_name" value='$!{g.ecGroup_name}'></input>
+							</td>
+                         </td>
+						</tr>
+						<tr>
+						  <td class="head" noWrap>State</td>
+ 						<td>
+						<input class="easyui-validatebox" id="state" name="g.state" value="$!{g.state}">
+                         </td>
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>
+
+
+		</div>  
+		
+		<br/>
+			<div region="south" border="0"style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Close</a>
+			</div>
+
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/ecGroup/viewGroup.js"></script>
+</html>

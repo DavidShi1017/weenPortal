@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+		<input type="hidden" id="id" name="ec.id" value="$!{ec.id}">	
+		<div  border="0"class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+ 				<table width="100%" border="0" cellpadding="5" cellspacing="1">
+ 					<input type="hidden" id="noPCEC"  value="$!{ec.noPCEC}"/>
+					<input type="hidden" id="e_name"  value="$!{ec.e_name}"/>
+					<input type="hidden" id="p_name"  value="$!{ec.p_name}"/>
+					<input type="hidden" id="e_country"  value="$!{ec.e_country}"/>
+					<input type="hidden" id="p_country"  value="$!{ec.p_country}"/>
+					<input type="hidden" id="e_province"  value="$!{ec.e_province}"/>
+					<input type="hidden" id="p_province"  value="$!{ec.p_province}"/>
+					<input type="hidden" id="e_city"  value="$!{ec.e_city}"/>
+					<input type="hidden" id="p_city"  value="$!{ec.p_city}"/>
+					<input type="hidden" id="e_zip"  value="$!{ec.e_zip}"/>
+					<input type="hidden" id="p_zip"  value="$!{ec.p_zip}"/>
+					<input type="hidden" id="quote_id" name="ec.quote_id" value="$!{ec.quote_id}"/>
+					<tr>
+						<td class="head" noWrap width='120'><label for="name">PC/EC :</label></td>
+						<td noWrap class="context" width='260'>
+						<input class="easyui-validatebox"  id="PCEC" name="ec.pcec"/>
+						</td>
+								<!--
+							<td class="head" noWrap width='120'><label for="name">Disti :</label></td>
+							<td noWrap class="context" width='260'>
+								
+								<label id="disti_groupId"> $!{ec.disti_groupId}</label>
+									<input type="hidden"name='ec.disti_groupId' value="$!{ec.disti_groupId}"> </input>								
+								<input type="hidden" id="disti_customer_name" name='ec.disti_customer_name' value="$!{ec.disti_customer_name}"> </input>
+									<input style="width:220px" class="easyui-validatebox"  id="disti_customer_name" name='ec.disti_customer_name' value='$!{ec.disti_customer_name}' readonly></input>
+								 <input   type="hidden"class="easyui-validatebox"  id="disti_customer_id" name='ec.disti_customer_id' value='$!{ec.disti_customer_id}'></input>
+							</td>
+								-->
+                            <td class="head" noWrap width='120'><label for="name">Country :</label></td>
+                            <td noWrap class="context" width='260'>
+								 <input class="easyui-validatebox"  id="country" name="ec.country" value='$!{ec.country}' readonly></input>	
+								 <input type="hidden"  id="countryOrg" name="ec.countryOrg" value='$!{ec.countryOrg}' readonly></input>	
+								 
+								<div id="toolbarCountry" class="datagrid-toolbar">
+									<input class="easyui-searchbox" searcher="searcherCountry" prompt="Key word search" style="width:300px"></input>		
+								</div>	
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Customer Name:</label></td>
+                            <td class="context" width='260'>
+								<input class="easyui-validatebox" id="end_customer_name" name="ec.end_customer_name" style="width:240px" value="$!{ec.end_customer_name}" readonly>
+								<input type="hidden" id="org_code"  value="$!{ec.org_code}" />
+							</td>
+							<td class="head" noWrap ><label for="name">State/Province :</label></td>
+                            <td class="context" width='260'>
+								<input type="text" id="province" name="ec.province" value='$!{ec.province}' readonly ></input>
+								<div id="toolbarProvince" class="datagrid-toolbar">
+									<input class="easyui-searchbox" searcher="searcherProvince" prompt="Key word search" style="width:300px"></input>		
+								</div>	
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Customer Group :</label></td>
+                            <td class="context" width='220' noWrap>
+								<input class="easyui-validatebox" id="end_customer_groupId" name="ec.end_customer_groupId" value="$!{ec.end_customer_groupId}" readonly/>
+								<div id="toolbarECGroup" class="datagrid-toolbar">
+									<input class="easyui-searchbox" searcher="searcherECGroup" prompt="EC Group KeyWord" style="width:300px"></input>		
+								</div>
+								<img style="cursor:del"  title=""  onclick=delECGroup()  src="$!{env.imgUrl}/images/actions/clear.png" align="absMiddle"></img> 
+								<img style="cursor:add"  title=""  onclick=applyECGroup()  src="$!{env.imgUrl}/images/actions/action_add.png" align="absMiddle"></img> 
+								<!--<a class="easyui-linkbutton" icon="icon-add" href="javascript:applyECGroup()"></a>-->
+							</td>
+							<td class="head" noWrap ><label for="name">City:</label></td>
+                            <td class="context" width='220'>
+								<input class="easyui-validatebox" id="city"  name="ec.city" value='$!{ec.city}' />  
+								<input type="hidden" id="oldCity" name="ec.oldCity" value='$!{ec.city}'/>
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap ><label for="name">Customer Type:</label></td>
+                            <td class="context" width='220'>
+								<input class="easyui-validatebox" id="customer_type" name="ec.customer_type"  value="$!{ec.customer_type}" >
+							</td>
+							<td class="head" noWrap ><label for="name">Address:</label></td>
+                            <td class="context" width='220'>
+								<input class="easyui-validatebox" id="address"  name="ec.address" style="width:240px"  value='$!{ec.address}' />  
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap ><label for="name">Contact:</label></td>
+                            <td class="context" width='220'>
+								<input class="easyui-validatebox" id="contact_name" name="ec.contact_name"  value="$!{ec.contact_name}" precision="2">
+							</td>
+                            <td class="head" noWrap ><label for="name">Tel Number:</label></td>
+                            <td class="context" width='220'>
+								<input class="easyui-validatebox" id="tel" name="ec.tel" value="$!{ec.tel}" ></input>  
+							</td>
+						</tr>
+							<!--
+						<tr>
+							<td class="head" noWrap ><label for="name">EC Property :</label></td>
+                            <td class="context" width='220'>
+								<input class="easyui-validatebox" id="customer_property" name="ec.customer_property" value="$!{ec.customer_property}" ></input>  
+
+							</td> 
+							<td class="head" noWrap ><label for="name">Currency:</label></td>
+                            <td class="context" >
+							</td>
+						</tr>
+							-->
+						<tr>
+							<td class="head" noWrap ><label for="name">Zip:</label></td>
+                            <td class="context" width='220'>
+								<input class="easyui-validatebox" id="zip" name="ec.zip" value="$!{ec.zip}" ></input>  
+								<input type="hidden" id="currency_code" name="ec.currency_code" value="USD" class="easyui-validatebox" readonly></input>  
+							</td>
+							 <td noWrap class="head">File:</td>
+                            <td class="context"><input  id="old_file_name" style="border:1" name="ec.file_name" value='$!{ec.file_name}' readonly/><a href="javascript:upload()" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-save'">Upload</a></td>	
+							<input  id="file_path" name="ec.file_path" value='$!{ec.file_path}'type="hidden"/>
+							
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>
+		</div>  
+		
+		<br/>
+			<div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+			</div>
+
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="maintWindow"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/endCustomer/createPCEC.js"></script>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+			#CSSM(["easyui","style"])
+        	#JSM(["jquery", "easyui"])
+        	#JS_ENV_VAL()	
+	</head>
+	<body>
+			<form id="ff" method="post" target="hideFrameApp" enctype="multipart/form-data">
+ 			<div class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-list'" style="padding: 2px; background: #fafafa;">
+			<br>
+			<table  border="0" cellpadding="1" cellspacing="1">
+			<tr>
+				<td class="head"width="120" noWrap0>Customer:</td>
+				
+				<td width="300">
+					<label width="300">$!{c.customer_name}</label>
+					<!--<input class="easyui-validatebox" id="customer_name" name="c.customer_name" value='$!{c.customer_name}'  readonly>-->
+				</td>
+
+				<td class="head" noWrap width="120">Global Account:</td>
+				<td width="300">
+					<label width="300">$!{c.global_account}</label>
+					<!--<input class="easyui-validatebox"    value="$!{c.global_account}"  id="global_account"   readonly>-->
+ 
+				</td>
+				
+			
+			</tr>
+			
+			<tr>
+				<td class="head" noWrap>Customer Code:</td>
+				<!--style="BACKGROUND-COLOR:pink"-->
+				<td>
+					<label id="customer_code1">$!{c.customer_code}</label>
+					<input class="easyui-validatebox" type='hidden'  id="customer_code" name="c.customer_code" value='$!{c.customer_code}'   readonly></td>
+				<td class="head" noWrap>Company Type:</td>
+				<td>
+					<label>$!{c.customer_type}</label>
+					<!--<input class="easyui-validatebox" id="customer_type" name="c.customer_type" value="$!{c.customer_type}"  146px;"  readonly/>--></td>	
+				
+			
+				 
+			</tr>
+			<tr>
+					<td class="head" noWrap>Sale Organization:</td>
+ 				<td>
+					<label>$!{c.sales_orgName}</label>
+					<!--<input class="easyui-validatebox" id="sales_org" name="c.sales_org" value="$!{c.sales_org}"  146px;" readonly/>-->
+				</td>
+			    <td class="head" noWrap>Currency:</td>
+				<td>
+					<label>$!{c.currency_code}</label>
+					<!--<input class="easyui-validatebox"   id="currency_code" name="c.currency_code"   value='$!{c.currency_code}' readonly>-->                 </td>			
+				
+			 </tr>
+			<tr>
+				<td class="head" noWrap>District:</td>
+				<td width="140px">
+					<label>$!{c.districtName}</label>
+				<!--<input class="easyui-validatebox" id="district" name="c.district" value='$!{c.district}' readonly></input> --> 	
+ 				</td>
+				<td class="head" noWrap>Address:</td>
+				<td width="140px">
+					<label>$!{c.address}</label>
+				<!--<input class="easyui-validatebox"  id="address" name="c.address" value='$!{c.address}'></input> --> 	
+ 				</td>
+			</tr>
+			<tr>
+				<td class="head" noWrap>Sales Office:</td>
+				<td width="140px">
+					<label>$!{c.sale_office}</label>
+				<!--<input class="easyui-validatebox"  id="sale_office" name="c.sale_office" value='$!{c.sale_office}' readonly></input>-->  	
+ 				</td>
+				<td class="head" noWrap>Contact:</td>
+				<td width="140px">
+					<label>$!{c.contact_name}</label>
+				<!--<input class="easyui-validatebox" id="contact_name" name="c.contact_name" value='$!{c.contact_name}'></input> --> 	
+ 				</td>
+			</tr>
+			<tr>
+				<td class="head" noWrap>Country:</td>
+				<td width="140px">
+					<label>$!{c.countryName}</label>
+				<!--<input class="easyui-validatebox"  id="country" name="c.country" value='$!{c.country}' readonly></input>-->  	
+ 				</td>
+				<td class="head" noWrap>Tel Number:</td>
+				<td width="140px">
+					<label>$!{c.tel}</label>
+				<!--<input class="easyui-validatebox"  id="tel" name="c.tel" value='$!{c.tel}'></input> --> 	
+ 				</td>
+			</tr>
+			<tr>
+				<!--
+				<td class="head" noWrap>Sales:<font color='red'>*</font></td>
+				<td width="140px">
+					<label>$!{c.suppliers_account}</label>
+				<input class="easyui-validatebox" id="suppliers_account" name="c.suppliers_account" value='$!{c.suppliers_account}'></input>	
+ 				</td>
+				<td class="head" noWrap>Design Customer:<font color='red'>*</font></td>
+				<td width="140px">
+					<label>$!{c.design_customer}</label>
+				<input class="easyui-validatebox"  id="design_customer" name="c.design_customer" value='$!{c.design_customer}' readonly></input>  	
+ 				</td>-->
+				<td class="head" noWrap>Status:</td>
+				<td width="140px">
+					<label>$!{c.state}</label>
+				<!--<input class="easyui-validatebox"  id="state" name="c.state" value='$!{c.state}'></input>-->  	
+ 				</td>
+			</tr>
+			</table>
+            </div>			 
+			</br>
+			
+			<!--销售背景-->
+<!--			<div class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+<!--			<div class="easyui-tabs"  style="padding: 2px; background: #fafafa;height:250px" id="tabs1">-->
+			<div title="" style="overflow:auto;padding:5px;" border="0">  
+    			<table id="datagrid"></table>
+			</div>
+ <!--
+            </div>
+			</br>
+			<div  border="false" style="text-align:center;height:30px;line-height:30px;">
+ 				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Close</a>
+			</div>
+			-->
+			<iframe id="hideFrameApp" name="hideFrameApp"  style="height: 0; width: 0"></iframe>
+		</form>
+		<div id="nextUserDialog"/>
+	</body>
+ 	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/customer/viewCustomer.js"></script>
+</html>

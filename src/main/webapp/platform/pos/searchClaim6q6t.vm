@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		
+		
+		<!-- ²éÑ¯ -->
+		<div class="easyui-layout" data-options="fit:true,border:false"> 
+
+	        <form method="post" target="hideFrame">
+			<div id="p_search" title="" style="height:90px;padding: 1px; background: #fafafa;" data-options="region:'north',iconCls:'icon-search'">
+                <input type="hidden" id="file_id" name="file_id" value="$!{file_id}"/>
+				<input type="hidden" id="loginRole" name="loginRole" value="$!{loginRole}"/>
+				<table width="100%" border="0" cellpadding="0" cellspacing="5">
+				<tr>
+                    <td class="head" noWrap>BOOK PART</td>
+                    <td><input class="easyui-validatebox" id="material_name" name="material_name"></td>
+ 					<td class="head" noWrap>12NC</td>
+                    <td><input class="easyui-validatebox" id="material_id" name="material_id"></td>
+					<td class="head" noWrap>PC EC NAME</td>
+					<td><input class="easyui-validatebox" id="pc_ec_name" name="pc_ec_name"></td>
+                 </tr>
+				 <tr>
+				 		<!-- ²éÑ¯
+						<td class="head" noWrap>FILE_ID</td>
+						<td><label> $!{file_id}</label></td>
+						<td class="head" noWrap>FILE_NAME</td>
+						<td><label> $!{file_url}</label></td>
+						-->
+						
+						<td class="head" noWrap>Debit Number</td>
+						<td><input class="easyui-validatebox" id="debit_number" name="debit_number"></td>
+						<td class="head" noWrap>Invoice Number</td>
+						<td><input class="easyui-validatebox" id="invoice_number" name="invoice_number"></td>
+	                    <td colspan="2">
+							<a id="search" href="javascript:search()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">Search</a>
+	                    	<a href="javascript:clearValue()" class="easyui-linkbutton" iconCls="icon-clear" id="clearV">Cancel</a> 	
+						</td>
+                    </tr>
+                    
+                </table>
+				 </div>
+			    <div data-options="region:'center'">
+					<table id="datagrid"></table>
+				</div>
+	</form>
+	
+	<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+	<div id="hiddenWin"/> 
+	</div>
+		
+		
+		 
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/pos/searchClaim6q6t.js?v=1.49"></script>
+</html>

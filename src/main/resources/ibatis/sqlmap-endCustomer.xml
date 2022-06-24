@@ -1,0 +1,973 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="endCustomer">
+	<typeAlias alias="endCustomer" type="com.jingtong.platform.endCustomer.pojo.EndCustomer" />
+	<typeAlias alias="ecAlias" type="com.jingtong.platform.endCustomer.pojo.ECAlias" />
+	
+	<!-- EC信息主数据 -->
+	<select id="getEndCustomerById" parameterClass="endCustomer"
+		resultClass="endCustomer">
+		<![CDATA[
+			SELECT 
+				aa.id,
+				aa.disti_groupId,
+				aa.disti_customer_id,
+				bb.customer_name disti_customer_name,
+				aa.end_customer_name,
+				ff.item_name customer_typeName,
+				aa.customer_type,
+				gg.item_name customer_propertyName,
+				aa.customer_property,
+				hh.item_name currency_name,
+				aa.currency_code,
+				aa.end_customer_groupId,
+				ee.ecgroup_name end_customer_groupName,
+				aa.city,
+				ii.country_name,
+				aa.country,
+				aa.province,
+				aa.address,
+				aa.zip,
+				aa.file_name,
+				aa.file_path,
+				aa.contact_name,
+				aa.tel,
+				aa.state,
+				aa.audit_opinion,
+				aa.remark,
+				aa.end_customer_id,
+				aa.new_hierarchy,
+				aa.tier,
+				kk.item_name as newHierarchyString,
+                ll.item_name as tierString,
+                aa.segment,
+                aa.application
+			from basis.basis_tb_end_customeInfo aa 
+				left outer join basis.basis_tb_customerInfo bb on aa.disti_customer_id=bb.customer_code
+				left outer join basis.basis_tb_salesemp_info cc on aa.modify_userId = cc.emp_id
+				left outer join basis.basis_tb_salesemp_info dd on aa.create_userId = dd.emp_id 
+				left outer join basis.basis_tb_ecgroup ee on aa.end_customer_groupId = ee.ecgroup_id 
+				left outer join basis.basis_tb_dict ff on aa.customer_type=ff.item_value and ff.dict_type_id=554
+				left outer join basis.basis_tb_dict gg on aa.customer_property=gg.item_value and gg.dict_type_id=546
+				left outer join basis.basis_tb_dict hh on aa.currency_code=hh.item_value and hh.dict_type_id=548
+				left outer join basis.basis_tb_country ii on aa.country=ii.country_code
+				left outer join basis.basis_tb_dict kk on aa.new_hierarchy = kk.item_value and kk.dict_type_id=569
+                left outer join basis.basis_tb_dict ll on aa.tier = ll.item_value and ll.dict_type_id=568
+			where aa.id=#id#
+		]]>
+	</select>
+	<select id="getEndCustomerByCode" parameterClass="endCustomer"
+		resultClass="endCustomer">
+		<![CDATA[
+			select 
+				aa.id,aa.disti_groupId,aa.disti_customer_id,aa.end_customer_groupId,ee.ecgroup_name end_customer_groupName,aa.end_customer_name,
+				aa.customer_type,aa.customer_property,aa.currency_code,aa.city,
+				aa.country,aa.province,aa.address,aa.zip,aa.file_name,aa.file_path,
+				aa.contact_name,aa.tel,aa.state,aa.audit_opinion,aa.remark,aa.end_customer_id				
+			from basis.basis_tb_end_customeInfo aa 
+				left outer join basis.basis_tb_ecgroup ee on aa.end_customer_groupId = ee.ecgroup_id 
+				
+			where aa.end_customer_id=#end_customer_id#
+		]]>
+	</select>
+	
+	<select id="pendingData" parameterClass="endCustomer"
+		resultClass="endCustomer">
+		<![CDATA[
+			select Quote_ID quote_id ,create_time from BASIS_TB_quoteinfo 
+			where purchasecustomer_id =#end_customer_id#  or endcustomer_id = #end_customer_id#
+			union all
+			select drnum,create_time from BASIS_TB_design_reg where endcus_id =#end_customer_id#
+		]]>
+	</select>
+	
+    <select id="searchEndCustomerList" parameterClass="endCustomer"
+		resultClass="endCustomer">
+		<include refid="global.paginationStart" />
+	    <![CDATA[
+		SELECT 
+	        aa.id,
+		    aa.disti_groupId,
+		    disti_customer_id,
+		    bb.customer_name disti_customer_name,
+		    end_customer_groupId,
+		    ee.ecgroup_name end_customer_groupName,
+			ff.item_name customer_type,
+			gg.item_name customer_property,
+			hh.item_name currency_code,
+			ii.country_name,
+			aa.country,
+			aa.province,
+			aa.address,
+			aa.contact_name,
+			aa.tel,
+			aa.state,
+			aa.audit_opinion,
+			aa.remark,
+			aa.create_time,
+			dd.emp_code create_userId,
+			ee.state ecGroupState,
+			end_customer_name,
+			aa.modify_time,
+			cc.emp_code modify_userId,
+			aa.org_code,
+			end_customer_id,
+			isCheck,
+			aa.sync_state,
+			aa.city,
+			aa.zip,
+			kk.item_name as new_hierarchy,
+			ll.item_name as tier	
+		FROM basis.basis_tb_end_customeInfo aa
+			left outer join basis.basis_tb_customerInfo bb on aa.disti_customer_id=bb.customer_code
+			left outer join basis.basis_tb_salesemp_info cc on aa.modify_userId = cc.emp_id
+			left outer join basis.basis_tb_salesemp_info dd on aa.create_userId = dd.emp_id 
+			left outer join basis.basis_tb_ecgroup ee on aa.end_customer_groupId = ee.ecgroup_id 
+			left outer join basis.basis_tb_dict ff on aa.customer_type=ff.item_value and ff.dict_type_id=554
+			left outer join basis.basis_tb_dict gg on aa.customer_property=gg.item_value and gg.dict_type_id=546
+			left outer join basis.basis_tb_dict hh on aa.currency_code=hh.item_value and hh.dict_type_id=548
+			left outer join basis.basis_tb_country ii on aa.country=ii.country_code
+			left outer join basis.basis_tb_org jj on ii.org_code = jj.sap_org_id
+			left outer join basis.basis_tb_dict kk on aa.new_hierarchy = kk.item_value and kk.dict_type_id=569
+			left outer join basis.basis_tb_dict ll on aa.tier = ll.item_value and ll.dict_type_id=568	
+	 	WHERE 1=1  
+	]]>
+		<dynamic>
+			<isNotEmpty property="disti_customer_id" prepend="and">
+				<![CDATA[ aa.disti_customer_id = #disti_customer_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_groupId" prepend="and">
+				<![CDATA[ upper(aa.disti_groupId) like #disti_groupId,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_customer_name" prepend="and">
+				<![CDATA[ bb.customer_name like #disti_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_groupName" prepend="and">
+				<![CDATA[ upper(ee.ecgroup_name) like #end_customer_groupName,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="country" prepend="and">
+				<![CDATA[ upper(ii.country_name) like #country,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="province" prepend="and">
+				<![CDATA[ upper(aa.province) like #province,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_type" prepend="and">
+				<![CDATA[ ff.item_name = #customer_type#]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_id" prepend="and">
+				<![CDATA[ end_customer_id like #end_customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_name" prepend="and">
+				<![CDATA[ upper(end_customer_name) like #end_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="states" prepend="and">
+				<![CDATA[ aa.state in $states$]]>
+			</isNotEmpty> 	
+			<isNotEmpty property="salesOrg" prepend="and">
+				<![CDATA[
+					jj.org_id in (
+			 		select a.org_id from basis.basis_tb_org a where a.state = 'Y'
+			 		start with a.org_id = #salesOrg# 
+			 		connect by prior a.org_id = a.org_parent_id)  
+				]]>
+			</isNotEmpty>
+			
+				
+			<isNotEmpty property="noTranBegin" prepend="and">
+				<![CDATA[
+					  aa.state=1 and not exists(
+				        select 1
+				        from (
+				            select distinct t2.ec_id, t2.alias_city
+				            from(
+				            select  purchasing_customer_name, purchasing_cust_city , max(nvl(update_time,created_time)) as update_time
+				            from    basis_tb_cus_pos 
+				            where transaction_code in ('s','c')
+				            group by purchasing_customer_name, purchasing_cust_city
+				            ) t1
+				            left join basis_tb_ecalias t2 on upper(t2.ec_alias_name) = upper(t1.purchasing_customer_name) and upper(t1.purchasing_cust_city)=upper(t2.alias_city)
+				            where t1.update_time >= #noTranBegin#  and t1.update_time <= #noTranEnd#
+				            union
+							
+				            select distinct t2.ec_id, t2.alias_city
+				            from(
+				            select  endcust_name, endcust_city , max(nvl(update_time,created_time)) as update_time
+				            from    basis_tb_cus_pos 
+				            where transaction_code in ('s','c')
+				            group by endcust_name, endcust_city
+				            ) t1
+				            left join basis_tb_ecalias t2 on upper(t2.ec_alias_name) = upper(t1.endcust_name) and upper(t1.endcust_city)=upper(t2.alias_city)
+				            where t1.update_time >= #noTranBegin#  and t1.update_time <= #noTranEnd#
+				            union
+				            select endcus_id, '' as city from(
+				            select  endcus_id , max(nvl(latest_time,create_time)) as update_time
+				            from    basis_tb_design_reg
+				            where nvl(latest_time,create_time) >= #noTranBegin#  and nvl(latest_time,create_time) <= #noTranEnd#
+				            group by endcus_id
+				            ) t 
+				            union
+				            select endcustomer_id, '' as city from(
+				            select  endcustomer_id , max(nvl(latest_time,create_time)) as update_time
+				            from    basis_tb_quoteinfo
+				            where nvl(latest_time,create_time) >= #noTranBegin#  and nvl(latest_time,create_time) <= #noTranEnd#
+				            group by endcustomer_id
+				            ) t 
+				            union
+				            select purchasecustomer_id, '' as city from(
+				            select  purchasecustomer_id , max(nvl(latest_time,create_time)) as update_time
+				            from    basis_tb_quoteinfo
+				            where nvl(latest_time,create_time) >= #noTranBegin#  and nvl(latest_time,create_time) <= #noTranEnd#
+				            group by purchasecustomer_id
+				            ) t 
+				        ) fi where ec_id is not null
+				        and aa.end_customer_id = fi.ec_id
+				    )
+				]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+
+	<select id="searchEndCustomerListCount" parameterClass="endCustomer"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.basis_tb_end_customeInfo  aa
+				left outer join basis.basis_tb_customerInfo bb on aa.disti_customer_id=bb.customer_code
+				left outer join basis.basis_tb_salesemp_info cc on aa.modify_userId = cc.emp_id
+				left outer join basis.basis_tb_salesemp_info dd on aa.create_userId = dd.emp_id 
+				left outer join basis.basis_tb_ecgroup ee on aa.end_customer_groupId = ee.ecgroup_id 
+				left outer join basis.basis_tb_dict ff on aa.customer_type=ff.item_value and ff.dict_type_id=554
+				left outer join basis.basis_tb_dict gg on aa.customer_property=gg.item_value and gg.dict_type_id=546
+				left outer join basis.basis_tb_dict hh on aa.currency_code=hh.item_value and hh.dict_type_id=548
+				left outer join basis.basis_tb_country ii on aa.country=ii.country_code 
+				left outer join basis.basis_tb_org jj on ii.org_code = jj.sap_org_id
+			where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="disti_customer_id" prepend="and">
+				<![CDATA[ aa.disti_customer_id = #disti_customer_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="country" prepend="and">
+				<![CDATA[ upper(ii.country_name) like #country,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="province" prepend="and">
+				<![CDATA[ upper(aa.province) like #province,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_type" prepend="and">
+				<![CDATA[ ff.item_name = #customer_type#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_groupId" prepend="and">
+				<![CDATA[ upper(aa.disti_groupId) like #disti_groupId,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_customer_name" prepend="and">
+				<![CDATA[ bb.customer_name  like #disti_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_groupName" prepend="and">
+				<![CDATA[ upper(ee.ecgroup_name) like #end_customer_groupName,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_id" prepend="and">
+				<![CDATA[ end_customer_id like #end_customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_name" prepend="and">
+				<![CDATA[ upper(end_customer_name)  like #end_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="states" prepend="and">
+				<![CDATA[ aa.state in $states$]]>
+			</isNotEmpty> 
+			<isNotEmpty property="salesOrg" prepend="and">
+				<![CDATA[
+					jj.org_id in (
+			 		select a.org_id from basis.basis_tb_org a where a.state = 'Y'
+			 		start with a.org_id = #salesOrg# 
+			 		connect by prior a.org_id = a.org_parent_id)  
+				]]>
+			</isNotEmpty>
+			
+			<isNotEmpty property="noTranBegin" prepend="and">
+				<![CDATA[
+					  aa.state=1 and not exists(
+				        select 1
+				        from (
+				            select distinct t2.ec_id, t2.alias_city
+				            from(
+				            select  purchasing_customer_name, purchasing_cust_city , max(nvl(update_time,created_time)) as update_time
+				            from    basis_tb_cus_pos 
+				            where transaction_code in ('s','c')
+				            group by purchasing_customer_name, purchasing_cust_city
+				            ) t1
+				            left join basis_tb_ecalias t2 on upper(t2.ec_alias_name) = upper(t1.purchasing_customer_name) and upper(t1.purchasing_cust_city)=upper(t2.alias_city)
+				            where t1.update_time >= #noTranBegin#  and t1.update_time <= #noTranEnd#
+				            union
+							
+				            select distinct t2.ec_id, t2.alias_city
+				            from(
+				            select  endcust_name, endcust_city , max(nvl(update_time,created_time)) as update_time
+				            from    basis_tb_cus_pos 
+				            where transaction_code in ('s','c')
+				            group by endcust_name, endcust_city
+				            ) t1
+				            left join basis_tb_ecalias t2 on upper(t2.ec_alias_name) = upper(t1.endcust_name) and upper(t1.endcust_city)=upper(t2.alias_city)
+				            where t1.update_time >= #noTranBegin#  and t1.update_time <= #noTranEnd#
+				            union
+				            select endcus_id, '' as city from(
+				            select  endcus_id , max(nvl(latest_time,create_time)) as update_time
+				            from    basis_tb_design_reg
+				            where nvl(latest_time,create_time) >= #noTranBegin#  and nvl(latest_time,create_time) <= #noTranEnd#
+				            group by endcus_id
+				            ) t 
+				            union
+				            select endcustomer_id, '' as city from(
+				            select  endcustomer_id , max(nvl(latest_time,create_time)) as update_time
+				            from    basis_tb_quoteinfo
+				            where nvl(latest_time,create_time) >= #noTranBegin#  and nvl(latest_time,create_time) <= #noTranEnd#
+				            group by endcustomer_id
+				            ) t 
+				            union
+				            select purchasecustomer_id, '' as city from(
+				            select  purchasecustomer_id , max(nvl(latest_time,create_time)) as update_time
+				            from    basis_tb_quoteinfo
+				            where nvl(latest_time,create_time) >= #noTranBegin#  and nvl(latest_time,create_time) <= #noTranEnd#
+				            group by purchasecustomer_id
+				            ) t 
+				        ) fi where ec_id is not null
+				        and aa.end_customer_id = fi.ec_id
+				    )
+				]]>
+			</isNotEmpty>
+			
+		</dynamic>
+	</select>
+	
+	
+	
+	
+	
+	<select id="getEndCustomerList" parameterClass="endCustomer"
+		resultClass="endCustomer">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+			  aa.id,aa.disti_groupId,disti_customer_id,bb.customer_name disti_customer_name,end_customer_groupId,ee.ecgroup_name end_customer_groupName,
+			  ff.item_name customer_type,gg.item_name customer_property,hh.item_name currency_code,ii.country_name,aa.country,aa.province,aa.address,
+			  aa.contact_name,aa.tel,aa.state,aa.audit_opinion,aa.remark,aa.create_time,dd.emp_name create_userId,ee.state ecGroupState,end_customer_name,
+			  aa.modify_time,cc.emp_name modify_userId,aa.org_code,end_customer_id,isCheck,aa.sync_state,aa.city,aa.zip	
+		from basis.basis_tb_end_customeInfo aa
+			left outer join basis.basis_tb_customerInfo bb on aa.disti_customer_id=bb.customer_code
+			left outer join basis.basis_tb_salesemp_info cc on aa.modify_userId = cc.emp_id
+			left outer join basis.basis_tb_salesemp_info dd on aa.create_userId = dd.emp_id 
+			left outer join basis.basis_tb_ecgroup ee on aa.end_customer_groupId = ee.ecgroup_id 
+			left outer join basis.basis_tb_dict ff on aa.customer_type=ff.item_value and ff.dict_type_id=554
+			left outer join basis.basis_tb_dict gg on aa.customer_property=gg.item_value and gg.dict_type_id=546
+			left outer join basis.basis_tb_dict hh on aa.currency_code=hh.item_value and hh.dict_type_id=548
+			left outer join basis.basis_tb_country ii on aa.country=ii.country_code 
+			left outer join basis.basis_tb_org jj on ii.org_code = jj.sap_org_id		
+	 	where 1=1  
+	]]>
+		<dynamic>
+			<isNotEmpty property="disti_customer_id" prepend="and">
+				<![CDATA[ aa.disti_customer_id = #disti_customer_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_groupId" prepend="and">
+				<![CDATA[ upper(aa.disti_groupId) like #disti_groupId,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_customer_name" prepend="and">
+				<![CDATA[ bb.customer_name like #disti_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_groupName" prepend="and">
+				<![CDATA[ upper(ee.ecgroup_name) like #end_customer_groupName,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="country" prepend="and">
+				<![CDATA[ upper(ii.country_name) like #country,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="province" prepend="and">
+				<![CDATA[ upper(aa.province) like #province,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_type" prepend="and">
+				<![CDATA[ ff.item_name = #customer_type#]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_id" prepend="and">
+				<![CDATA[ end_customer_id like #end_customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_name" prepend="and">
+				<![CDATA[ upper(end_customer_name) like #end_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="states" prepend="and">
+				<![CDATA[ aa.state in $states$]]>
+			</isNotEmpty> 	
+			<isNotEmpty property="salesOrg" prepend="and">
+				<![CDATA[
+					jj.org_id in (
+			 		select a.org_id from basis.basis_tb_org a where a.state = 'Y'
+			 		start with a.org_id = #salesOrg# 
+			 		connect by prior a.org_id = a.org_parent_id)  
+				]]>
+			</isNotEmpty>
+		</dynamic>
+		<![CDATA[
+		union
+		
+		select 
+			  aa.id,aa.disti_groupId,disti_customer_id,bb.customer_name disti_customer_name,end_customer_groupId,ee.ecgroup_name end_customer_groupName,
+			  ff.item_name customer_type,gg.item_name customer_property,hh.item_name currency_code,ii.country_name,aa.country,aa.province,aa.address,
+			  aa.contact_name,aa.tel,aa.state,aa.audit_opinion,aa.remark,aa.create_time,dd.emp_name create_userId,ee.state ecGroupState,end_customer_name,
+			  aa.modify_time,cc.emp_name modify_userId,aa.org_code,end_customer_id,isCheck,aa.sync_state,aa.city,aa.zip	
+		from basis.basis_tb_end_customeInfo aa
+			left outer join basis.basis_tb_customerInfo bb on aa.disti_customer_id=bb.customer_code
+			left outer join basis.basis_tb_salesemp_info cc on aa.modify_userId = cc.emp_id
+			left outer join basis.basis_tb_salesemp_info dd on aa.create_userId = dd.emp_id 
+			left outer join basis.basis_tb_ecgroup ee on aa.end_customer_groupId = ee.ecgroup_id 
+			left outer join basis.basis_tb_dict ff on aa.customer_type=ff.item_value and ff.dict_type_id=554
+			left outer join basis.basis_tb_dict gg on aa.customer_property=gg.item_value and gg.dict_type_id=546
+			left outer join basis.basis_tb_dict hh on aa.currency_code=hh.item_value and hh.dict_type_id=548
+			left outer join basis.basis_tb_country ii on aa.country=ii.country_code 
+			left outer join basis.basis_tb_org jj on ii.org_code = jj.sap_org_id		
+	 	where aa.state=0 
+	]]>
+		<dynamic>
+			<isNotEmpty property="create_userId" prepend="and">
+				<![CDATA[ aa.create_userId = #create_userId#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_customer_id" prepend="and">
+				<![CDATA[ aa.disti_customer_id = #disti_customer_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_groupId" prepend="and">
+				<![CDATA[ upper(aa.disti_groupId) like #disti_groupId,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_customer_name" prepend="and">
+				<![CDATA[ bb.customer_name like #disti_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_groupName" prepend="and">
+				<![CDATA[ upper(ee.ecgroup_name) like #end_customer_groupName,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="country" prepend="and">
+				<![CDATA[ upper(ii.country_name) like #country,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="province" prepend="and">
+				<![CDATA[ upper(aa.province) like #province,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_type" prepend="and">
+				<![CDATA[ ff.item_name = #customer_type#]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_id" prepend="and">
+				<![CDATA[ end_customer_id like #end_customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_name" prepend="and">
+				<![CDATA[ upper(end_customer_name) like #end_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="salesOrg" prepend="and">
+				<![CDATA[
+					jj.org_id in (
+			 		select a.org_id from basis.basis_tb_org a where a.state = 'Y'
+			 		start with a.org_id = #salesOrg# 
+			 		connect by prior a.org_id = a.org_parent_id)  
+			]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+
+	<select id="getEndCustomerListCount" parameterClass="endCustomer"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.basis_tb_end_customeInfo  aa
+				left outer join basis.basis_tb_customerInfo bb on aa.disti_customer_id=bb.customer_code
+				left outer join basis.basis_tb_salesemp_info cc on aa.modify_userId = cc.emp_id
+				left outer join basis.basis_tb_salesemp_info dd on aa.create_userId = dd.emp_id 
+				left outer join basis.basis_tb_ecgroup ee on aa.end_customer_groupId = ee.ecgroup_id 
+				left outer join basis.basis_tb_dict ff on aa.customer_type=ff.item_value and ff.dict_type_id=554
+				left outer join basis.basis_tb_dict gg on aa.customer_property=gg.item_value and gg.dict_type_id=546
+				left outer join basis.basis_tb_dict hh on aa.currency_code=hh.item_value and hh.dict_type_id=548
+				left outer join basis.basis_tb_country ii on aa.country=ii.country_code 
+				left outer join basis.basis_tb_org jj on ii.org_code = jj.sap_org_id
+			where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="disti_customer_id" prepend="and">
+				<![CDATA[ aa.disti_customer_id = #disti_customer_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="country" prepend="and">
+				<![CDATA[ upper(ii.country_name) like #country,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="province" prepend="and">
+				<![CDATA[ upper(aa.province) like #province,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_type" prepend="and">
+				<![CDATA[ ff.item_name = #customer_type#]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_groupId" prepend="and">
+				<![CDATA[ upper(aa.disti_groupId) like #disti_groupId,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_customer_name" prepend="and">
+				<![CDATA[ bb.customer_name  like #disti_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_groupName" prepend="and">
+				<![CDATA[ upper(ee.ecgroup_name) like #end_customer_groupName,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_id" prepend="and">
+				<![CDATA[ end_customer_id like #end_customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_name" prepend="and">
+				<![CDATA[ upper(end_customer_name)  like #end_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="states" prepend="and">
+				<![CDATA[ aa.state in $states$]]>
+			</isNotEmpty> 
+			<isNotEmpty property="salesOrg" prepend="and">
+				<![CDATA[
+					jj.org_id in (
+			 		select a.org_id from basis.basis_tb_org a where a.state = 'Y'
+			 		start with a.org_id = #salesOrg# 
+			 		connect by prior a.org_id = a.org_parent_id)  
+				]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="checkEndCustomer" parameterClass="endCustomer"
+		resultClass="endCustomer">
+	<![CDATA[
+		select 
+			  aa.id aliasId,aa.ec_alias_name,aa.alias_city,a.id,a.disti_groupId,disti_customer_id,bb.customer_name disti_customer_name,
+			  end_customer_groupId,ee.ecgroup_name end_customer_groupName, end_customer_name,
+			  ff.item_name customer_type,gg.item_name customer_property,a.currency_code,a.country,a.province,a.address,a.city,
+			  a.contact_name,a.tel,a.state,a.audit_opinion,a.remark,end_customer_id
+		from  basis.BASIS_TB_ECALIAS aa
+			left outer join basis.basis_tb_end_customeInfo a on aa.ec_id=a.end_customer_id
+			left outer join basis.basis_tb_customerInfo bb on a.disti_customer_id=bb.customer_code
+			left outer join basis.basis_tb_ecgroup ee on a.end_customer_groupId = ee.ecgroup_id 
+			left outer join basis.basis_tb_dict ff on a.customer_type=ff.item_value and ff.dict_type_id=554
+			left outer join basis.basis_tb_dict gg on a.customer_property=gg.item_value and gg.dict_type_id=546
+	 	where a.id!=#id#
+	]]>
+		<dynamic>
+			<isNotEmpty property="ec_alias_name" prepend="and">
+				<![CDATA[ upper(aa.ec_alias_name)  like #ec_alias_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="country" prepend="and">
+				<![CDATA[ a.country = #country#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+
+
+<!-- 
+	<select id="checkEndCustomer" parameterClass="endCustomer"
+		resultClass="endCustomer">
+	<![CDATA[
+		select 
+			  aa.id,aa.disti_groupId,disti_customer_id,bb.customer_name disti_customer_name,
+			  end_customer_groupId,ee.ecgroup_name end_customer_groupName, end_customer_name,
+			  ff.item_name customer_type,gg.item_name customer_property,aa.currency_code,aa.country,aa.province,aa.address,
+			  aa.contact_name,aa.tel,aa.state,aa.audit_opinion,aa.remark,end_customer_id
+		from basis.basis_tb_end_customeInfo aa
+			left outer join basis.basis_tb_customerInfo bb on aa.disti_customer_id=bb.customer_code
+			left outer join basis.basis_tb_ecgroup ee on aa.end_customer_groupId = ee.ecgroup_id 
+			left outer join basis.basis_tb_dict ff on aa.customer_type=ff.item_value and ff.dict_type_id=554
+			left outer join basis.basis_tb_dict gg on aa.customer_property=gg.item_value and gg.dict_type_id=546
+	 	where aa.id!=#id#
+	]]>
+		<dynamic>
+			<isNotEmpty property="disti_groupId" prepend="and">
+				<![CDATA[ upper(aa.disti_groupId) like #disti_groupId,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_customer_name" prepend="and">
+				<![CDATA[ bb.customer_name like #disti_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_type" prepend="and">
+				<![CDATA[ aa.customer_type like #customer_type,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<![CDATA[ and ( 1=1 ]]>
+			<isNotEmpty property="end_customer_groupName" prepend="and">
+				<![CDATA[ ee.ecgroup_name = #end_customer_groupName#]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_customer_name" prepend="or">
+				<![CDATA[ end_customer_name like #end_customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<![CDATA[ )]]>
+		</dynamic>
+	</select>
+
+ -->
+
+	<update id="setECCode" parameterClass="endCustomer">
+		update
+		basis.basis_tb_end_customeInfo set end_customer_id=#end_customer_id#
+		where id=#id#
+	</update>
+
+	<insert id="createEndCustomer" parameterClass="endCustomer">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			SELECT
+			basis.basis_seq_end_customeInfo.nextval AS id FROM DUAL
+		</selectKey>
+		<![CDATA[
+			INSERT INTO basis.basis_tb_end_customeInfo  
+			(
+				id,end_customer_id,disti_groupId,disti_customer_id,end_customer_groupId,end_customer_name,
+				customer_type,customer_property,currency_code,country,province,city,address,
+				contact_name,tel,state,audit_opinion,remark,create_time,create_userId,
+				modify_time,modify_userId,org_code,zip,file_name,file_path,new_hierarchy,tier,
+				segment,application
+			)
+			values
+			(
+				#id#,#end_customer_id#,#disti_groupId#,#disti_customer_id#,#end_customer_groupId#,#end_customer_name#,
+				#customer_type#,#customer_property#,#currency_code#,#country#,#province#,#city#,#address#,
+				#contact_name#,#tel#,0,#audit_opinion#,#remark#,sysdate,#create_userId#,
+				sysdate,#modify_userId#,#org_code#,#zip#,#file_name#,#file_path#,#new_hierarchy#,#tier#,
+				#segment#,#application#
+			)		
+		]]>
+	</insert>
+	<update id="checkEC" parameterClass="endCustomer">
+		update
+		basis.basis_tb_end_customeInfo set isCheck=1
+		where id=#id#
+	</update>
+
+
+	
+	<!-- 修改数据后不要改变原来状态 邮件 Fang   2017-08-24 09:55     ,state=0 -->
+	<!-- 
+	disti_groupId=#disti_groupId#,disti_customer_id=#disti_customer_id#,
+	end_customer_groupId=#end_customer_groupId#, -->
+	<update  id="updateEndCustomer" parameterClass="endCustomer">
+		update basis.basis_tb_end_customeInfo  set 			
+			end_customer_name=#end_customer_name#,end_customer_groupId=#end_customer_groupId#, 		
+			currency_code=#currency_code#,country=#country#,province=#province#,address=#address#,
+			contact_name=#contact_name#,tel=#tel#,remark=#remark#,city=#city#,zip=#zip#,
+			customer_type=#customer_type#,customer_property=#customer_property#,file_name=#file_name#,
+			file_path=#file_path#,
+			new_hierarchy=#new_hierarchy#,
+			tier=#tier#,
+			segment=#segment#,
+			application=#application#
+		where id=#id#
+	</update>
+
+	<update id="auditEndCustomer" parameterClass="endCustomer">
+		update
+		basis.basis_tb_end_customeInfo set
+		state=#state#,audit_opinion=#audit_opinion#,modify_time=sysdate,modify_userId=#modify_userId#
+		where id=#id#
+	</update>
+
+	<update id="deleteEndCustomer" parameterClass="endCustomer">
+		update
+		basis.basis_tb_end_customeInfo set state=#state#
+		where id=#id#
+	</update>
+	
+	<update id="setCheck" parameterClass="endCustomer">
+		update basis.basis_tb_end_customeInfo  set 
+			isCheck=#isCheck#
+		where id=#id#
+	</update>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+<!-- EC别名模块  ECAlias -->
+	<select id="getECAliasList" parameterClass="ecAlias"
+		resultClass="ecAlias">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+	 	select  
+	 		aa.id,
+	 		(select END_CUSTOMER_ID from basis.basis_tb_end_customeInfo 
+               where END_CUSTOMER_ID = aa.ec_id ) ec_id,aa.ec_name,aa.ec_alias_name,aa.alias_city,aa.ec_city,aa.ec_group,
+		 	aa.create_time,to_char(aa.create_time,'YYYY-MM-DD') create_timestr,ee.ecgroup_name ec_groupName,    
+		 	dd.emp_name create_userId,aa.modify_time,cc.emp_name modify_userId,
+		 	to_char(aa.modify_time,'YYYY-MM-DD') modify_timestr
+		from basis.BASIS_TB_ECALIAS aa
+		left outer join basis.basis_tb_end_customeInfo bb on aa.ec_id=bb.end_customer_id
+		left outer join basis.basis_tb_salesemp_info cc on aa.modify_userId = cc.emp_id
+		left outer join basis.basis_tb_salesemp_info dd on aa.create_userId = dd.emp_id
+		left outer join basis.basis_tb_ecgroup ee on aa.ec_group = ee.ecgroup_id 
+		where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="ec_id" prepend="and">
+				<![CDATA[ aa.ec_id =#ec_id#]]>
+			</isNotEmpty>	
+			<isNotEmpty property="ec_name" prepend="and">
+				<![CDATA[ upper(aa.ec_name)  like #ec_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="ec_alias_name" prepend="and">
+				<![CDATA[ upper(aa.ec_alias_name)  like #ec_alias_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="alias_city" prepend="and">
+				<![CDATA[ upper(aa.alias_city)  like #alias_city,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_groupId" prepend="and">
+				<![CDATA[ upper(bb.disti_groupId) like #disti_groupId,handler=wildcard# escape '\']]>
+			</isNotEmpty>			
+		</dynamic>	
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	
+	<select id="getECAliasListCount" parameterClass="ecAlias"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) 
+		from basis.BASIS_TB_ECALIAS aa
+		left outer join basis.basis_tb_end_customeInfo bb on aa.ec_id=bb.end_customer_id
+ 		where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="ec_id" prepend="and"> 
+				<![CDATA[ aa.ec_id =#ec_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="ec_name" prepend="and">
+				<![CDATA[ upper(aa.ec_name)  like #ec_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="ec_alias_name" prepend="and">
+				<![CDATA[ upper(aa.ec_alias_name)  like #ec_alias_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="alias_city" prepend="and">
+				<![CDATA[ upper(aa.alias_city)  like #alias_city,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_groupId" prepend="and">
+				<![CDATA[ upper(bb.disti_groupId) like #disti_groupId,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+		</dynamic>
+	</select>
+	
+
+
+	<select id="getCountByAliasName" parameterClass="ecAlias"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.BASIS_TB_ECALIAS aa  
+		left outer join basis.basis_tb_end_customeInfo a on aa.ec_id=a.end_customer_id
+ 		where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="ec_alias_name" prepend="and">
+				<![CDATA[ upper(aa.ec_alias_name)  = #ec_alias_name#]]>
+			</isNotEmpty>
+			<isNotEmpty property="country" prepend="and">
+				<![CDATA[ a.country = #country#]]>
+			</isNotEmpty>
+			<isNotEmpty property="alias_city" prepend="and">
+				<![CDATA[ upper(aa.alias_city) = #alias_city#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<insert id="createECAlias" parameterClass="ecAlias">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		<![CDATA[
+			SELECT basis.BASIS_SEQ_ECALIAS.nextval as id from dual
+		]]>
+		</selectKey> 
+	<![CDATA[
+		insert into basis.BASIS_TB_ECALIAS
+			(id,ec_id,ec_name,ec_city,ec_group,ec_alias_name,alias_city,
+			create_time,create_userid)
+		values
+			(#id#,#ec_id#,#ec_name#,#ec_city#,#ec_group#,#ec_alias_name#,#alias_city#,
+			sysdate,#create_userId#)
+	]]>
+	</insert>
+
+	<update id="updateECAlias" parameterClass="ecAlias">
+	<![CDATA[
+		update basis.BASIS_TB_ECALIAS 
+		set    
+			   ec_alias_name=#ec_alias_name#,
+		       alias_city=#alias_city#,			
+			   modify_time=sysdate,
+			   modify_userid=#modify_userId#			   
+		where  	id = #id#
+	]]>
+	</update>
+
+	<delete id="deleteECAliasById" parameterClass="ecAlias">
+	<![CDATA[
+		delete from basis.BASIS_TB_ECALIAS 
+		where id=#id#
+	]]>
+	</delete>
+
+	<select id="getECAliasById" parameterClass="ecAlias"
+		resultClass="ecAlias">
+		<![CDATA[
+			select  
+			    aa.id,
+			    aa.ec_id,
+			    aa.ec_name,
+			    aa.ec_city,
+			    aa.ec_group,
+			 	aa.ec_alias_name,
+			 	aa.alias_city,
+			 	ee.ecgroup_name ec_groupName,
+			 	aa.create_time,
+			 	aa.create_userid,		
+			 	aa.modify_time,
+			 	aa.modify_userid
+			from basis.BASIS_TB_ECALIAS aa
+			left outer join basis.basis_tb_ecgroup ee on aa.ec_group = ee.ecgroup_id 
+			where
+			 	 aa.id = #id#
+		]]>
+	</select>
+
+	<select id="getSamePCEC" parameterClass="endCustomer"
+		resultClass="endCustomer">
+	<![CDATA[
+		select 
+			  aa.id aliasId,aa.ec_alias_name,aa.alias_city,a.id,a.disti_groupId,disti_customer_id,bb.customer_name disti_customer_name,
+			  end_customer_groupId,ee.ecgroup_name end_customer_groupName, end_customer_name,
+			  ff.item_name customer_type,gg.item_name customer_property,a.currency_code,a.country,a.province,a.address,a.city,
+			  a.contact_name,a.tel,a.state,a.audit_opinion,a.remark,end_customer_id
+		from  basis.BASIS_TB_ECALIAS aa
+			left outer join basis.basis_tb_end_customeInfo a on aa.ec_id=a.end_customer_id
+			left outer join basis.basis_tb_customerInfo bb on a.disti_customer_id=bb.customer_code
+			left outer join basis.basis_tb_ecgroup ee on a.end_customer_groupId = ee.ecgroup_id 
+			left outer join basis.basis_tb_dict ff on a.customer_type=ff.item_value and ff.dict_type_id=554
+			left outer join basis.basis_tb_dict gg on a.customer_property=gg.item_value and gg.dict_type_id=546
+	 	where a.id!=#id#
+	]]>
+		<dynamic>
+			<isNotEmpty property="ec_alias_name" prepend="and">
+				<![CDATA[ upper(aa.ec_alias_name)  like #ec_alias_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="alias_city" prepend="and">
+				<![CDATA[ upper(aa.alias_city) = #alias_city#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+<!-- changeEC -->		
+	<update id="changeEC" parameterClass="ecAlias">
+	<![CDATA[
+		update basis.BASIS_TB_ECALIAS 
+		set    
+			   ec_id=#ec_id#,
+			   ec_name=#ec_name#,
+		       ec_city=#ec_city#,	
+		       ec_group=#ec_group#,		
+			   modify_time=sysdate,
+			   modify_userid=#modify_userId#			   
+		where  	ec_id = #oldEc_id#
+	]]>
+		<dynamic>
+			<isNotEmpty property="ec_alias_name" prepend="and">
+				<![CDATA[ ec_alias_name = #ec_alias_name#]]>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	
+	
+	<select id="searchECAlias" parameterClass="endCustomer"	resultClass="ecAlias">
+		<![CDATA[
+			select  
+			    aa.id,aa.ec_id,aa.ec_name,aa.ec_city,aa.ec_group,
+			 	aa.ec_alias_name,aa.alias_city,
+			 	aa.create_time,aa.create_userid,		
+			 	aa.modify_time,aa.modify_userid
+			from basis.BASIS_TB_ECALIAS aa
+			where aa.ec_alias_name =  #end_customer_name# and
+			      aa.alias_city = #city#
+		]]>
+	</select>
+	
+	<update id="updateQuoteInfo" parameterClass="ecAlias">
+	<![CDATA[
+		update BASIS_TB_Quoteinfo 
+			set purchasecustomer_id= #ec_id#,
+			 pcGroup_id=#ec_group#
+		 where purchasecustomer_id= #oldEc_id# and Quote_id not in (
+				select  distinct b.Quote_id  from BASIS_TB_Quoteinfo a,BASIS_TB_Quote_Detail b
+				 where a.quote_id=b.quote_id and a.purchasecustomer_id= #oldEc_id# and b.state<>0)
+	]]>
+	</update>
+	
+	<update id="updateQuoteEcInfo" parameterClass="ecAlias">
+	<![CDATA[
+		update BASIS_TB_Quoteinfo 
+		set endcustomer_id = #ec_id#,
+			 ecGroup_id=#ec_group#
+		where endcustomer_id= #oldEc_id# and Quote_id not in (
+			select  distinct b.Quote_id  from BASIS_TB_Quoteinfo a,BASIS_TB_Quote_Detail b 
+			where a.quote_id=b.quote_id and a.endcustomer_id= #oldEc_id# and b.state<>0)
+	]]>
+	</update>
+
+<!-- change后更新Quote和DR的PCEC编码 -->	
+	<update  id="updateQuoteECid" parameterClass="ecAlias">
+		update basis.basis_tb_quoteInfo   set 
+			  endCustomer_id=#ec_id#,
+			  ecGroup_id=#ec_group#
+		where endCustomer_id=#oldEc_id#
+	</update>
+	<update  id="updateQuotePCid" parameterClass="ecAlias">
+		update basis.basis_tb_quoteInfo   set 
+			  purchaseCustomer_id=#ec_id#,
+			  pcGroup_id=#ec_group#
+		where purchaseCustomer_id=#oldEc_id#
+	</update>
+	<update  id="updateDRECid" parameterClass="ecAlias">
+			<![CDATA[
+				update BASIS_TB_DESIGN_REG 
+				  set endcus_id = #ec_id# ,
+				      ENDCUS_GROUPID = #ec_group#
+				  where endcus_id= #oldEc_id# and
+						drnum not in (select  distinct b.drnum 
+										 	from BASIS_TB_DESIGN_REG a,BASIS_TB_DESIGN_REG_DETAIL b
+										where a.drnum=b.drnum and a.endcus_id= #oldEc_id# and b.state<>0)
+			]]>
+	</update>
+	
+	<!-- 2018/11/06 Add Start -->
+	<select id="getEndCustomerByNameCity" parameterClass="endCustomer"
+		resultClass="endCustomer">
+		<![CDATA[
+			SELECT id			
+			     , end_customer_groupid
+			     , end_customer_id
+			     , state
+			  FROM basis.basis_tb_end_customeInfo				
+			 WHERE end_customer_name = #end_customer_name#
+			   AND city = #city#
+		]]>
+	</select>
+	<update id="rollBackEndCustomer" parameterClass="endCustomer">
+		UPDATE basis.basis_tb_end_customeInfo
+		   SET state = #state#
+		   	 , modify_time = sysdate
+			 , modify_userid = #modify_userId#		
+		 WHERE id = #id#
+	</update>
+	<update id="changeAlias" parameterClass="ecAlias">
+	<![CDATA[
+		UPDATE basis.BASIS_TB_ECALIAS 
+		   SET    
+			   ec_id=#ec_id#,
+			   ec_name=#ec_name#,
+		       ec_city=#ec_city#,	
+		       ec_group=#ec_group#,		
+			   modify_time=sysdate,
+			   modify_userid=#modify_userId#			   
+		where  id = #id#
+	]]>
+	</update>
+	<!-- 2018/11/06 Add End -->
+</sqlMap>

@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	 </head>
+	<body>
+		<form action="" method="post">
+		<div  class="easyui-panel"  style="width:900px;border:0" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+			<input type='hidden' id="id" value="$!{id}"></input>
+			
+		    	<div data-options="region:'center'">
+					<table id="datagrid"></table>
+				</div>
+			<br/>
+		</div>
+		</div>  
+		
+		<br/>
+			<div region="south" border="false" style="text-align:center;height:20px;line-height:20px;">
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="maintWindow"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/pos/searchClaimErrorCode.js"></script>
+</html>

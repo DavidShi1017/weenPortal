@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" title="基本信息" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+ 				<table width="100%" border="0" cellpadding="0" cellspacing="5">
+					<input  type="" name="e.enquiry_id" id="enquiry_id" value="$!{e.enquiry_id}"/>
+					<input type="hidden" id="id" name="e.id" value="$!{e.id}"/>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Quote Type报价类型<font color="red">*</font> ：</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="type_id" name="e.type_id" value='$!{e.type_id}'></input>
+							</td>
+                            <td class="head" noWrap><label for="name">Project<font color="red">*</font> ：</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="project_name" name="e.project_name" value='$!{e.project_name}'></input>
+							</td>							
+						</tr>
+						<tr>
+                            <td class="head" noWrap><label for="name">Customer Group<font color="red">*</font> ：</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="cusGroup_id" name="e.cusGroup_id" value='$!{e.cusGroup_id}'></input>
+							</td>
+							<td class="head" noWrap><label for="name">Assembly：</label></td>
+                            <td>
+								<input type="text" id="assembly_id" name="e.isDelivery" value='$!{e.isDelivery}' data-options="required:true" ></input>
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Customer：</label></td>
+                            <td>
+								<input id="customer_id" class="easyui-validatebox" name="e.customer_id" value='$!{e.customer_id}'  />  
+							</td>		
+							<td class="head" noWrap><label for="name">Currency<font color="red">*</font> ：</label></td>
+                            <td>
+								<input class="easyui-validatebox" id="currency_code" name="e.currency_code" value="$!{e.currency_code}" data-options="required:true" />  
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">EC Group ：</label></td>
+                            <td>
+								<input class="easyui-validatebox" id="ecGroup_id" name="e.ecGroup_id"  value="$!{e.ecGroup_id}" >
+							</td>
+ 							<td class="head" noWrap><label for="name">Start Date ：</label></td>
+                            <td>
+								<input class="easyui-datebox" id="start_date" name="e.start_date"  value="$!{e.start_dateStr}" >
+							</td>         
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">End Customer终端客户 ：</label></td>
+                            <td>
+								 <input class="easyui-validatebox"  id="endCustomer_id" name="e.endCustomer_id" value="$!{e.endCustomer_id}"   ></input>					
+                               
+							</td>  
+							<td class="head" noWrap><label for="name">Latest Expire ：</label></td>
+                            <td>
+								<input class="easyui-datebox" id="latest_expire" name="e.latest_expire" value="$!{e.latest_expireStr}" ></input>  
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Created：</label></td>
+                            <td>
+								<input class="easyui-validatebox" id="create_userId" name="e.create_userId" value="$!{e.create_userId}" ></input>  
+							</td>
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>
+
+
+		
+		<div id="p_search" class="easyui-panel" title="" style="padding: 2px; background: #fafafa;" data-options="collapsible:true">
+			<table id="datagrid">
+			</table>			
+			<input class="easyui-validatebox" data-options="required:true" id="enquiryDetailJson" name="enquiryDetailJson" type="hidden">
+				<input class="easyui-validatebox" data-options="required:true" id="delEnquiry" name="delEnquiryDetail" type="hidden">
+        </div>
+
+		</div>  
+		
+		<br/>
+			<div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+			</div>
+
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+
+
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/enquiry/createEnquiry.js"></script>
+</html>

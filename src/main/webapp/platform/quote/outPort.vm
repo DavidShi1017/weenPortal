@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" border="0" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+ 				<table  border="0" cellpadding="0" cellspacing="5">
+						<tr>                
+                            <td class="head" noWrap><label for="name">Disti :</label></td>
+							<td noWrap>
+								<input id="cusGroup_id" class="easyui-validatebox" name="q.cusGroup_id" value='$!{q.cusGroup_id}'/>
+								<!--
+								 <input class="easyui-validatebox" id="customer_id" name="qd.customer_id">
+        						<div id="toolbarCustomer" class="datagrid-toolbar">
+        							<input class="easyui-searchbox" searcher="searcherCustomer" prompt="请输入客户名称关键字查询" style="width:300px"></input>		
+        						</div>	
+								-->
+								<!--<input type="hidden" id="sales_org" name="c.sales_org" value='HK10'  ></input>-->
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">BookPart :</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="material_name" name="qd.material_name"></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Start Date :</label></td>
+							<td noWrap>
+								 <input class="easyui-datebox"  id="qStart_date" name="qd.qStart_date" ></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">End Date :</label></td>
+							<td noWrap>
+								 <input class="easyui-datebox"  id="qEnd_date" name="qd.qEnd_date" ></input>
+							</td>							
+						</tr>
+						<tr>        
+							 <td class="head" noWrap><label for="name">Status :</label></td>
+							 <td>
+                            <select id="states" name="qd.states" value="(0,1,2)"style="width:155px;" data-options="editable:false">
+        						<!--<option value="(0,1,2,3,4,5)">All</option>  -->
+        						<option value="(0,1,2)">Pending</option>  
+        						<option value="(3,4,5)">Approved</option>
+							</select>		
+							</td>
+						</tr>		
+					</table>
+					</p>				             
+			<br/>
+		</div>
+			<br/>
+			<div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/quote/outPort.js"></script>
+</html>

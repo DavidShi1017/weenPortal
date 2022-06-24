@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="endCustomerAction" class="com.jingtong.platform.endCustomer.action.EndCustomerAction"
+		parent="baseAction" scope="request">
+		<property name="endCustomerService" ref="endCustomerService" />
+		<property name="customerService" ref="customerService" />
+		<property name="roleService" ref="roleService"></property>
+		<property name="quoteService" ref="quoteService" />
+		<property name="messageService" ref="messageService" />
+	</bean>
+	<bean id="endCustomerService" class="com.jingtong.platform.endCustomer.service.impl.EndCustomerServiceImpl">
+		<property name="endCustomerDao" ref="endCustomerDao"/>
+		<property name="transactionTemplate" ref="transactionTemplate" />
+		<property name="messageService" ref="messageService" />
+	</bean>
+	
+	<bean id="endCustomerDao" class="com.jingtong.platform.endCustomer.dao.impl.EndCustomerDaoImpl" parent="baseDao">
+	</bean>
+	 
+</beans>

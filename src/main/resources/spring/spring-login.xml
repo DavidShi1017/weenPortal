@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="loginAction"
+		class="com.jingtong.platform.login.action.LoginAction" parent="baseAction" scope="request">
+		<property name="domain">
+			<value>${cookie.domain}</value>
+		</property>
+		<property name="validate">
+			<value>${ldap.validate}</value>
+		</property>
+		<property name="caService" ref="caService" />		
+		<property name="accountService" ref="accountService"/>
+		<property name="allUserService" ref="allUserService"/>
+		<property name="LDAPService" ref="LDAPService"/>
+		
+	</bean> 
+
+	<bean id="customerDao" class="com.jingtong.platform.customer.dao.impl.CustomerDaoImpl" parent="baseDao">
+	</bean>
+	
+	<bean id="caService"
+		class="com.jingtong.platform.login.service.impl.CAServiceImpl">
+		<property name="allUserService" ref="allUserService" />
+		<property name="LDAPService" ref="LDAPService"/>
+		<property name="customerDao" ref="customerDao"/>
+	</bean>
+	
+	<!-- <bean id="accountService" class="com.jingtong.platform.account.service.impl.AccountServiceImpl">
+		<property name="accountDao" ref="accountDao" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+		<property name="downloadPath">
+			<value>${wfe.upload.filePath}</value>
+		</property>
+	</bean>
+
+	<bean id="accountDao" class="com.jingtong.platform.account.dao.impl.AccountDaoImpl"
+		parent="baseDao">
+	</bean>
+	
+	 -->
+</beans>

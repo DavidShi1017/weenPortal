@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="cusInventroy" extends="jingtong-default">
+		
+		<action name="cusInventroyAction" class="cusInventroyAction">
+			<result name="toSearchCusInventroy">/platform/cusInventroy/searchCusInventroy.vm</result>
+			<result name="toSearchCusInventroyDetail">/platform/cusInventroy/searchCusInventroyDetail.vm</result>
+			<result name="toViewCusInventroy">/platform/cusInventroy/viewCusInventroy.vm</result>
+			<result name="bBCusInventroy">/platform/cusInventroy/bBCusInventroy.vm</result>
+			<result name="importExcel">/platform/cusInventroy/importExcel.vm</result>
+			
+		</action>
+	</package>
+</struts>

@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" border="0" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+ 				<table  border="0" cellpadding="0" cellspacing="5">
+					<input type="hidden" id="id" name="g.id" value="$!{g.id}"/>
+					<input type="hidden" id="ecGroup_id"  value="$!{g.ecGroup_id}">
+						<input type="hidden" id="old_org_code" name="g.old_org_code" value="$!{g.ecGroup_id}">
+						<tr>                
+                            <td class="head" noWrap><label for="name">Sync Customer<font color="red">*</font> :</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="customer_code" name="c.customer_code" value='$!{c.customer_code}'></input>
+								 <!---
+								 <div id="toolbarCustomer" class="datagrid-toolbar">
+									<input class="easyui-searchbox" searcher="searcherCustomer" prompt="请输入客户名称关键字查询" style="width:300px"></input>		
+								</div>	
+								-->
+								<input type="hidden" id="sales_org" name="c.sales_org" value='HK10' data-options="required:true" ></input>
+							</td>							
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>
+			<br/>
+			<div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Close</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/customer/syncCustomer.js"></script>
+</html>

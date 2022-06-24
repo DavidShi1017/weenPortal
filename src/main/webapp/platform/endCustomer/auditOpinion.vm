@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+		<input type="hidden" id="id" name="ec.id" value="$!{ec.id}">	
+		<input type="hidden" id="state" name="ec.state" value="$!{ec.state}">	
+		<input type="hidden" id="end_customer_id" name="ec.end_customer_id" value="$!{ec.end_customer_id}">	
+		<input type="hidden" id="end_customer_name" name="ec.end_customer_name" value="$!{ec.end_customer_name}">	
+		<input type="hidden" id="end_customer_groupId" name="ec.end_customer_groupId" value="$!{ec.end_customer_groupId}">	
+		<input type="hidden" id="city" name="ec.city" value="$!{ec.city}">	
+		<div  class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+			<label>Please fill in the audit opinion:</label>
+			<input id="audit_opinion" name="ec.audit_opinion" style="width:360px;height:60px">
+            </input>
+			<br/>
+		</div>
+		</div>  
+		
+		<br/>
+			<div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+			</div>
+
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="maintWindow"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/endCustomer/auditOpinion.js"></script>
+</html>

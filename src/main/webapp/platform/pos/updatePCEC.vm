@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+ 				<table width="100%" border="0" cellpadding="0" cellspacing="5">
+					<input type="hidden" id="id" name="pos.id" value="$!{pos.id}"/>
+						<tr>
+							<td class="head" noWrap><label for="name">Purchasing Cust Zip:</label></td>
+                            <td>
+								<input type="text" id="purchasing_cust_zip" name="pos.purchasing_cust_zip" value='$!{pos.purchasing_cust_zip}' ></input>
+							</td>
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Purchasing Cust State:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="purchasing_cust_state" name="pos.purchasing_cust_state" value='$!{pos.purchasing_cust_state}'></input>
+							</td>							
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Purchasing Cust Country:</label></td>
+                            <td noWrap>
+								 <input class="easyui-validatebox"  id="purchasing_cust_country" name="pos.purchasing_cust_country" value='$!{pos.purchasing_cust_country}'></input>
+							</td>	
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Endcust Zip:</label></td>
+                            <td noWrap>
+								 <input class="easyui-validatebox"  id="endcust_zip" name="pos.endcust_zip" value='$!{pos.endcust_zip}'></input>
+							</td>	
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Endcust State:</label></td>
+                            <td noWrap>
+								 <input class="easyui-validatebox"  id="endcust_state" name="pos.endcust_state" value='$!{pos.endcust_state}'></input>
+							</td>	
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Endcust Country:</label></td>
+                            <td noWrap>
+								 <input class="easyui-validatebox"  id="endcust_country" name="pos.endcust_country" value='$!{pos.endcust_country}'></input>
+							</td>	
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>
+<br><br>
+			<div region="south" border="false" style="text-align:center;height:20px;line-height:20px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/pos/updatePCEC.js"></script>
+</html>

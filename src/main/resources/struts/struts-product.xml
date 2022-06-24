@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="product" extends="jingtong-default">
+		
+		<action name="productAction" class="productAction" >
+			<result name="toSearchProduct">/platform/product/searchProduct.vm</result>
+			<result name="toViewProduct">/platform/product/viewProduct.vm</result>
+			<result name="toCreateProduct">/platform/product/createProduct.vm</result>
+			<result name="toSearchProductForUse">/platform/product/searchProductForUse.vm</result>
+			<result name="importExcel">/platform/product/importExcel.vm</result>
+			<result name="toSyncProduct">/platform/product/syncProduct.vm</result>
+		</action>
+	</package>
+</struts>

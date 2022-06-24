@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="ediDistiAction" extends="jingtong-default">
+		
+		<action name="ediDistiAction" class="ediDistiAction">
+			<result name="toSearchEdiDisti">/platform/ediDisti/searchEdiDisti.vm</result>
+			<result name="toCreateEdiDisti">/platform/ediDisti/createEdiDisti.vm</result>
+
+		</action>
+	</package>
+</struts>

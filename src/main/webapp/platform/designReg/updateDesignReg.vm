@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+        #CSSM(["easyui","style"])
+        #JSM(["jquery", "easyui"])
+        #JS_ENV_VAL()
+    </head>
+    <body>
+        <form action="" method="post">
+            <div class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+                <table  border="0" cellpadding="0" cellspacing="5">
+                    <input type="hidden" id="drNum" name="dr.drNum" value="$!{dr.drNum}"/>
+                    <input type="hidden" id="state" name="dr.state" value="$!{dr.state}"/>
+                    <input type="hidden" id="id" name="dr.id" value="$!{dr.id}"/>
+                    <input type="hidden" id="customer_code"  value='$!{dr.customer_id}' ></input>
+                    <input type="hidden" id="forWho"  value='$!{dr.forWho}' ></input>
+                    <input type="hidden" id="isAllDW"  value='$!{dr.isAllDW}' ></input>
+                    <input type="hidden" id="old_file_name" value='$!{dr.file_name}' ></input>
+                    <input type="hidden" id="isUpload" value='0' ></input>
+                    <input type="hidden" id="dwId" value='0' ></input>
+                    <tr>                
+                        <td class="head" noWrap width='100'><label for="name">Disti :</label></td>
+                        <td noWrap class="context" width='220'>
+                            <label id="cus_groupId" >$!{dr.cus_groupId}</label>
+                            <input type='hidden' id="customer_id" name="dr.customer_id" value='$!{dr.customer_id}'></input>
+                            <input type='hidden'  id="currency_code"  value='$!{dr.currency_code}'></input>
+                            <input type='hidden'  id="office_id"  value='$!{dr.office_id}'></input>
+                        </td>
+                        <td class="head" noWrap width='160'><label for="name">Registration Date :</label></td>
+                        <td noWrap class="context" width='220'>
+                            <label id="start_date" >$!{dr.start_dateStr}</label>
+                        </td>                            
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap width='120'><label for="name">Disti Branch</label></td>
+                        <td noWrap class="context" width='220'>
+                            <label id="disti_branch" name="dr.disti_branch" >$!{dr.disti_branch} </label>
+                        </td>
+                        <td class="head" noWrap><label for="name">Expiry Date:</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-validatebox" id="end_date" name="dr.end_dateStr" value='$!{dr.end_dateStr}' readonly></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">End Customer :</label></td>
+                        <td noWrap class="context">
+                            <label>$!{dr.endCus_name}</label>
+                        </td>
+                        <td class="head" noWrap><label for="name">MP Schedule:</label></td>
+                        <td noWrap class="context">
+                            #if($!{dr.state}==3)
+                            <input  class="Wdate" id="mp_schedule" name="dr.mp_scheduleStr" value='$!{dr.mp_scheduleStr}' readonly></input>
+                            #elseif($!{dr.isAllDW}==1)
+                            <input  class="Wdate" id="mp_schedule" name="dr.mp_scheduleStr" value='$!{dr.mp_scheduleStr}' readonly></input>
+                            #else 
+                            <input  class="Wdate" id="mp_schedule" name="dr.mp_scheduleStr" value='$!{dr.mp_scheduleStr}' onfocus="WdatePicker({minDate:'%y-%M-%d'})" ></input>
+                            #end
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="display:none" class="head" noWrap><label for="name">EC Group:</label></td>
+                        <td style="display:none" noWrap class="context">
+                            <label>$!{dr.endCus_groupId}</label>    
+                        </td>
+                        <td class="head" noWrap><label for="name">EC City:</label></td>
+                        <td noWrap class="context">
+                            <input id="endCus_groupName" class="easyui-validatebox"  value='$!{dr.ec_city}' readonly />  
+                            <input id="endCus_groupId" type="hidden" name="dr.endCus_groupId" value='$!{dr.ec_city}' readonly />  
+                        </td>
+                        <td class="head" noWrap><label for="name">Annual runrate(sets) :</label></td>
+                        <td noWrap class="context">
+                            #if($!{dr.state}==3)
+                            <input class="easyui-numberbox" id="usage_amount" name="dr.usage_amount"  value="$!{dr.usage_amount}" readonly>
+                            <span id='runrateMSG' border=0 style="color:red"></span>
+                            #elseif($!{dr.isAllDW}==1)
+                            <input class="easyui-numberbox" id="usage_amount" name="dr.usage_amount"  value="$!{dr.usage_amount}" readonly>
+                            <span id='runrateMSG' border=0 style="color:red"></span>
+                            #else
+                            <input class="easyui-numberbox" id="usage_amount" name="dr.usage_amount"  value="$!{dr.usage_amount}" >
+                            <span id='runrateMSG' border=0 style="color:red"></span>
+                            #end
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">EC Contact:</label></td>
+                        <td noWrap class="context">
+                            <label>$!{dr.ec_contact}</label>
+                        </td>    
+                        <td class="head" noWrap><label for="name">Application:</label></td>
+                        <td noWrap class="context">
+                            <label>$!{dr.equip_type}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">EC Tel number:</label></td>
+                        <td noWrap class="context">
+                            <label>$!{dr.tel}</label>
+                        </td>
+                        <td class="head" noWrap><label for="name">Project :</label></td>
+                        <td noWrap class="context">
+                            <label>$!{dr.project_name}</label>
+                            <input type="hidden" id="total_amount" name="dr.total_amount"  value="$!{q.total_amount}" readonly/>  
+                            <input type="hidden" id="total_type" name="dr.total_type" value="$!{q.total_type}" readonly ></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">Estimated Share(%):</label></td>
+                        <td noWrap class="context">
+                            #if($!{dr.state}==3)
+                            <input class="easyui-validatebox" id="estimated_share" name="dr.estimated_share" value="$!{dr.estimated_share}" readonly></input>  
+                            #elseif($!{dr.isAllDW}==1)
+                            <input class="easyui-validatebox" id="estimated_share" name="dr.estimated_share" value="$!{dr.estimated_share}" readonly></input>  
+                            #else
+                            <input class="easyui-validatebox" id="estimated_share" name="dr.estimated_share" value="$!{dr.estimated_share}" ></input>  
+                            #end
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" >Remark:</td>
+                        <td colspan="3">
+                            #if($!{dr.state}==3)
+                            <textarea style="width:650px ;height:60px;" id="remark" name="dr.remark" readonly> $!{dr.remark}</textarea>
+                            #elseif($!{dr.isAllDW}==1)
+                            <input class="easyui-validatebox" id="estimated_share" name="dr.estimated_share" value="$!{dr.estimated_share}" readonly></input>  
+                            #else
+                            <textarea style="width:650px ;height:60px;" id="remark" name="dr.remark"> $!{dr.remark}</textarea>
+                            #end
+                        </td>
+                    </tr>
+                    <tr>
+                        <td noWrap class="head">Design Win File:</td>
+                        <td colspan="3" class="context">
+                            <input id="upload_file_name" style="width:650px ;" value="$!{dr.file_name}" name="dr.file_name" value='' readonly/>
+                        </td>    
+                        <input id="file_path" name="dr.file_path" value="$!{dr.file_path}" type="hidden"/>
+                    </tr>
+                </table>
+                </p>
+                <br/>
+            </div>
+            <div id="p_search" class="easyui-panel" title="" style="padding: 2px; background: #fafafa;" data-options="collapsible:true">
+                <table id="datagrid" border="0"></table>
+                <input class="easyui-validatebox" data-options="required:true" id="designRegDetailJson" name="designRegDetailJson" type="hidden">
+                <input class="easyui-validatebox" data-options="required:true" id="delDesignReg" name="delDesignRegDetail" type="hidden">
+            </div>
+            <br/>
+            <div region="south" border="false" style="text-align:center;height:20px;line-height:20px;">
+                #if($!{dr.state}==3)
+                <a class="easyui-linkbutton" icon="icon-ok" href="#" disabled="true">Submit</a>
+                #elseif($!{dr.isAllDW}==1)
+                <a class="easyui-linkbutton" icon="icon-ok" href="#" disabled="true">Submit</a>
+                #else
+                <a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+                #end
+                <a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+            </div>
+        </form>
+        <iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+        <div id="hiddenWin"/> 
+    </body>
+    <script type="text/javascript" src="$!{env.imgUrl}/js/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="$!{env.imgUrl}/js/platform/designReg/updateDesignReg.js?time=New Date()"></script>
+</html>

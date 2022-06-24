@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="countryAction" extends="jingtong-default">
+		
+		<action name="countryAction" class="countryAction">
+			<result name="tosearchCountry">/platform/country/searchCountry.vm</result>
+			<result name="toCreateCountry">/platform/country/createCountry.vm</result>
+			<result name="toViewCountry">/platform/country/viewCountry.vm</result>
+			<result name="toSearchCountryProvince">/platform/country/toSearchCountryProvince.vm</result>
+			<result name="toSearchSaleCountry">/platform/alluser/searchSaleCountry.vm</result>
+			<result name="toSearchList">/platform/branchMapping/searchList.vm</result>	
+			<result name="toCreateBranchMapping">/platform/branchMapping/add.vm</result>	
+			<result name="toUpdateBranchMapping">/platform/branchMapping/edit.vm</result>	
+			<result name="importExcel">/platform/branchMapping/importExcel.vm</result>
+		</action>
+	</package>
+</struts>

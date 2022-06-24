@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		<style media="print">  
+			.noprint { display : none; }  
+        </style> 
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui","print"])
+		#JS_ENV_VAL()
+	</head>
+<body>
+<form action=""   method="post">
+	
+	<table width="100%" cellpadding="0" cellspacing="0" style="border:#95b8e7 solid 1px;">
+				<tr height="25px">
+					<td style="padding-left:5px;font-size:13px;font-weight:bold;color:#0e2d5f;border-bottom:#95b8e7 1px solid;">
+						总单信息
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table width="100%" border="0" cellpadding="0" cellspacing="1" style="word-wrap:break-word;word-break:break-all">
+			<tr>
+    				<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+    					 收款人
+    				</td>
+					<td style="font-size:12px;font-weight:bold;color:#000000;">
+						<input name="singleTotal.pay_ee" type='hidden' value='$!{travelTotal.payee}' />
+						$!{travelTotal.payee}
+					</td>
+					<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+						支付账号
+                    </td>
+					<td style="font-size:12px;font-weight:bold;color:#000000;">
+						<input name="singleTotal.pay_account" type='hidden' value='$!{travelTotal.account}' />
+						$!{travelTotal.payaccount}
+                    </td>
+					<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+    					支付类型
+    				</td>
+					<td style="font-size:12px;font-weight:bold;color:#000000;">
+						#if($!{travelTotal.payType}=="1")
+							现金
+						#elseif($!{travelTotal.payType}=="2")
+							银行
+						#elseif($!{travelTotal.payType}=="3")
+							其他
+						#end
+					</td>
+                </tr>
+				<tr>
+					<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+    					合计金额
+    				</td>
+					<td style="font-size:12px;font-weight:bold;color:#000000;">
+						$!{travelTotal.auditMoney}
+					</td>
+					<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+    					出差事由
+    				</td>
+					<td style="font-size:12px;font-weight:bold;color:#000000;" colspan="5">
+						$!{travelTotal.memo}
+					</td>
+				</tr>
+					</table>
+                    </td>	
+                </tr>			
+		</table>
+	
+	<br/>
+		   	   
+		   <table width="100%" cellpadding="0" cellspacing="0" style="border:#95b8e7 solid 1px;">
+			<tr height="25px">
+					<td style="padding-left:5px;font-size:13px;font-weight:bold;color:#0e2d5f;">
+						明细信息&nbsp;&gt;&gt;
+					</td>
+			</tr>
+			<tr>
+				<td>
+					<table width="100%" cellpadding="0" border="1px" bordercolor="#cccccc" cellspacing="0px" style="border-collapse:collapse">
+						<tr style="height:25px" class="even2">
+        						<td style="text-align:center;font-size:12px;color:#000000;width:15%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						出差起始日期
+                            </td>
+        					<td style="text-align:center;font-size:12px;color:#000000;width:15%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						出差结束日期
+                            </td>
+        					<td style="text-align:center;font-size:12px;color:#000000;width:13%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						出差天数
+                            </td>
+							<td style="text-align:center;font-size:12px;color:#000000;width:13%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						同行人
+                            </td>
+        					<td style="text-align:center;font-size:12px;color:#000000;width:13%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						出差目的地
+                            </td>
+        					<td style="text-align:center;font-size:12px;color:#000000;width:10%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						报销金额
+                            </td>
+        					<td style="text-align:center;font-size:12px;color:#000000;width:30%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						报销详细说明
+                            </td>
+			</tr>
+			#foreach($travelDetail in $travelTotal.travelDetailList)
+			<tr style="height:20px" class="even1">
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$dateUtil.datetime($!{travelDetail.travelStartDate},"yyyy-MM-dd")
+				</td>
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$dateUtil.datetime($!{travelDetail.travelEndDate},"yyyy-MM-dd")
+				</td>
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$!{travelDetail.travelNum}
+				</td>
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$!{travelDetail.peerPerson}
+				</td>
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$!{travelDetail.travelPlace}
+				</td>
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$!{travelDetail.invoiceAmount}
+				</td>
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$!{travelDetail.meno}
+				</td>
+			</tr>
+			#end
+		</table>
+		</td>
+	</tr>
+</table>
+	</div>
+</form>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="endCustomer" extends="jingtong-default">
+		
+		<action name="endCustomerAction" class="endCustomerAction" >
+			<result name="toSearchEndCustomer">/platform/endCustomer/searchEndCustomer.vm</result>
+			<result name="toPenddingEndCustomer">/platform/endCustomer/penddingEndCustomer.vm</result>
+			<result name="toPendingData">/platform/endCustomer/penddingData.vm</result>
+			<result name="toCheckEndCustomer">/platform/endCustomer/checkEndCustomer.vm</result>
+			<result name="toAuditEndCustomer">/platform/endCustomer/auditEndCustomer.vm</result>
+			<result name="toViewEndCustomer">/platform/endCustomer/viewEndCustomer.vm</result>
+			<result name="toCreateEndCustomer">/platform/endCustomer/createEndCustomer.vm</result>
+			<result name="toAuditOpinion">/platform/endCustomer/auditOpinion.vm</result>
+			<result name="toCreateECAlias">/platform/endCustomer/createECAlias.vm</result>
+			<result name="tosearchECAlias">/platform/endCustomer/searchECAlias.vm</result>
+			<result name="toViewECAlias">/platform/endCustomer/viewECAlias.vm</result>
+			<result name="toCreatePCEC">/platform/endCustomer/createPCEC.vm</result>
+			<result name="toChangeEC">/platform/endCustomer/changeEC.vm</result>
+			<result name="searchAlias">/platform/endCustomer/searchAlias.vm</result>
+		</action>
+	</package>
+</struts>

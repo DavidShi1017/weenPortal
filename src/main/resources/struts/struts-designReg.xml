@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="designReg" extends="jingtong-default">
+		
+		<action name="designRegAction" class="designRegAction" >
+			<result name="toSearchDesignReg">/platform/designReg/searchDesignReg.vm</result>
+			<result name="toViewDesignReg">/platform/designReg/viewDesignReg.vm</result>
+			<result name="toCreateDesignReg">/platform/designReg/createDesignReg.vm</result>
+			<result name="toUpdateDesignReg">/platform/designReg/updateDesignReg.vm</result>
+			<result name="toCheckDesignReg">/platform/designReg/checkDesignReg.vm</result>
+			<result name="toCheck">/platform/designReg/toCheck.vm</result>
+			<result name="toQuote">/platform/designReg/toQuote.vm</result>
+			<result name="toViewApproveDR">/platform/designReg/viewApproveDR.vm</result>
+			<result name="toOutport">/platform/designReg/outportDR.vm</result>
+			<result name="toCopyCreate">/platform/designReg/copyDesignReg.vm</result>
+			<result name="designwinSalerApprove">/platform/designReg/designwinSalerApprove.vm</result>
+			<result name="designwinLeaderApprove">/platform/designReg/designwinLeaderApprove.vm</result>			
+			<result name="designwinBusinessApprove">/platform/designReg/designwinBusinessApprove.vm</result>
+			<result name="designwinFinanceApprove">/platform/designReg/designwinFinanceApprove.vm</result>
+			<result name="importExcel">/platform/designReg/importExcel.vm</result>
+			<result name="toDesignwinlist">/platform/designReg/designwinlist.vm</result>
+			<result name="toSearchDrLog">/platform/designReg/searchDRLog.vm</result>
+			<result name="toRemarkTxt">/platform/designReg/remarkTxt.vm</result>
+		</action>
+	</package>
+</struts>

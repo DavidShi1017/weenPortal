@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="order" extends="jingtong-default">
+		
+		<action name="orderAction" class="orderAction" >
+			<result name="toSearchOrder">/platform/order/searchOrder.vm</result>
+			<result name="toViewOrder">/platform/order/viewOrder.vm</result>
+			<result name="toCreateOrder">/platform/order/createOrder.vm</result>
+			<result name="importExcel">/platform/order/importExcel.vm</result>
+		</action>
+	</package>
+</struts>

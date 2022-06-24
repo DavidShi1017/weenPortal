@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        #CSSM(["easyui","style"])
+        #JSM(["jquery", "easyui"])
+        #JS_ENV_VAL()
+    </head>
+    <body>
+        <form action="" method="post">
+            <input type="hidden" id="id" name="ec.id" value="$!{ec.id}" />    
+            <div class="easyui-panel" border="0" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+                <table width="100%" border="0" cellpadding="5" cellspacing="1">
+                    <tr>
+                        <td class="head" noWrap width='160'><label for="name">Disti :</label></td>
+                        <td noWrap class="context" width='220'>
+                            <label id="disti_groupId"> $!{ec.disti_groupId}</label>
+                        </td>
+                        <td class="head" noWrap width='160'><label for="name">Country :</label></td>
+                        <td class='context' noWrap width='220'>
+                            <label>$!{ec.country_name}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">Customer Name:</label></td>
+                        <td class="context">
+                            <label>$!{ec.end_customer_name}</label>
+                        </td>
+                        <td class="head" noWrap><label for="name">State/Province :</label></td>
+                        <td class="context">
+                            <label>$!{ec.province}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">Customer Group:</label></td>
+                        <td class="context">
+                            <label>$!{ec.end_customer_groupName}</label>
+                        </td>
+                        <td class="head" noWrap ><label for="name">City:</label></td>
+                        <td class="context" width='220'>
+                            <label>$!{ec.city}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">Customer Type:</label></td>
+                        <td class="context">
+                            <label>$!{ec.customer_typeName}</label>
+                        </td>
+                        <td class="head" noWrap><label for="name">Address:</label></td>
+                        <td class="context">
+                            <label>$!{ec.address}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">Tel Number:</label></td>
+                        <td class="context">
+                            <label>$!{ec.tel}</label>
+                        </td>
+                        <td class="head" noWrap><label for="name">Contact:</label></td>
+                        <td class="context">
+                            <label>$!{ec.contact_name}</label>
+                        </td>    
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap ><label for="name">Zip:</label></td>
+                        <td class="context" width='220'>
+                            <label>$!{ec.zip}</label>
+                        </td>
+                        <td class="head" noWrap >File:</td>
+                        <td  id="fileName">
+                            <label>$!{ec.file_name}</label>
+                            <img id="downImg" style="cursor:add" title="" onclick=downLoadFile() src="$!{env.imgUrl}/images/actions/down.png" align="absMiddle"></img> 
+                            <input type='hidden' id="file_path" value="$!{ec.file_path}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap ><label for="name">Customer Hierarchy:</label></td>
+                        <td class="context" width='220'>
+                            <label>$!{ec.newHierarchyString}</label>
+                        </td>
+                        <td class="head" noWrap ><label for="name">Tier:</label></td>
+                        <td class="context" width='220'>
+                            <label>$!{ec.tierString}</label>
+                        </td>
+                    </tr> 
+                </table>
+            </div>
+        </form>
+        <iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+        <div id="maintWindow"/> 
+    </body>
+    <script type="text/javascript" src="$!{env.imgUrl}/js/platform/endCustomer/viewEndCustomer.js?time=New Date()"></script>
+</html>

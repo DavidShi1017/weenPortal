@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ecGroup">
+
+	<typeAlias alias="groupInfo" type="com.jingtong.platform.ecgroup.pojo.GroupInfo" />
+
+	<select id="searchGroupInfo" parameterClass="groupInfo"
+		resultClass="groupInfo">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+	 	select  aa.id,
+ 			aa.ecGroup_id,aa.ecGroup_name,
+		 	aa.state,aa.create_time,to_char(create_time,'YYYY-MM-DD') create_timestr,   
+		 	dd.emp_name create_userId,aa.org_code,
+		 	aa.modify_time,to_char(modify_time,'YYYY-MM-DD') modify_timestr,cc.emp_name modify_userId
+		from basis.basis_tb_ecgroup aa
+		left outer join basis.basis_tb_salesemp_info cc on aa.modify_userId = cc.emp_id
+		left outer join basis.basis_tb_salesemp_info dd on aa.create_userId = dd.emp_id
+		where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="state" prepend="and">
+				<![CDATA[ state in $states$]]>
+			</isNotEmpty>
+			<isNotEmpty property="ecGroup_id" prepend="and">
+				<![CDATA[ upper(ecGroup_id) like #ecGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="ecGroup_name" prepend="and">
+				<![CDATA[ upper(ecGroup_name) like #ecGroup_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+	<select id="getGroupInfoListCount" parameterClass="groupInfo"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_ecgroup
+ 		where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="states" prepend="and"> 
+				<![CDATA[ state in $states$]]>
+			</isNotEmpty>
+			<isNotEmpty property="ecGroup_id" prepend="and">
+				<![CDATA[ upper(ecGroup_id) like #ecGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="ecGroup_name" prepend="and">
+				<![CDATA[ upper(ecGroup_name) like #ecGroup_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<select id="getGroupList" parameterClass="groupInfo"
+		resultClass="groupInfo">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+	 	select  aa.id,
+ 			aa.ecGroup_id,aa.ecGroup_name,
+		 	aa.state,aa.create_time,to_char(create_time,'YYYY-MM-DD') create_timestr,   
+		 	dd.emp_name create_userId,aa.org_code,
+		 	aa.modify_time,to_char(modify_time,'YYYY-MM-DD') modify_timestr,cc.emp_name modify_userId
+		from basis.basis_tb_ecgroup aa
+		left outer join basis.basis_tb_salesemp_info cc on aa.modify_userId = cc.emp_id
+		left outer join basis.basis_tb_salesemp_info dd on aa.create_userId = dd.emp_id
+		where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="states" prepend="and">
+				<![CDATA[ state in $states$]]>
+			</isNotEmpty>
+			<isNotEmpty property="ecGroup_id" prepend="and">
+				<![CDATA[ upper(ecGroup_id) like #ecGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="ecGroup_name" prepend="and">
+				<![CDATA[ upper(ecGroup_name)  like #ecGroup_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>			
+		</dynamic>
+		<![CDATA[		
+		union 
+		
+		select  aa.id,
+ 			aa.ecGroup_id,aa.ecGroup_name,
+		 	aa.state,aa.create_time,to_char(create_time,'YYYY-MM-DD') create_timestr,   
+		 	dd.emp_name create_userId,aa.org_code,
+		 	aa.modify_time,to_char(modify_time,'YYYY-MM-DD') modify_timestr,cc.emp_name modify_userId
+		from basis.basis_tb_ecgroup aa
+		left outer join basis.basis_tb_salesemp_info cc on aa.modify_userId = cc.emp_id
+		left outer join basis.basis_tb_salesemp_info dd on aa.create_userId = dd.emp_id
+		where aa.state=0 
+		]]>
+		<dynamic>
+			<isNotEmpty property="create_userId" prepend="and">
+				<![CDATA[ aa.create_userId =#create_userId#]]>
+			</isNotEmpty>
+			<isNotEmpty property="ecGroup_id" prepend="and">
+				<![CDATA[ upper(ecGroup_id) like #ecGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="ecGroup_name" prepend="and">
+				<![CDATA[ upper(ecGroup_name)  like #ecGroup_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>			
+		</dynamic>	
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<select id="getGroupListCount" parameterClass="groupInfo"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_ecgroup
+ 		where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="state" prepend="and"> 
+				<![CDATA[ state in $states$]]>
+			</isNotEmpty>
+			<isNotEmpty property="ecGroup_id" prepend="and">
+				<![CDATA[ upper(ecGroup_id) like #ecGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="ecGroup_name" prepend="and">
+				<![CDATA[ upper(ecGroup_name) like #ecGroup_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>	
+		<![CDATA[ or (state=0  ]]>	
+			<dynamic>		
+				<isNotEmpty property="create_userId" prepend="and">
+					<![CDATA[ create_userId =#create_userId#]]>
+				</isNotEmpty>
+			</dynamic>	
+		<![CDATA[)  ]]>	
+	</select>
+	
+
+
+	<select id="getCountByEcgroupId" parameterClass="groupInfo"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_ecgroup
+		where upper(ecGroup_name) = #ecGroup_name#
+	]]>
+	</select>
+
+	<insert id="saveGroupInfo" parameterClass="groupInfo">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		<![CDATA[
+			SELECT basis.basis_seq_ecgroup.nextval as id from dual
+		]]>
+		</selectKey> 
+	<![CDATA[
+		insert into basis.basis_tb_ecgroup(id,ecgroup_id,ecgroup_name,state,create_time,create_userid,org_code)
+		values(#id#,#ecGroup_id#,#ecGroup_name#,0,sysdate,#create_userId#,#org_code#)
+	]]>
+	</insert>
+	
+	<update id="setECGroupCode" parameterClass="groupInfo">
+		update basis.basis_tb_ecgroup set ecgroup_id=#ecGroup_id#
+		where id=#id#
+	</update>
+	
+			<!--   ecgroup_id=#ecGroup_name#,-->
+	<update id="updateGroupInfo" parameterClass="groupInfo">
+	<![CDATA[
+		update basis.basis_tb_ecgroup 
+		set    
+		       ecgroup_name=#ecGroup_name#,
+			   state=#state#,
+			   org_code=#org_code#,			
+			   modify_time=sysdate,
+			   modify_userid=#modify_userId#
+		where  	id = #id#
+	]]>
+	</update>
+
+	<update id="deleteGroupInfoById" parameterClass="groupInfo">
+	<![CDATA[
+		update basis.basis_tb_ecgroup set state='9'
+		where id=$id$
+	]]>
+	</update>
+
+	<select id="getGroupInfoById" parameterClass="groupInfo"
+		resultClass="groupInfo">
+		<![CDATA[
+			select  id,
+			   ecGroup_id,ecGroup_name,
+			 	state,create_time,   
+			 	create_userid,org_code,			
+			 	modify_time,modify_userid
+		from basis.basis_tb_ecgroup
+			where
+			 	 id = #id#
+		]]>
+
+	</select>
+	
+		<update id="auditGroup" parameterClass="groupInfo">
+		<![CDATA[
+		update  basis.basis_tb_ecgroup   set state=#state#
+		where id =#id#
+			]]>
+	</update>
+
+</sqlMap>

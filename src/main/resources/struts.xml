@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<include file="struts/struts-global.xml" />
+	<include file="struts/struts-login.xml" />
+	<include file="struts/struts-singleLogin.xml" />
+	<include file="struts/struts-menu.xml" />
+	<include file="struts/struts-alluser.xml" />
+	<include file="struts/struts-conpoint.xml" />
+	<include file="struts/struts-role.xml" />
+	<include file="struts/struts-station.xml" />
+	<include file="struts/struts-position.xml" />
+	<include file="struts/struts-staffamount.xml" />
+	<include file="struts/struts-wfe.xml" />
+	<include file="struts/struts-org.xml" />
+	<include file="struts/struts-dict.xml" /> 
+	<include file="struts/struts-news.xml" /> 
+	<include file="struts/struts-account.xml" />
+	<include file="struts/struts-monitor.xml" />
+	<include file="struts/struts-activitiwebedit.xml" />
+	<include file="struts/struts-files.xml" />
+	<include file="struts/struts-post.xml" />
+	<include file="struts/struts-ireport.xml"/>		
+	<include file="struts/struts-boform.xml" />
+	<include file="struts/struts-travelapp.xml" />
+	<include file="struts/struts-kunnrs.xml" />
+	<include file="struts/struts-materials.xml" />
+	<include file="struts/struts-channelPrice.xml" />
+	<include file="struts/struts-customerPrice.xml" />
+	<include file="struts/struts-userCust.xml" />
+	<include file="struts/struts-userOrg.xml" />
+	<include file="struts/struts-userKunnr.xml" />
+	<include file="struts/struts-sap.xml" />
+	<include file="struts/struts-exclude.xml" />
+	<include file="struts/struts-warehouse.xml"/>
+	<include file="struts/struts-logisticsScheduling.xml"/>
+	
+	<include file="struts/struts-customer.xml"/>
+	<include file="struts/struts-endCustomer.xml"/>
+	<include file="struts/struts-product.xml"/>
+	<include file="struts/struts-order.xml"/>
+	<include file="struts/struts-sampleOrder.xml"/>
+	<include file="struts/struts-enquiry.xml"/>
+	<include file="struts/struts-quote.xml"/>
+	<include file="struts/struts-priceRule.xml"/>
+	<include file="struts/struts-designReg.xml"/>
+	<include file="struts/struts-ecGroup.xml"/>
+	<include file="struts/struts-country.xml"/>
+	<include file="struts/struts-pos.xml"/>
+	<include file="struts/struts-province.xml"/>
+	<include file="struts/struts-cusInventroy.xml"/>	
+	<include file="struts/struts-ediDisti.xml"/>
+	<include file="struts/struts-levelDict.xml"/>	
+</struts>

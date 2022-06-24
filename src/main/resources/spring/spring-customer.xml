@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="customerAction" class="com.jingtong.platform.customer.action.CustomerAction"
+		parent="baseAction" scope="request">
+		<property name="customerService" ref="customerService" />
+		<property name="allUserService" ref="allUserService"></property>
+	</bean>
+	<bean id="customerService" class="com.jingtong.platform.customer.service.impl.CustomerServiceImpl" >
+		<property name="customerDao" ref="customerDao"/>
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+	
+	<bean id="customerDao" class="com.jingtong.platform.customer.dao.impl.CustomerDaoImpl" parent="baseDao">
+	</bean>
+	 
+</beans>

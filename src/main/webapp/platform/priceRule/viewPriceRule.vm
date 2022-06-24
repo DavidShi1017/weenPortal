@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+		<input type="hidden" id="id" name="ec.id" value="$!{ec.id}">	
+		<div  class="easyui-panel" border="0" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+ 	 				<table width="100%" border="0" cellpadding="0" cellspacing="5">
+ 					<tr>
+                            <td class="head" noWrap width='160'><label for="name">Book Part :</label></td>
+                            <td class="context" width='220'>
+								 <input class="easyui-validatebox"  id="material_name" name='pr.material_name' value="$!{pr.material_desc}"    ></input>
+								 <!--<input id="material_id" name='pr.material_id' value="$!{pr.material_id}" type='hidden'>-->
+                         
+							</td>
+                            <td class="head" noWrap width='160'><label for="name">Start Date<font color="red">*</font> :</label></td>
+                            <td noWrap class="context" width='220'>
+								 <input class="easyui-validatebox"  id="start_date" name="pr.start_date" value='$!{pr.start_dateStr}' readonly></input>	
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap width='160'><label for="name">12NC :</label></td>
+                            <td class="context" width='220'>
+								 <input class="easyui-validatebox"  id="material_id" name='pr.material_id' value="$!{pr.material_id}"    ></input>
+								 <!--<input id="material_id" name='pr.material_id' value="$!{pr.material_id}" type='hidden'>-->
+                         
+							</td>
+							<td class="head" noWrap><label for="name">End Date:</label></td>
+                            <td class="context">
+								<input class="easyui-validatebox" id="end_date" name="pr.end_date" value='$!{pr.end_dateStr}' data-options="required:true" ></input>
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Org_ID:</label></td>
+                            <td class="context">
+								<input class="easyui-validatebox" id="org_id" name="pr.org_id"  value="$!{pr.org_id}" >
+							</td>
+							<td class="head" noWrap><label for="name">Price:</label></td>
+                            <td class="context">
+								<input class="easyui-validatebox" id="sale_price" name="pr.sale_price"  value="$!{pr.sale_price}" precision="2">
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Currency :</label></td>
+                            <td class="context">
+								<input class="easyui-validatebox" id="currency_code" name="pr.currency_code" value="$!{pr.currency_code}" ></input>  
+							</td> 
+							<td class="head" noWrap><label for="name">Stop Price:</label></td>
+                            <td class="context">
+								<input id="stop_price" name="pr.stop_price" value="$!{pr.stop_price}" class="easyui-validatebox"></input>  
+							</td>
+						</tr>
+<!--						
+						<tr>
+							<td class="head" noWrap><label for="name">Basic Type<font color="red">*</font> :</label></td>
+                            <td class="context">
+								<input class="easyui-validatebox" id="basic_type" name="pr.basic_type" value="$!{pr.basic_type}" data-options="required:true" />  
+							</td>
+							<td class="head" noWrap><label for="name">Product Desc<font color="red">*</font> :</label></td>
+                            <td class="context">
+								<input class="easyui-validatebox" id="material_desc" name="pr.material_desc" value="$!{pr.material_desc}" data-options="required:true" />
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Status :</label></td>
+                            <td class="context">
+								<input id="state" name="pr.state" value="$!{pr.state}" class="easyui-validatebox" disabled="true"></input>  
+
+							</td>							
+						</tr>
+						<tr>
+                            <td class="head" noWrap><label for="name">Product Type<font color="red">*</font> :</label></td>
+							<td noWrap class="context">
+								 <input class="easyui-validatebox"  id="material_type" name='pr.material_type' value='$!{pr.material_type}'  ></input>
+							</td>	
+						</tr>
+-->
+					</table>
+					</p>				             
+			<br/>
+		</div>
+		</div>  
+		<!--
+		<br/>
+			<div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+			
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Close</a>
+			</div>
+			-->
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="maintWindow"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/priceRule/viewPriceRule.js"></script>
+</html>

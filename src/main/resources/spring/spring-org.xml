@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="orgAction" class="com.jingtong.platform.org.action.OrgAction"
+		parent="baseAction" scope="request">
+		<property name="orgService" ref="orgService" />
+		<property name="conpointService" ref="conpointService" />
+		<property name="transactionTemplate" ref="transactionTemplate"></property>
+		<property name="staffAmountService" ref="staffAmountService" />
+		<property name="LDAPService" ref="LDAPService"/>
+		<property name="validate">
+			<value>${ldap.validate}</value>
+		</property>
+	</bean>
+
+	<bean id="orgTreeAjaxAction" class="com.jingtong.platform.org.action.OrgTreeAjaxAction"
+		parent="baseAction" scope="request">
+		<property name="orgService" ref="orgService" />
+		<property name="allUserService" ref="allUserService" />
+	</bean>
+
+	<bean id="orgService"
+		class="com.jingtong.platform.org.service.impl.OrgServiceImpl">
+		<property name="orgDao" ref="orgDao"/>
+	</bean>
+	<bean id="orgDao" class="com.jingtong.platform.org.dao.impl.OrgDaoImpl" parent="baseDao">
+	</bean>
+	
+
+</beans>

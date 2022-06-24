@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	<bean id="travelAppAction" class="com.jingtong.platform.account.action.TravelAppAction"
+		parent="baseAction" scope="request">
+		<property name="travelAppService" ref="travelAppService" />
+		<property name="orgService" ref="orgService" />
+		<property name="eventService" ref="eventService" />
+		<property name="webService" ref="webService" />
+		<property name="accountService" ref="accountService" />
+		<property name="appUrl">
+			<value>${appUrl}</value>
+		</property>
+		<property name="xmlFilePath">
+			<value>${wfe.xml.filePath}</value>
+		</property>
+	</bean>
+	
+	<bean id="travelAppService" class="com.jingtong.platform.account.service.impl.TravelAppServiceImpl">
+		<property name="travelAppDao" ref="travelAppDao" />
+		<property name="accountDao" ref="accountDao" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+
+	<bean id="travelAppDao" class="com.jingtong.platform.account.dao.impl.TravelAppDaoImpl"
+		parent="baseDao">
+	</bean>
+	
+</beans>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="scheduleList">
+	<typeAlias alias="scheduleSmtor"
+		type="com.jingtong.platform.logisticsScheduling.pojo.ScheduleSmtor" />
+	<typeAlias alias="schedulel"
+		type="com.jingtong.platform.logisticsScheduling.pojo.ScheduleList" />
+   <select id="getScheduleSmtorTotal" parameterClass="scheduleSmtor"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*)  from basis.basis_sht_smtor a where 1=1 
+		]]>
+		
+	</select>
+	
+	<select id="getScheduleSmtorByid" parameterClass="java.lang.Long" resultClass="scheduleSmtor">
+	<![CDATA[
+			select a.id,a.bolnr_level,a.bolnr
+			from  basis.basis_sht_smtor a
+			where a.id =#id#
+		]]>
+	</select>
+	<select id="getScheduleSmtor" parameterClass="scheduleSmtor"
+		resultClass="scheduleSmtor">
+		<include refid="global.paginationStart" />
+		<![CDATA[
+			select a.id,a.bolnr,a.vstel,a.brgew,a.bolnr_level,a.location_level,a.states,a.is_lock  from basis.basis_sht_smtor a
+			where 1=1 
+		]]>
+		<dynamic>
+			 <isNotEmpty property="vstel" prepend="and">
+			    <![CDATA[ a.vstel = #vstel# ]]>
+			 </isNotEmpty>
+			 <isNotEmpty property="bolnr" prepend="and">
+			 	<![CDATA[ a.bolnr = #bolnr# ]]>
+			 </isNotEmpty>
+		</dynamic> 
+		<![CDATA[
+			 order  by a.bolnr_level,a.location_level 
+		]]>
+		<include refid="global.paginationEnd" />
+	</select>
+	<parameterMap id="pSchedule" class="java.util.HashMap">
+	    <parameter property="userid" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+	    <parameter property="result" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT" />
+	</parameterMap>
+	
+	<procedure id="querySchedule" parameterMap="pSchedule" resultClass="java.lang.String">
+   	<![CDATA[
+    	{ call basis.LOGISTICSSCHEDULING(?,?) }
+   	]]>
+	</procedure>
+	
+	<select id="viewshcedulelistTotal" parameterClass="schedulel"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(id)  from basis.BASIS_PROCESS_COUNT a where 1=1 
+		]]>
+		
+	</select>
+	
+	<select id="viewshcedulelist" parameterClass="schedulel"
+		resultClass="schedulel">
+		<include refid="global.paginationStart" />
+		<![CDATA[
+			select a.id,a.bolnr,a.vstel,a.brgew,to_char(a.workstart_date,'yyyy-mm-dd HH24:MI') as workstart_date,to_char(a.workend_date,'yyyy-mm-dd HH24:MI') as workend_date ,a.team from basis.BASIS_PROCESS_COUNT a
+			where 1=1 
+		]]>
+		<dynamic>
+			 <isNotEmpty property="vstel" prepend="and">
+			    <![CDATA[ a.vstel = #vstel# ]]>
+			 </isNotEmpty>
+			 <isNotEmpty property="bolnr" prepend="and">
+			 	<![CDATA[ a.bolnr = #bolnr# ]]>
+			 </isNotEmpty>
+		</dynamic> 
+		<![CDATA[
+			 order  by a.workstart_date,a.id
+		]]>
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<update id="uplevel01" parameterClass="scheduleSmtor">
+		<![CDATA[
+		   UPDATE basis.BASIS_SHT_SMTOR a SET a.bolnr_level=a.bolnr_level+1  WHERE a.bolnr_level=#bolnr_level#-1 
+		]]>
+	</update> 
+	<update id="uplevel02" parameterClass="scheduleSmtor">
+		<![CDATA[
+            UPDATE basis.basIS_SHT_SMTOR a SET a.bolnr_level=a.bolnr_level-1  WHERE a.bolnr=#bolnr# and a.bolnr_level>0
+		]]>
+	</update> 
+	<update id="downlevel01" parameterClass="scheduleSmtor">
+		<![CDATA[
+		   UPDATE basis.BASIS_SHT_SMTOR a SET a.bolnr_level=a.bolnr_level-1  WHERE a.bolnr_level=#bolnr_level#+1
+		]]>
+	</update> 
+	<update id="downlevel02" parameterClass="scheduleSmtor">
+		<![CDATA[
+            UPDATE basis.basIS_SHT_SMTOR a SET a.bolnr_level=a.bolnr_level+1  WHERE a.bolnr=#bolnr# 
+		]]>
+	</update> 
+	<update id="islock" parameterClass="scheduleSmtor">
+		<![CDATA[
+			update basis.basIS_SHT_SMTOR a
+			   set a.is_lock=1
+			where a.id in ( $smtorIds$ )
+		]]>
+	</update> 
+	<update id="unlock" parameterClass="scheduleSmtor">
+		<![CDATA[
+			update basis.basIS_SHT_SMTOR a
+			   set a.is_lock=0
+			where a.id in ( $smtorIds$ )
+		]]>
+	</update>
+	<select id="getShceduleListByid" parameterClass="java.lang.Long" resultClass="schedulel">
+	<![CDATA[
+			select a.id,a.bolnr,a.vstel,a.brgew,to_char(a.workstart_date,'yyyy-mm-dd HH24:MI') as workstart_date,to_char(a.workend_date,'yyyy-mm-dd HH24:MI') as workend_date ,a.team   from basis.BASIS_PROCESS_COUNT a
+			where a.id =#ids#
+		]]>
+	</select> 
+	<update id="updateschedulel" parameterClass="schedulel">
+		<![CDATA[
+		   UPDATE basis.BASIS_PROCESS_COUNT a SET a.workstart_date=to_date(#workstart_date#,'yyyy-mm-dd HH24:MI:ss'),a.workend_date=to_date(#workend_date#,'yyyy-mm-dd HH24:MI:ss') WHERE a.id=#id#
+		]]>
+	</update> 
+	<select id="viewshcedulelistLock" parameterClass="schedulel"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(id)  from basis.basIS_SHT_SMTOR a where 1=1  and a.is_lock=1
+		]]>
+		
+	</select>
+	
+</sqlMap>

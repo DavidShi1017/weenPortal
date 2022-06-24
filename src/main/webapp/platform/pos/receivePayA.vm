@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui","upload"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		<div class="easyui-layout"  data-options="fit:true,border:false">
+		<div region="north"  style="height:180px;text-align:left;" data-options="iconCls:'icon-edit'">
+			<form method="post" target="hideFrame" enctype="multipart/form-data" >
+			<input id="kunnr2" value="$!{kunnr2}" type="hidden"></input>
+			<input id="rebateOver" value="$!{rebateOver}" type="hidden"></input>
+			
+			<table width="100%" border="0"  cellpadding="0" cellspacing="1">
+		      	<input type="hidden" id="id" name="o.id" value="0"/>
+					<input type="hidden" id="customer_code"  value='' ></input>
+						<tr>                
+                            <td class="head" noWrap width='160'><label for="name">Order Type</label></td>
+							<td noWrap class="context" width='220'>
+								<input class="easyui-validatebox"   value='Rebate' readonly></input>
+								 <input id="type_id" name="o.type_id" value="ZOR1" type="hidden">
+							</td>
+                            <td class="head" noWrap width='160'><label for="name">Ship To </label></td>
+							<td noWrap width='220' class="context">
+							<input class="easyui-validatebox context"  id="ship_toValue" name="o.ship_to" value='' ></input>
+								 <input class="easyui-validatebox context"  id="ship_to" value='' ></input>
+							</td>							
+						</tr>
+						<tr>
+                            <td class="head" noWrap><label for="name">Customer </label></td>
+							<td noWrap class="context">
+								 
+								<input class="easyui-validatebox"  data-options="required:true" id="branch_id" name="o.branch_id"  />
+                                <input class="easyui-validatebox"  data-options="required:true" id="dist_name" type="hidden"   />
+
+								<div id="toolbarCustomer" class="datagrid-toolbar">
+									<input class="easyui-searchbox" searcher="searcherCustomer" prompt="key word search" style="width:300px"></input>		
+								</div>	
+<!--	
+								<input class="easyui-validatebox"  id="customer_name" name="o.customer_name" value='' readonly></input>
+-->
+							</td>
+							<td class="head" noWrap><label for="name">Payer To </label></td>
+                            <td class="context">
+								
+								<input type="text" id="payer_to" name="o.payer_to" value=''  ></input>
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Currency </label></td>
+                            <td class="context" >
+								
+								<input  class="easyui-validatebox" id="currency_code" name="o.currency_code" value="" /> 
+								<input  class="easyui-validatebox" id="currency_name"  type="hidden" />  
+
+							</td>
+							<td class="head" noWrap><label for="name">Billing To </label></td>
+                            <td class="context">
+								
+								<input id="billing_to" class="easyui-validatebox" name="o.billing_to" value=''   />  
+							</td>		
+						</tr>
+						<tr>
+                            <td class="head" noWrap><label for="name">Rebate Total </label></td>
+                            <td class="context">
+							
+								 <input class="easyui-validatebox" id="rebate_total" name="o.rebate_total" value="" readonly></input>		
+							</td>      
+						   <td class="head" noWrap><label for="name">Remark </label></td>
+                            <td class="context">
+								<input class="easyui-validatebox" id="remark" name="o.remark" value=""    ></input>  
+							</td>
+
+						</tr>
+						<tr>
+						   <td ><a id="repayBtn" class="easyui-linkbutton" icon="icon-search" href="javascript:loadKunnrReceivePayDetail()">Search</a></td>
+ 						</tr>
+					</table>
+
+
+			 
+		</form>
+		</div>
+		
+		<div region="center" style="height:180px;">
+			<table>
+    			<tr style="text-align:center;" align="center">
+    			    <td ><a id="repayBtn" class="easyui-linkbutton" icon="icon-add" href="javascript:confirmRepayment()">Create</a></td>
+
+    			</tr>
+		    </table>
+			<table id="datagrid"></table>
+		</div>
+		<div region="south" style="height:30px;">
+				
+		  </div>   
+		</div>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<input type="hidden" value="$!{kunnrLoadFlag}" id="kunnrLoadFlag"/>
+		<input type="hidden" value="$!{kunnr}" id="kunnrCode"/>
+	</body>
+	
+
+</html>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/pos/receivePayA.js"></script>

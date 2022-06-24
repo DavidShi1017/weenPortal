@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="enquiry" extends="jingtong-default">
+		
+		<action name="enquiryAction" class="enquiryAction" >
+			<result name="toSearchEnquiry">/platform/enquiry/searchEnquiry.vm</result>
+			<result name="toViewEnquiry">/platform/enquiry/viewEnquiry.vm</result>
+			<result name="toCreateEnquiry">/platform/enquiry/createEnquiry.vm</result>
+			<result name="toUpdateEnquiry">/platform/enquiry/createEnquiry.vm</result>
+		</action>
+	</package>
+</struts>

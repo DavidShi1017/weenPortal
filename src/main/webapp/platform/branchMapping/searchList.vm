@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		<!-- 查询 -->
+		<div class="easyui-layout" data-options="fit:true,border:false"> 
+			<input type="hidden" id="ids"/>
+	        <form method="post" target="hideFrame">
+			<div id="p_search" title="" style="height:80px;padding: 2px; background: #fafafa;" data-options="region:'north',iconCls:'icon-search'">
+				<br>
+				<table width="100%" border="0" cellpadding="0" cellspacing="1">
+					<tr>
+                       <td class="head" noWrap>Disti HQ Soldto</td>
+                       <td><input class="easyui-validatebox" id="disti_hq_soldto" name="disti_hq_soldto"></td>
+ 					   <td class="head" noWrap>Region Level2</td>
+                       <td><input class="easyui-validatebox" id="region_level2" name="region_level2"></td>
+					</tr>
+					<tr>
+						<td class="head" noWrap>Global Account</td>
+						<td>
+							<input class="easyui-validatebox" id="global_account" name="global_account">
+						</td>
+					    <td class="head" noWrap>LOC Rep Country</td>
+                   	    <td>
+                  		<input class="easyui-validatebox" id="loc_rep_country" name="loc_rep_country"></td>
+
+					<td colspan="2">
+						<a id="search" href="javascript:search()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">Search</a>
+                    	<a href="javascript:clearValue()" class="easyui-linkbutton" iconCls="icon-clear">Cancel</a> 	
+					</td>		
+					
+                </tr>
+                </table>
+				 </div>
+			    <div data-options="region:'center'">
+					<table id="datagrid"></table>
+				</div>
+	</form>
+	</div>
+	<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+	<div id="hiddenWin"/> 
+	</div>
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/branchMapping/searchList.js?v=22"></script>
+</html>

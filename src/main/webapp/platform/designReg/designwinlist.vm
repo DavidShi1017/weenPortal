@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+        #CSSM(["easyui","style"])
+        #JSM(["jquery", "easyui"])
+        #JS_ENV_VAL()
+    </head>
+    <body>
+        <div class="easyui-layout" data-options="fit:true,border:false"> 
+            <input type="hidden" id="ids" />
+            <form method="post" target="hideFrame">
+                <div id="p_search" border="0" title="" style="height:125px;padding: 2px; background: #fafafa;" data-options="region:'north',iconCls:'icon-search'">
+                    <br/>
+                    <table  border="0" cellpadding="0" cellspacing="1">
+                        <tr>                
+                            <td class="head" noWrap width='120'>Disti</td>
+                            <td class="context" width='200'>
+                                <input class="easyui-validatebox" id="cus_groupId" name="cus_groupId" value='$!{dr.cus_groupId}' />
+                                <input type="hidden" id="forWho" value="$!{forWho}" />    
+                            </td>
+                            <td class="head" noWrap width='120'>Disti Branch</td>
+                            <td class="context"  width='200'>
+                                <input  class="easyui-validatebox" id="disti_branch" name="disti_branch" value='$!{dr.disti_branch}' />
+                            </td>
+                            <td class="head" noWrap width='140'>End Customer</td>
+                            <td class="context"  width='200'>
+                                <input class="easyui-validatebox" id="endCus_name" name="endCustomer_name" />                    
+                            </td>
+                            <td><a id="search" href="javascript:search()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">Search</a></td>
+                        </tr>
+                        <tr>
+                            <td class="head" noWrap width='120'>DR number</td>
+                            <td noWrap class="context" width='220'><input class="easyui-validatebox" id="drNum" name="drNum"></td>
+                            <td class="head" noWrap width='120'>Project</td>
+                            <td noWrap class="context" width='220'><input class="easyui-validatebox" id="project_name" name="project_name"></td>
+                            <td class="head" noWrap>DW Status</td>
+                            <td>
+                                <select id="saler_design_statusStr" name="saler_design_statusStr" value="(0,1,2,4)" style="width:155px;" data-options="editable:false">
+                                    <option value="(0,1,2,4)">All</option> 
+                                    <option value="(0)">Pending</option>  
+                                    <option value="(1)">Regional Sales approved</option>  
+                                    <option value="(2)">Sales head approved</option>  
+                                    <option value="(4)">Final approved</option>  
+                               </select>
+                            </td>
+                            <td><a href="javascript:clearValue()" class="easyui-linkbutton" iconCls="icon-clear" id="clearV">cancel</a> </td>    
+                        </tr>
+                        <tr>
+                            <td class="head myself" noWrap>Creator</td>
+                            <td class="context myself">
+                                <input class="easyui-validatebox" id="create_userName" name="create_userName" />    
+                            </td>
+                            <td class="head" noWrap width='80'>BookPart</td>
+                            <td class="context" width='180'>
+                                <input class="easyui-validatebox" id="material_name" name="material_name" />                    
+                            </td>
+                            <td class="head" noWrap width='140'>Application</td>
+                            <td class="context"  width='180'>
+                                <input class="easyui-validatebox" id="equip_type" name="equip_type" />                    
+                            </td>    
+                        </tr>
+                        <tr>
+                            <td class="head" noWrap width='100'>Created from</td>
+                            <td width='200'><input class="easyui-datebox" id="start_dateStr" name="start_dateStr" /></td>
+                            <td class="head" noWrap width='100'>Created till</td>
+                            <td width='200'><input class="easyui-datebox" id="end_dateStr" name="end_dateStr" /></td>
+                        </tr>
+                    </table>
+                </div>
+                <div data-options="region:'center'"  border="0">
+                    <table id="datagrid"></table>
+                </div>
+            </form>
+        </div>
+        <iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+        <div id="hiddenWin"> 
+        </div>
+    </body>
+    <script type="text/javascript" src="$!{env.imgUrl}/js/platform/designReg/designwinlist.js?time=New Date()"></script>
+</html>

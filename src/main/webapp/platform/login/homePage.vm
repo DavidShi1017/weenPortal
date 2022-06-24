@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>System home page</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery","easyui","jquery.tools"])
+		#JS_ENV_VAL()
+		<style type=text/css>
+		.fontStyle{
+			ront-family: "VERDANA","ARIAL", "SANS-SERIF","ËÎÌå";
+			font-size:14px;
+			color:red
+		}
+		</style>
+		
+		<script>   
+		   
+			</script>
+		<style type="text/css">
+        .div1{border:1px ;width:100px;height:53px;float:left;margin-left:6%;position:relative;left:-80px}
+        .div2{border:1px;width:350px;height:53px;float:left;position:relative;left:-80px}
+        </style>
+	</head>
+	<body class="easyui-layout">
+	<!--<ul id="navigation">
+		<li class="home"><a href="#" onclick="navigation4MenuTree(1);"><span style="font-weight: bold;color:black">Ö÷Ò³</span></a></li>
+	</ul>
+	-->
+	<!-- <div id="menuTree" data-options="region:'west',split:true,title:'[ $!{passport} - $!{name} ]',tools:'#all'" style="width:180px;padding:0px;">-->
+	 
+    <div id="menuTree" data-options="region:'west',split:true,title:'[ $!{name} ]',tools:'#all'" style="width:180px;padding:0px;">
+	<div id='all'>
+		<!--a href="javascript:void(0)" class="icon-expand" onclick="expandAll()"></a-->
+		<a href="javascript:void(0)" class="icon-collapse" onclick="collapseAll()"></a>
+	</div>
+    <ul id="rootTree" class="easyui-tree" style="height:96%;position:relative;overflow-y:auto;overflow-x:hidden">
+	</ul>
+    <div><font size='3' style="font-weight: bold;font-style:VERDANA;color:gray;">&nbsp;Online User:&nbsp;$!{onLine}</font></div>
+	</div>
+    <div id="work" data-options="iconCls:'icon-edit',tools:'#tool',region:'center',title:'Hi $!{subName},Welcome To WeEn Portal!'"/>
+	<div id="tabs" class="easyui-tabs" data-options="fit:true"> 
+	</div>
+	<div id="tabsMenu" class="easyui-menu" style="width:120px;"> 
+    <div name="close">Close</div> 
+    <div name="other">Close Others</div> 
+    <div name="all">Close All</div>
+	</div> 
+	</div>
+	<div id="tool">
+		<a href="#" onclick="javascript:reloadOA()" class="icon-reload" ></a>
+		<a href="javascript:void(0)" class="icon-blank"></a>
+		<a href="loginAction!logout.jspa?action=logout" class="icon-logout" ></a>
+		<a href="javascript:void(0)" class="icon-blank"></a>
+	</div>
+	<div data-options="region:'south',border:false" style="height: 2px; background-image: url('$!{env.imgUrl}/images/banners/index_bottom.png'); color: #327195; text-align: center; padding-top: 1px;">
+	</div>
+</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/login/homePage.js">
+</script>
+</html>

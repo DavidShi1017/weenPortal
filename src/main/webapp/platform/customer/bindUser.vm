@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+ 				<table width="100%" border="0" cellpadding="0" cellspacing="5">
+					<input type="hidden" id="userId" name="cusUser.userId" value="$!{userId}"/>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Login Id:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="loginId" name="cusUser.loginId" value='$!{loginId}'style="width:400px" readonly></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">User Name:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="userName" name="cusUser.userName" value='$!{userName}'style="width:400px" readonly></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Disti Code:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="customer_code" name="cusUser.customer_code" value='$!{cusUser.customer_code}' readonly></input>
+								 <div id="toolbarCustomer" class="datagrid-toolbar">
+									<input class="easyui-searchbox" searcher="searcherCustomer" prompt="Pls Serach Funloc Key" style="width:350px"></input>		
+								 </div>		
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Disti Name:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="customer_name" name="cusUser.customer_name" value='$!{cusUser.customer_name}'style="width:400px" readonly></input>
+							</td>							
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>
+<br><br>
+			<div region="south" border="false" style="text-align:center;height:20px;line-height:20px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/customer/bindUser.js"></script>
+</html>

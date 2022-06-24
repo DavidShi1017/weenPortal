@@ -1,0 +1,690 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="customer">
+	<typeAlias alias="customer"	type="com.jingtong.platform.customer.pojo.Customer" />
+	<typeAlias alias="cusCompany" type="com.jingtong.platform.customer.pojo.CusCompany" />
+	<typeAlias alias="cusUser" type="com.jingtong.platform.customer.pojo.CustomerUser" />
+	<typeAlias alias="disti_branch" type="com.jingtong.platform.customer.pojo.Disti_branch" />
+
+	<!-- 客户主数据 -->
+	<select id="getCustomerById" parameterClass="customer"
+		resultClass="customer">
+		<![CDATA[			
+			select 
+			  aa.id,customer_code,customer_name,nielsenRemark global_account,sales_org,sale_office,district,
+			  bb.org_name sales_orgName,cc.org_name sale_officeName,dd.org_name districtName,ee.country_name countryName,
+			  country,ship_method,gg.item_name customer_type,design_customer,segment,ff.item_name currency_code,address,
+			  contact_name,isAssigned,aa.state,audit_opinion,aa.remark,aa.create_time,aa.create_userId,
+			  aa.modify_time,aa.modify_userId,aa.org_code,tel,sales
+		from basis.basis_tb_customerInfo aa 
+			left outer join basis.basis_tb_org bb on aa.sales_org = bb.sap_org_id
+			left outer join basis.basis_tb_org cc on aa.sale_office = cc.sap_org_id
+			left outer join basis.basis_tb_org dd on aa.district = dd.sap_org_id
+			left outer join basis.basis_tb_country ee on aa.country=ee.country_code 	
+			left outer join basis.basis_tb_dict ff on aa.currency_code=ff.item_value and ff.dict_type_id=548
+			left outer join basis.basis_tb_dict gg on aa.customer_type=gg.item_value and gg.dict_type_id=553		
+	 	where  aa.id !=0
+		]]>
+		<isNotEmpty property="id" prepend="and">
+			<![CDATA[ aa.id = #id# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="customer_code" prepend="or">
+			<![CDATA[ customer_code = #customer_code#]]>
+		</isNotEmpty>
+	</select>
+
+	<select id="getCustomerList" parameterClass="customer"
+		resultClass="customer">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+			  aa.id,customer_code,customer_name,nielsenRemark global_account,sales_org,sale_office,district,
+			  bb.org_name sales_orgName,cc.org_name sale_officeName,dd.org_name districtName,ee.country_name countryName,
+			  country,ship_method,gg.item_name customer_type,design_customer,segment,ff.item_name currency_code,address,
+			  contact_name,isAssigned,aa.state,audit_opinion,aa.remark,aa.create_time,aa.create_userId,
+			  aa.modify_time,aa.modify_userId,aa.org_code,tel,sales
+		from basis.basis_tb_customerInfo aa 
+			left outer join basis.basis_tb_org bb on aa.sales_org = bb.sap_org_id
+			left outer join basis.basis_tb_org cc on aa.sale_office = cc.sap_org_id
+			left outer join basis.basis_tb_org dd on aa.district = dd.sap_org_id
+			left outer join basis.basis_tb_country ee on aa.country=ee.country_code 	
+			left outer join basis.basis_tb_dict ff on aa.currency_code=ff.item_value and ff.dict_type_id=548
+			left outer join basis.basis_tb_dict gg on aa.customer_type=gg.item_value and gg.dict_type_id=553		
+	 	where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="customer_code" prepend="and">
+				<![CDATA[ customer_code like #customer_code,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_name" prepend="and">
+				<![CDATA[ upper(customer_name) like #customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+				<![CDATA[ upper(customer_name) like #search,handler=wildcard# escape '\' or  customer_code like #search,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="global_account" prepend="and">
+				<![CDATA[ global_account = #global_account#]]>
+			</isNotEmpty>
+			<isNotEmpty property="org_code" prepend="and">
+				<![CDATA[ 
+			 	(cc.org_id in (
+			 		select a.org_id from basis.basis_tb_org a where a.state = 'Y'
+			 		start with a.org_id = #org_code# 
+			 		connect by prior a.org_id = a.org_parent_id)  
+       			or dd.org_id in (
+				    select a.org_id from basis.basis_tb_org a where a.state = 'Y' 
+				    start with a.org_id = #org_code# connect by prior a.org_id = a.org_parent_id)
+    
+			    or bb.org_id in (
+				    select a.org_id from basis.basis_tb_org a where a.state = 'Y' 
+				    start with a.org_id = #org_code# connect by prior a.org_id = a.org_parent_id)
+				 ) 
+				 ]]>
+			</isNotEmpty>
+			<isNotEmpty property="loginId" prepend="and">
+				<![CDATA[ customer_code in (select customer_code from basis_tb_customer_user where loginId=#loginId#) ]]>
+			</isNotEmpty> 
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+	<select id="getCustomerListCount" parameterClass="customer"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.basis_tb_customerInfo aa
+				left outer join basis.basis_tb_org bb on aa.sales_org = bb.sap_org_id
+				left outer join basis.basis_tb_org cc on aa.sale_office = cc.sap_org_id
+				left outer join basis.basis_tb_org dd on aa.district = dd.sap_org_id
+				left outer join basis.basis_tb_country ee on aa.country=ee.country_code 	
+				left outer join basis.basis_tb_dict ff on aa.currency_code=ff.item_value and ff.dict_type_id=548
+				left outer join basis.basis_tb_dict gg on aa.customer_type=gg.item_value and gg.dict_type_id=553				
+			where 1=1 
+		]]>
+		<dynamic>
+			<isNotEmpty property="customer_code" prepend="and">
+				<![CDATA[ customer_code like #customer_code,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_name" prepend="and">
+				<![CDATA[ upper(customer_name) like #customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+				<![CDATA[ upper(customer_name) like #search,handler=wildcard# escape '\' or  customer_code like #search,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="global_account" prepend="and">
+				<![CDATA[ global_account = #global_account#]]>
+			</isNotEmpty>
+			<isNotEmpty property="org_code" prepend="and">
+				<![CDATA[ 
+			 	(cc.org_id in (
+			 		select a.org_id from basis.basis_tb_org a where a.state = 'Y'
+			 		start with a.org_id = #org_code# 
+			 		connect by prior a.org_id = a.org_parent_id)  
+       			or dd.org_id in (
+				    select a.org_id from basis.basis_tb_org a where a.state = 'Y' 
+				    start with a.org_id = #org_code# connect by prior a.org_id = a.org_parent_id)
+    
+			    or bb.org_id in (
+				    select a.org_id from basis.basis_tb_org a where a.state = 'Y' 
+				    start with a.org_id = #org_code# connect by prior a.org_id = a.org_parent_id)
+				 ) 
+				 ]]>
+			</isNotEmpty>
+			<isNotEmpty property="loginId" prepend="and">
+				<![CDATA[ customer_code in (select customer_code from basis_tb_customer_user where loginId=#loginId#) ]]>
+			</isNotEmpty> 
+		</dynamic>
+	</select>
+
+
+	<!-- 客户公司关系（Ship_to,payer_to,billing_to） -->
+	<select id="getCusCompanyList" parameterClass="cusCompany"
+		resultClass="cusCompany">
+		<![CDATA[
+			select 
+				  aa.id,aa.customer_code,aa.partnerId,aa.partnerName,(aa.partnerName|| '  --  ' ||aa.address) nameAddress,ff.item_name partnerType,aa.address,aa.contact,aa.create_time,aa.create_userId
+			from basis.basis_tb_cus_relationship aa
+				left outer join basis.basis_tb_dict ff on aa.partnerType=ff.item_value and ff.dict_type_id=560
+						
+		 	where 1=1 and partnerId!='00000000'
+		]]>
+		<dynamic>
+			<isNotEmpty property="customer_code" prepend="and">
+				<![CDATA[ aa.customer_code = #customer_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="partnerType" prepend="and">
+				<![CDATA[ aa.partnerType = #partnerType#]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+	</select>
+
+
+
+
+
+
+
+<!-- 查询人员信息 -->	
+	<select id="searchCusUser" parameterClass="cusUser"
+		resultClass="cusUser">
+		<include refid="global.paginationStart" /> 
+	<![CDATA[
+			select  t.emp_id          as userId,
+		     t.emp_code           as loginId,
+			 t.emp_name           as userName,
+			 t.emp_state          as userState,
+			 t.org_id             as orgId,   
+			 b.org_name           as orgName,
+			 t.emp_phone          as phone,
+			
+			 t.bus_mobilephone  as mobile,
+			 t.emp_email          as email,
+			 t.emp_address        as address,
+			 t.emp_sex            as sex,
+			 t.last_modify modify_date,
+			 c.emp_name modify_user,
+			 t.create_date, 
+			 d.emp_name create_user 
+		  from basis.basis_tb_salesemp_info t 
+		  	left join basis.basis_tb_org b on t.org_id=b.org_id
+		  	left outer join  basis.basis_tb_salesemp_info c on t.modify_user=c.emp_id
+		  	left outer join  basis.basis_tb_salesemp_info d on t.create_user=d.emp_id
+		   where
+				1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="email" prepend="and">
+			<![CDATA[ upper(t.emp_email) like #email,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="loginId" prepend="and">
+			<![CDATA[ upper(t.emp_code) like #loginId,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="userName" prepend="and">
+			<![CDATA[ upper(t.emp_name) like #userName,handler=wildcard# escape '\']]>
+			</isNotEmpty>			
+			<isNotEmpty property="customer_code" prepend="and">
+			<![CDATA[ t.customer_code=#customer_code# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="customerSign" prepend="and"><!-- Y表示是customer的账号 -->
+				<![CDATA[ t.org_id is null ]]>
+			</isNotEmpty>
+			<isNotEmpty property="userState" prepend="and">
+			<![CDATA[
+			    t.emp_state = #userState#
+			]]>
+			</isNotEmpty>
+			
+			<isNotEmpty property="orgId" prepend="and">
+				<isEqual property="bhxjFlag" compareValue="C">
+					<![CDATA[   t.org_id in (select a.org_id
+									  from basis.basis_tb_org a
+									   where a.state = 'Y'
+									 start with a.org_id = #orgId#
+									connect by prior a.org_id = a.org_parent_id)  ]]>
+				</isEqual>
+				<isNotEqual  property="bhxjFlag" compareValue="C">
+					<![CDATA[   t.org_id = #orgId#  ]]>
+				</isNotEqual >
+			</isNotEmpty>
+		</dynamic>
+		<![CDATA[  order by t.emp_id desc  ]]>
+		
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	
+
+	
+	<select id="searchCusUserCount" parameterClass="cusUser"
+		resultClass="java.lang.Integer">
+	<![CDATA[
+			select  count(t.emp_id) 
+		  from basis.basis_tb_salesemp_info t left join basis.basis_tb_org b on t.org_id=b.org_id
+		   where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="email" prepend="and">
+			<![CDATA[ upper(t.emp_email) like #email,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="loginId" prepend="and">
+			<![CDATA[ upper(t.emp_code) like #loginId,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="userName" prepend="and">
+			<![CDATA[ upper(t.emp_name) like #userName,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			
+			<isNotEmpty property="customer_code" prepend="and">
+			<![CDATA[ t.customer_code=#customer_code# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="customerSign" prepend="and"><!-- Y表示是customer的账号 -->
+				<![CDATA[ t.org_id is null  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="userState" prepend="and">
+			<![CDATA[
+			    t.emp_state = #userState#
+			]]>
+			</isNotEmpty>
+			
+			<isNotEmpty property="orgId" prepend="and">
+				<isEqual property="bhxjFlag" compareValue="C">
+					<![CDATA[   t.org_id in (select a.org_id
+									  from basis.basis_tb_org a
+									   where a.state = 'Y'
+									 start with a.org_id = #orgId#
+									connect by prior a.org_id = a.org_parent_id)  ]]>
+				</isEqual>
+				<isNotEqual  property="bhxjFlag" compareValue="C">
+					<![CDATA[   t.org_id = #orgId#  ]]>
+				</isNotEqual >
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 客户标识 -->
+	<update  id="setCusomerSignForUser" parameterClass="cusUser">
+		update basis.basis_tb_salesemp_info   set 
+			customer_code = #customer_code#
+		where emp_code=#loginId#
+	</update>
+	<!-- 创建人 -->
+	<update  id="setCreateUserForUser" parameterClass="cusUser">
+		update basis.basis_tb_salesemp_info   set 
+			create_user = #create_user#
+		where emp_code=#loginId#
+	</update>
+	<!-- 修改人 -->
+	<update  id="setModifyUserForUser" parameterClass="cusUser">
+		update basis.basis_tb_salesemp_info   set 
+			modify_user = #modify_user#
+		where emp_code=#loginId#
+	</update>
+	
+	<select id="getLoginCusUser" parameterClass="cusUser"
+		resultClass="cusUser">
+	<![CDATA[
+			select 
+			 t.user_id as userId,
+		     t.login_id           as loginId,
+		     t.passwd passWd,
+			 t.user_name           as userName,
+			 t.user_state          as userState,
+			 t.phone          as phone,
+			 t.mobile  as mobile,
+			 t.trafficExpense,
+			 t.customer_code,
+			 t.customer_name,
+			 t.sales,
+			 t.currency_code,
+			 t.global_account,
+			 t.sales_org,
+			 t.sale_office,
+			 t.district,
+			 t.country
+			 
+		  from basis.basis_vw_customerInfo t
+		   where
+				1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="userId" prepend="and">
+				<![CDATA[ t.user_id = #userId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="loginId" prepend="and">
+				<![CDATA[ t.login_id = #loginId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="userName" prepend="and">
+				<![CDATA[ t.user_name = #userName#]]>
+			</isNotEmpty>			
+			<isNotEmpty property="customer_code" prepend="and">
+				<![CDATA[ t.customer_code=#customer_code# ]]>
+			</isNotEmpty>						
+		</dynamic>
+	</select>
+	
+	
+	<select id="getUserByUserId" parameterClass="java.lang.String" resultClass="cusUser">
+		select
+		b.emp_id userId,
+		b.emp_code as loginId, 
+		b.emp_name as userName,
+		b.emp_sex as sex,
+		b.emp_psd as passWd,
+		b.emp_start_date as startDate,
+		b.org_id as orgId,
+		o.org_name as orgName,
+		b.emp_id_card as idCard,
+		b.emp_workfax as workFax,
+		b.emp_email as email,
+		b.emp_mobile_phone as mobile,
+		b.emp_phone as phone,
+		b.bus_mobilephone as busMobilephone,
+		b.emp_remark as remark,
+		b.emp_address as address,
+		b.emp_post_id as empPostId,
+		b.hq_sign as hqSign,
+   		b.traffic_expense as trafficExpense,
+   		b.meal_allowances as mealAllowances,
+   		b.communication_fees as communicationFees,
+   		b.emp_attribute as userAttr,
+   		b.deptCode,
+   		b.deptName 
+    	from 
+    	basis.basis_tb_salesemp_info b left join basis.basis_tb_org o
+    	on b.org_id = o.org_id 
+	 	where 
+		b.emp_id= #ids#
+		
+	</select>
+<!-- 人员创建 -->	 
+	<insert id="createCustomerUser" parameterClass="cusUser">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_emp.NEXTVAL AS id FROM DUAL	
+		</selectKey>
+	<![CDATA[
+		 insert into basis.basis_tb_salesemp_info
+		  (emp_id,
+		   org_id,
+		   emp_name,
+		   emp_id_card,
+		   emp_code,
+		   emp_sex,
+		   emp_phone,
+		   emp_mobile_phone,
+		   emp_start_date,
+		   emp_state,
+		   emp_remark,
+		   last_modify,
+		   emp_address,
+		   modify_date,
+		   emp_psd,
+		   emp_email,
+		   emp_workfax,
+		   paswd_sign_Date,
+		   emp_post_id,
+		   hq_sign,
+           is_first,
+           traffic_expense,
+           meal_allowances,
+           communication_fees,
+           deptCode,
+           deptName,
+           create_date,
+           create_user,
+           modify_user
+		   )
+		values
+		  (#id#,
+		   #orgId#,
+		   #userName#,
+		   #idCard#,
+		   #loginId#,
+		   #sex#,
+		   #phone#,
+		   #busMobilephone#,
+		   #startDate#,
+		   #userState#,
+		   #remark#,
+		   sysdate,
+		   #address#,
+		   sysdate,
+		   #passWd#,
+		   #email#,
+		   #workFax#,
+		   sysdate,
+		   #empPostId#,
+		   #hqSign#,
+		   '0',
+		   #trafficExpense#,
+		   #mealAllowances#,
+		   #communicationFees#,
+		   #deptCode#,
+		   #deptName#,
+		   sysdate,
+		   #create_user#,
+           #modify_user#
+		   )
+
+	]]>
+	</insert>
+	<update id="updateCustomerUser" parameterClass="cusUser" >
+		update basis.basis_tb_salesemp_info b set 
+			b.emp_name=#userName#,
+			b.org_id=#orgId#,
+			b.emp_email=#email#,
+			b.bus_mobilephone=#busMobilephone#,
+			b.emp_address = #address#,
+			b.emp_start_date = #startDate#,
+			b.emp_sex=#sex#,
+			b.emp_id_card=#idCard#,
+			b.emp_phone =#phone#,
+			b.emp_mobile_phone =#busMobilephone#,
+			b.emp_remark =#remark#,
+			b.emp_workfax = #workFax#,
+			b.last_modify= sysdate,
+			b.modify_date= sysdate,
+			b.modify_user= #modify_user#,
+			b.emp_post_id=#empPostId#,
+			b.traffic_expense = #trafficExpense#,
+			b.hq_sign=#hqSign#,
+            b.emp_attribute =#userAttr#,
+            b.deptCode=#deptCode#
+		 where b.emp_id=#userId#
+	</update>
+	
+	
+	
+<!-- 获取当前用户下的客户列表 -->	
+	<select id="getDistiListOfThisUser" parameterClass="cusUser"
+		resultClass="cusUser">
+	<![CDATA[
+		select 
+			 	id,userId,loginId,userName,customer_code,customer_name
+		  from basis.basis_tb_customer_user 
+		  where userId=#userId#
+	]]>
+	</select>
+
+<!-- 查询是否已经绑定该Disti  大于等于1则已绑定 -->	
+		<select id="getCountByCusUser" parameterClass="cusUser"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.basis_tb_customer_user 			
+			where  userId=#userId# and customer_code=#customer_code#
+		]]>
+	</select>
+<!-- 绑定客户到当前用户 -->	 
+	<insert id="bindDistiToThisUser" parameterClass="cusUser">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_customer_user.NEXTVAL AS id FROM DUAL	
+		</selectKey>
+	<![CDATA[
+		insert into basis.basis_tb_customer_user
+		  (
+		  	id,userId,loginId,userName,customer_code,customer_name
+		   )
+		values
+		  (
+		  	#id#,#userId#,#loginId#,#userName#,#customer_code#,#customer_name#
+		   )
+	]]>
+	</insert>	
+<!-- 解除绑定 -->	
+	<delete id="unBind" parameterClass="cusUser">
+	<![CDATA[
+		delete from basis.basis_tb_customer_user 
+		where id=#id#
+	]]>
+	</delete>
+	
+	
+	
+	
+	<!-- 分公司表 -->
+	<select id="getDistiBranchCount" parameterClass="disti_branch" resultClass="java.lang.Integer">
+		<![CDATA[
+			select 
+				count(*) from basis.basis_tb_disti_branch						
+		 	where 1=1
+		]]>
+		<dynamic>
+		    <isNotEmpty property="disti_name" prepend="and">
+			<![CDATA[ upper(disti_name) like #disti_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="payer_to" prepend="and">
+			<![CDATA[ payer_to like #payer_to,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_branch" prepend="and">
+			<![CDATA[ upper(disti_branch) like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>		
+		</dynamic>
+	</select>
+	
+	<select id="getDistiBranchList" parameterClass="disti_branch" resultClass="disti_branch">
+		<include refid="global.paginationStart" />
+		<![CDATA[
+			select 
+				id,disti_name,disti_branch,branch_code,payer_to,pricing_region,currency,creater,create_date ,sold_to,ship_to,bill_to from basis.basis_tb_disti_branch							
+		 	where 1=1
+		]]>
+		<dynamic>
+		    <isNotEmpty property="disti_name" prepend="and">
+			<![CDATA[ upper(disti_name) like #disti_name,handler=wildcard# escape '\'  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="payer_to" prepend="and">
+			<![CDATA[ payer_to like #payer_to,handler=wildcard# escape '\'  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="disti_branch" prepend="and">
+			<![CDATA[ upper(disti_branch) like #disti_branch,handler=wildcard# escape '\'  ]]>
+			</isNotEmpty>		
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+<!-- 分公司表(查Name用于客户账号创建) -->
+	<select id="getDistiNameCount" parameterClass="disti_branch" resultClass="java.lang.Integer">
+		<![CDATA[
+			select 
+				count(*) from 	(select 
+				disti_name,payer_to from basis.basis_tb_disti_branch									
+		 	where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+			<![CDATA[ upper(disti_name) like #disti_name,handler=wildcard# escape '\'  ]]>
+			</isNotEmpty>	
+			<isNotEmpty property="payer_to" prepend="and">
+				<![CDATA[ payer_to like #payer_to,handler=wildcard# escape '\'  ]]>
+			</isNotEmpty>		
+		</dynamic>
+		<![CDATA[
+		 	group by disti_name,payer_to)
+		]]>
+	</select>
+	
+	<select id="getDistiNameList" parameterClass="disti_branch" resultClass="disti_branch">
+		<include refid="global.paginationStart" />
+		<![CDATA[
+			select 
+				disti_name,payer_to from basis.basis_tb_disti_branch									
+		 	where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="disti_name" prepend="and">
+			<![CDATA[ upper(disti_name) like #disti_name,handler=wildcard# escape '\'  ]]>
+			</isNotEmpty>	
+			<isNotEmpty property="payer_to" prepend="and">
+				<![CDATA[ payer_to like #payer_to,handler=wildcard# escape '\'  ]]>
+			</isNotEmpty>		
+		</dynamic>
+		<![CDATA[
+		 	group by disti_name,payer_to
+		]]>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	
+	<!-- check判断重复  or branch_code = #branch_code# -->
+	<select id="getDBCountByPayer_to" parameterClass="disti_branch"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_disti_branch
+		where upper(disti_branch) = #disti_branch#
+	]]>
+	</select>
+
+	<insert id="createDistiBranch" parameterClass="disti_branch">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_disti_branch.NEXTVAL AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_disti_branch(id,disti_name,disti_branch,branch_code,payer_to,pricing_region,currency,creater,create_date,sold_to,ship_to,bill_to)
+			values(#id#,#disti_name#,#disti_branch#,#branch_code#,#payer_to#,#pricing_region#,#currency#,#creater#,sysdate,#sold_to#,#ship_to#,#bill_to#)
+		]]>
+	</insert>
+
+	<update id="updateDistiBranch" parameterClass="disti_branch">
+	<![CDATA[
+		update basis.basis_tb_disti_branch 
+		set    
+				disti_name=#disti_name#,
+				disti_branch=#disti_branch#,
+				branch_code = #branch_code#,
+				payer_to=#payer_to#,
+				pricing_region=#pricing_region#,
+				currency=#currency#,
+				sold_to=#sold_to#,
+				ship_to=#ship_to#,
+				bill_to=#bill_to#
+		where  	id = #id#
+	]]>
+	</update>
+
+	<delete id="deleteDistiBranch" parameterClass="disti_branch">
+	<![CDATA[
+		delete from basis.basis_tb_disti_branch 
+		where id=#id#
+	]]>
+	</delete>
+
+	<select id="getDistiBranchById" parameterClass="disti_branch"
+		resultClass="disti_branch">
+		<![CDATA[
+			select 
+			  id,disti_name,disti_branch,branch_code,payer_to,pricing_region,currency,creater,create_date,sold_to , ship_to,bill_to
+			from basis.basis_tb_disti_branch
+			where
+			 	 id = #id#
+		]]>
+	</select>
+
+    <select id="getDistiBranchAliasByName" parameterClass="disti_branch" resultClass="disti_branch">
+        SELECT id
+             , disti_name
+             , disti_branch
+             , branch_code
+             , payer_to
+             , pricing_region
+             , currency
+             , creater
+             , create_date
+             , sold_to
+             , ship_to
+             , bill_to
+             , alias
+          from basis.basis_tb_disti_branch                           
+         where upper(disti_branch) = upper(#disti_branch#)
+    </select>
+
+    <select id="getDistiAliasByName" parameterClass="disti_branch" resultClass="disti_branch">
+        SELECT distinct 
+               disti_name
+             , disti_alias
+          from basis.basis_tb_disti_branch
+         where upper(disti_name) = upper(#disti_name#)
+    </select>
+</sqlMap>

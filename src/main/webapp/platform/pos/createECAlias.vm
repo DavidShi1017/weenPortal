@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+ 				<table width="100%" border="0" cellpadding="0" cellspacing="5">
+					<input type="hidden" id="pcec"  value="$!{pcec}"/>
+					<input type="hidden" id="e_name"  value="$!{pos.e_name}"/>
+					<input type="hidden" id="e_city"  value="$!{pos.e_city}"/>
+					<input type="hidden" id="e_zip"  value="$!{pos.endcust_zip}"/>
+					<input type="hidden" id="p_name" value="$!{pos.p_name}"/>
+					<input type="hidden" id="p_city"  value="$!{pos.p_city}"/>
+					<input type="hidden" id="p_zip"  value="$!{pos.purchasing_cust_zip}"/>
+					<input type="hidden" id="ec_id" name="ea.ec_id" value='$!{ea.ec_id}' readonly></input>
+					<input type="hidden" id="quote_id"  name="ea.quote_id" value="$!{quote_id}"/>
+						<tr>                
+                            <td class="head" noWrap><label for="name">For EC/PC:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="PCorEC" style="width:300px"></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Alias Name:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="ec_alias_name" name="ea.ec_alias_name" value='$!{ea.ec_alias_name}' style="width:300px"></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Alias City:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="alias_city" name="ea.alias_city" value='$!{ea.alias_city}' style="width:300px"></input>
+							</td>							
+						</tr>
+						<tr>               
+                            <td class="head" noWrap><label for="name">Customer Name:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="ec_name" name="ea.ec_name" value='$!{ea.ec_name}' readonly style="width:300px"></input>
+								 <img style="cursor:add"  title=""  onclick=applyEC()  src="$!{env.imgUrl}/images/actions/action_add.png" align="absMiddle"></img> 
+								<div id="toolbarPurchaseCustomer" class="datagrid-toolbar">
+									<input class="easyui-searchbox" searcher="searcherPurchaseCustomer" prompt="Key word search" style="width:300px"></input>		
+								</div>	
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Customer Group:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="ec_groupName" name="ea.ec_groupName" value='$!{ea.ec_groupName}' readonly style="width:300px"></input>
+								<input type="hidden" id="ec_group" name="ea.ec_group" value="$!{ea.ec_group}"/>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Customer City:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="ec_city" name="ea.ec_city" value='$!{ea.ec_city}' readonly style="width:300px"></input>
+							</td>							
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>
+<br><br>
+			<div region="south" border="false" style="text-align:center;height:20px;line-height:20px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/pos/createECAlias1.js"></script>
+</html>

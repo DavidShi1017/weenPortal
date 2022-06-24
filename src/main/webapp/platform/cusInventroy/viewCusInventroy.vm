@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" border="0" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="5">
+					<input type="hidden" id="id" name="c.id" value="$!{c.id}"/>
+						<tr>      
+							<td class="head" noWrap><label for="name">Message Number</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="message_number" name="c.message_number" value='$!{c.message_number}'></input>
+							</td>
+							<td class="head" noWrap><label for="name">Doc Id</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="doc_id" name="c.doc_id" value='$!{c.doc_id}'></input>
+							</td>
+                           							
+						</tr>
+						
+						<tr>
+						  <td class="head" noWrap><label for="name">Doc Code</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="doc_code" name="c.doc_code" value='$!{c.doc_code}'></input>
+							</td>
+                         </td>
+						 <td class="head" noWrap><label for="name">Doc Identifier</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="doc_identifier" name="c.doc_identifier" value='$!{c.doc_identifier}'></input>
+							</td>
+                         </td>
+						</tr>
+						
+						<tr>
+						  <td class="head" noWrap>Function Code</td>
+ 						    <td>
+						        <input class="easyui-validatebox" id="function_code" name="c.function_code" value="$!{c.function_code}">
+                            </td>
+                          </td>
+						 <td class="head" noWrap>Sender Id</td>
+ 						    <td>
+						      <input class="easyui-validatebox" id="sender_id" name="c.sender_id" value="$!{c.sender_id}">
+                            </td>
+						 </td>
+						</tr>
+						
+						<tr>
+						  <td class="head" noWrap>Recipient Id</td>
+ 						    <td>
+						        <input class="easyui-validatebox" id="recipient_id" name="c.recipient_id" value="$!{c.recipient_id}">
+                            </td>
+                          </td>
+						 <td class="head" noWrap>Sender Date</td>
+ 						    <td>
+						      <input class="easyui-validatebox" id="sender_date" name="c.sender_date" value="$!{c.sender_date}">
+                            </td>
+						 </td>
+						</tr>
+						
+						<tr>
+						  <td class="head" noWrap>By Party</td>
+ 						    <td>
+						        <input class="easyui-validatebox" id="by_party" name="c.by_party" value="$!{c.by_party}">
+                            </td>
+                          </td>
+						 <td class="head" noWrap>St Party</td>
+ 						    <td>
+						      <input class="easyui-validatebox" id="st_party" name="c.st_party" value="$!{c.st_party}">
+                            </td>
+						 </td>
+						</tr>
+						
+						<tr>
+						  <td class="head" noWrap>Line Item</td>
+ 						    <td>
+						        <input class="easyui-validatebox" id="line_item" name="c.line_item" value="$!{c.line_item}">
+                            </td>
+                          </td>
+						 <td class="head" noWrap>BOOK PART</td>
+ 						    <td>
+						      <input class="easyui-validatebox" id="part_name" name="c.part_name" value="$!{c.part_name}">
+                            </td>
+						 </td>
+						</tr>
+						
+						<tr>
+						  <td class="head" noWrap>Item Type</td>
+ 						    <td>
+						        <input class="easyui-validatebox" id="item_type" name="c.item_type" value="$!{c.item_type}">
+                            </td>
+                          </td>
+						 <td class="head" noWrap>Inventroy Method</td>
+ 						    <td>
+						      <input class="easyui-validatebox" id="inventroy_method" name="c.inventroy_method" value="$!{c.inventroy_method}">
+                            </td>
+						 </td>
+						</tr>
+						
+						<tr>
+						  <td class="head" noWrap>Quantity Type</td>
+ 						    <td>
+						        <input class="easyui-validatebox" id="quantity_type" name="c.quantity_type" value="$!{c.quantity_type}">
+                            </td>
+                          </td>
+						 <td class="head" noWrap>Quantity</td>
+ 						    <td>
+						      <input class="easyui-validatebox" id="quantity" name="c.quantity" value="$!{c.quantity}">
+                            </td>
+						 </td>
+						</tr>
+						
+						<tr>
+						  <td class="head" noWrap>Unit Code</td>
+ 						    <td>
+						        <input class="easyui-validatebox" id="unit_code" name="c.unit_code" value="$!{c.unit_code}">
+                            </td>
+                          </td>
+						 <td class="head" noWrap>Currency</td>
+ 						    <td>
+						      <input class="easyui-validatebox" id="currency" name="c.currency" value="$!{c.currency}">
+                            </td>
+						 </td>
+						</tr>
+						
+						<tr>
+						  <td class="head" noWrap>Price Code</td>
+ 						    <td>
+						        <input class="easyui-validatebox" id="price_code" name="c.price_code" value="$!{c.price_code}">
+                            </td>
+                          </td>
+						 <td class="head" noWrap>Price</td>
+ 						    <td>
+						      <input class="easyui-validatebox" id="price" name="c.price" value="$!{c.price}">
+                            </td>
+						 </td>
+						</tr>
+						
+						<tr>
+						  <td class="head" noWrap>Price Type</td>
+ 						    <td>
+						        <input class="easyui-validatebox" id="price_type" name="c.price_type" value="$!{c.price_type}">
+                            </td>
+                          </td>
+						 <td class="head" noWrap>Price Basis</td>
+ 						    <td>
+						      <input class="easyui-validatebox" id="price_basis" name="c.price_basis" value="$!{c.price_basis}">
+                            </td>
+						 </td>
+						</tr>
+						
+						<tr>
+						  <td class="head" noWrap>Status</td>
+ 						    <td>
+						        <input class="easyui-validatebox" id="status" name="c.status" value="$!{c.status}">
+                            </td>
+                          </td>
+						</tr>
+						
+					</table>
+					</p>				             
+			<br/>
+		</div>
+
+
+		</div>  
+		
+		<br/>
+			<div region="south" border="0"style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Close</a>
+			</div>
+
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/cusInventroy/viewCusInventroy.js"></script>
+</html>

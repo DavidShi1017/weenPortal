@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()	
+	</head>
+	<body>
+		<form  method="post">
+		<input type="hidden" id="planId" name="singleTotal.plan_id" value="$singleTotal.plan_id" />
+		<input type="hidden" id="size"  value="$singleTotal.detailList.size()" />
+		<input id="detailJsonStr" name="detailJsonStr" type="hidden" />
+		<div class="easyui-panel" title="核销--总单信息" style="width:1120px;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+				<tr>
+    				<td class="head" noWrap style="text-align: right">
+    					 收款人
+    				</td>
+					<td class="even">
+						$!{singleTotal.pay_ee}
+					</td>
+					<td class="head" noWrap style="text-align: right">
+						支付账号
+                    </td>
+					<td class="even">
+						$!{singleTotal.pay_account}
+                    </td>
+                </tr>
+				<tr>
+					<td class="head" noWrap style="text-align: right">
+    					支付类型
+    				</td>
+					<td class="even">
+						#if($!{singleTotal.pay_type}=="1")
+							现金
+						#elseif($!{singleTotal.pay_type}=="2")
+							银行
+						#elseif($!{singleTotal.pay_type}=="3")
+							其他
+						#end
+					</td>
+					<td class="head" noWrap style="text-align: right">
+    					合计报销金额
+    				</td>
+					<td class="even">
+						$!{singleTotal.total_money}
+					</td>
+					</tr>
+					#if($!{singleTotal.travleName})
+					<tr>
+					<td class="head" noWrap style="text-align: right">
+    					出差申请标题
+    				</td>
+					<td class="even">
+						<!--
+						#if($!{modifyFlag})
+							<input id="totalMoney" name="singleTotal.total_money" type="text" value="$!{singleTotal.total_money}" readonly/>
+						#else
+							<input id="totalMoney" name="singleTotal.total_money" type='hidden' value="$!{singleTotal.total_money}" />
+						#end
+						-->
+						$!{singleTotal.travleName}
+					</td>
+					<td class="head" noWrap style="text-align: right">
+    					实际报销金额
+    				</td>
+					<td class="even">
+						<!--
+						#if($!{modifyFlag})
+							<input id="totalMoney" name="singleTotal.total_money" type="text" value="$!{singleTotal.total_money}" readonly/>
+						#else
+							<input id="totalMoney" name="singleTotal.total_money" type='hidden' value="$!{singleTotal.total_money}" />
+						#end
+						-->
+						$!{singleTotal.applayMoney}
+					</td>
+                    </tr>
+					#end
+				
+				 #if(($!{curStaId} == "Finance_Manager" || $!{curStaId} == "cxyfeiyong_jihe" || $!{curStaId} == "znfeiyong_jihe" || $!{curStaId} == "feiyong_jicha_zn" || 
+			            $!{curStaId} == "feiyong_jihe" ) &&  $!{modifyFlag} == "Y")
+				 <tr>
+    				<td class="head" noWrap style="text-align: right">
+    					 付现
+    				</td>
+					<td class="even">
+						#if($!{singleTotal.payCash})
+							<input class="easyui-numberbox" min="0" max="9999999999" id='payCash' name="singleTotal.payCash"  value='$!{singleTotal.payCash}'  data-options ="required:true, missingMessage:'只能输入数字或者不能为空'"/>
+						#else
+							<input class="easyui-numberbox" min="0" max="9999999999" id='payCash' name="singleTotal.payCash"  value='$!{singleTotal.audit_money}'  data-options ="required:true, missingMessage:'只能输入数字或者不能为空'"/>
+						 #end
+					</td>
+					<td class="head" noWrap style="text-align: right">
+    					 抽欠
+    				</td>
+					
+					<td class="even">
+						#if($!{singleTotal.chouQian})
+							<input class="easyui-numberbox" min="0" max="9999999999" id='chouQian' name="singleTotal.chouQian"  value='$!{singleTotal.chouQian}'  data-options ="required:true, missingMessage:'只能输入数字或者不能为空'"/>
+						 #else
+							 <input class="easyui-numberbox" min="0" max="9999999999" id='chouQian' name="singleTotal.chouQian"  value='0'  data-options ="required:true, missingMessage:'只能输入数字或者不能为空'"/>
+						 #end
+					</td>
+				 </tr>
+				 #else
+					 <tr>
+    				<td class="head" noWrap style="text-align: right">
+    					 付现
+    				</td>
+					<td class="even">
+						$!{singleTotal.payCash}
+					</td>
+					<td class="head" noWrap style="text-align: right">
+    					 抽欠
+    				</td>
+					
+					<td class="even">
+						$!{singleTotal.chouQian}
+					</td>
+				 </tr>
+				 #end
+				 <tr>
+    				<td class="head" noWrap style="text-align: right">
+    					核销总金额
+    				</td>
+					<td class="even" colspan="3">
+					 <input id="auditMoney" name="audit_money" type="text" value="$!{singleTotal.audit_money}" readonly/>
+					</td>
+				 </tr>
+				<tr>
+    				<td class="head" noWrap style="text-align: right">
+    					说明
+    				</td>
+					<td class="even" colspan="2">
+						<!--
+						#if($!{curStaId} == "start1")
+							<input name="singleTotal.memo" type="text" class="easyui-validatebox" value="$!{singleTotal.memo}" size="54"/>
+						#else
+							<input name="singleTotal.memo" type='hidden' value="$!{singleTotal.memo}" />
+						-->
+						$!{singleTotal.memo}
+						<!-- #end -->
+					</td>
+				 </tr>
+		    </table>
+		</div>
+		
+		<div region="south" border="false" style="height:6px;"></div>
+		
+		<div class="easyui-panel" title="核销--明细信息" style="width:1120px;">
+			<table id="myTab" width="100%" cellpadding="0" border="1px" bordercolor="#cccccc" cellspacing="0px" style="border-collapse:collapse">
+				
+				<tr style="height:25px;BACKGROUND-COLOR:#efefef">
+					<td width="12%" style="text-align: center">
+						费用类型
+                    </td>
+					<td width="10%" style="text-align: center">
+						成本中心
+                    </td>
+					<td width="14%"style="text-align: center">
+						预算编号
+                    </td>
+					<td width="8%" style="text-align: center">
+						费用日期
+                    </td>
+					<td width="10%" style="text-align: center">
+						实际报销金额
+                    </td>
+					<td width="10%" style="text-align: center">
+						核销金额
+                    </td>
+					<td width="10%" style="text-align: center">
+						业务所属期间
+                    </td>
+                </tr>
+				
+				#foreach($singleDetail in $singleTotal.detailList)
+				#set($num = $velocityCount%2+1)
+				<input type="hidden" id="detailId_$velocityCount" value="$!{singleDetail.detail_id}" />
+				<tr id="tr_$velocityCount" style="height:23px" class="even$num">
+					<!--
+					#if($!{curStaId} == "start1")
+					<td>
+						<input id="item_$velocityCount" type="checkbox" />
+					</td>
+					#end
+					-->
+					<td>
+						$!{singleDetail.cost_type_content}
+						<!--
+						#if($!{modifyFlag})
+							<input id="expType_$velocityCount" />
+							<input id="costTypeText_$velocityCount" type="hidden" value="$!{singleDetail.cost_type_content}" />
+							<input id="costTypeValue_$velocityCount" type="hidden" value="$!{singleDetail.org_name}" />
+						#else
+							-->
+							
+						<!-- #end -->
+					</td>
+					<td>
+						<!--
+						#if($!{curStaId} == "start1")
+							<input id="costPurpose_$velocityCount" type="text" class="easyui-validatebox" value="$!{singleDetail.cost_purpose}" style="width:130px" />
+						#else
+						-->
+							<input id="costPurpose_$velocityCount" type="hidden" value="$!{singleDetail.cost_purpose}" />
+							$!{singleDetail.org_name}
+						<!-- #end -->
+					</td>
+					<td>
+						<!--
+						#if($!{curStaId} == "start1")
+							<input id="costPurpose_$velocityCount" type="text" class="easyui-validatebox" value="$!{singleDetail.cost_purpose}" style="width:130px" />
+						#else
+						 -->
+							<input id="costPurpose_$velocityCount" type="hidden" value="$!{singleDetail.cost_purpose}" />
+							$!{singleDetail.budget_number}
+						<!-- #end -->
+					</td>
+					<td>
+						<!--
+						#if($!{curStaId} == "start1")
+							<input id="costDate_$velocityCount" name="costDate_$velocityCount" type="text" class="easyui-datebox" value='$dateUtil.datetime($!{singleDetail.cost_date},"yyyy-MM-dd")' />
+						#else
+						-->
+							$dateUtil.datetime($!{singleDetail.cost_date},"yyyy-MM-dd")
+    					<!-- #end -->
+					</td>
+					<td>
+						<!--
+						#if($!{curStaId} == "start1")
+							<input id="invoiceAmount_$velocityCount" onblur="checkIsNumber('$velocityCount', 'amount');" type="text" class="easyui-validatebox" data-options ="required:true" value="$!{singleDetail.invoice_amount}" style="width:130px" />
+						#else
+						-->
+							<input id="invoiceAmount_$velocityCount" type="hidden" value="$!{singleDetail.invoice_amount}" />
+							$!{singleDetail.invoice_amount}
+						<!-- #end -->
+					</td>
+					<td>
+						<!--
+						#if($!{curStaId} == "start1")
+							<input id="invoiceAmount_$velocityCount" onblur="checkIsNumber('$velocityCount', 'amount');" type="text" class="easyui-validatebox" data-options ="required:true" value="$!{singleDetail.invoice_amount}" style="width:130px" />
+						#else
+						-->
+						#if(($!{curStaId} == "Finance_Manager" || $!{curStaId} == "cxyfeiyong_jihe" || $!{curStaId} == "znfeiyong_jihe" || $!{curStaId} == "feiyong_jicha_zn" || 
+			                  $!{curStaId} == "feiyong_jihe" ) &&  $!{modifyFlag} == "Y")
+							<input id="auditMoney_$velocityCount" onblur="checkIsNumber('$velocityCount', 'auditMoney');" type="text" class="easyui-validatebox" data-options ="required:true" value="$!{singleDetail.audit_money}" style="width:130px" />
+						#else
+							$!{singleDetail.audit_money}
+						#end
+						<!-- #end -->
+					</td>
+					<td>
+						<!--
+						#if($!{curStaId} == "start1")
+							<input id="costMemo_$velocityCount" type="text" value="$!{singleDetail.cost_memo}" style="width:210px" />
+						#else
+						-->
+							<input id="costMemo_$velocityCount" type="hidden" value="$!{singleDetail.cost_memo}" />
+							#if($!{singleDetail.cost_memo} == "undefined")
+								$dateUtil.datetime($!{singleDetail.businessStartDate},"yyyy-MM-dd")到
+								$dateUtil.datetime($!{singleDetail.businessEndDate},"yyyy-MM-dd")
+							#else
+								$!{singleDetail.cost_memo}
+							#end
+							<!--
+							$dateUtil.datetime($!{singleDetail.businessStartDate},"yyyy-MM-dd")到
+							$dateUtil.datetime($!{singleDetail.businessEndDate},"yyyy-MM-dd")
+							-->
+						<!-- #end -->
+					</td>
+				</tr> 
+				#end
+		    </table>
+		</div>
+		#if(($!{curStaId} == "Finance_Manager" || $!{curStaId} == "cxyfeiyong_jihe" || $!{curStaId} == "znfeiyong_jihe" || $!{curStaId} == "feiyong_jicha_zn" || 
+			$!{curStaId} == "feiyong_jihe" ) &&  $!{modifyFlag} == "Y")
+		<div region="south" border="false" style="text-align:right;height:30px;line-height:30px;">
+			<br>
+			<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">确定</a>&nbsp;
+		</div>
+		#end
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="maintDiv"/>
+	</body>
+	#if(($!{curStaId} == "Finance_Manager" || $!{curStaId} == "cxyfeiyong_jihe" || $!{curStaId} == "znfeiyong_jihe" || $!{curStaId} == "feiyong_jicha_zn" || 
+			$!{curStaId} == "feiyong_jihe" ) &&  $!{modifyFlag} == "Y")
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/account/searchAuditExpenseForm.js"></script>
+	#end
+</html>

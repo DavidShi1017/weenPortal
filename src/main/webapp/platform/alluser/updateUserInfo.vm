@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()	
+	</head>
+	<body class="easyui-layout">
+		<form method="post" target="hideFrame">
+			<div region="center" class="easyui-panel" title="" data-options="iconCls:'icon-edit'">
+				<input type="hidden" id="userId" value="$!{cusUser.userId}"/>
+			<table width="100%" border="0" cellpadding="0" cellspacing="5">
+        			<tr>
+                        <td class="head" noWrap>LoginId:</font>):</td>
+        				<td><input class="easyui-validatebox"  id="loginId" name="cusUser.loginId" 
+							data-options="required:true" missingMessage="Please enter a valid LoginId" value="$!{cusUser.loginId}" readonly>
+							<!--<input type="button" onclick="testId(document.getElementById('loginId').value)" value="测试是否可用"/>-->
+						</td>
+        				<td class="head" noWrap>UserName<font color='red'>*</font>:</td>
+        				<td><input class="easyui-validatebox"  id="userName" name="cusUser.userName" 
+							data-options="required:true" missingMessage="Please enter a valid Username" value="$!{cusUser.userName}" ></td>
+        			</tr>
+        			<tr>
+
+						<td class="head" noWrap>Org:</td>
+        				<td>
+        				<input class="easyui-validatebox"  id="orgName" name="cusUser.orgName"   value="$!{cusUser.orgName}" readonly >
+						<input class="easyui-validatebox" type='hidden' id="orgId" name="cusUser.orgId" value="$!{cusUser.orgId}">
+						
+						<!--
+						<input type="button"  value="组织"  onclick="selectOrgTree()"/>
+                       -->
+                        <a class="easyui-linkbutton"  href="javascript:selectOrgTree()">Org</a>
+						</td>
+						
+						<td class="head" noWrap>Deptment<font color='red'>*</font>:</td>
+        				<td><input class="easyui-validatebox"  id="dept" name="cusUser.deptCode" 
+						  value="$!{cusUser.deptCode}" ></td>		
+						
+        			</tr>
+        			<tr>
+						
+        				<td class="head" noWrap>Email:</td>
+        				<td>
+        				<input class="easyui-validatebox"  id="email" name="cusUser.email" 
+							missingMessage="Please enter your email" validType="email" invalidMessage="Please enter the correct mailbox format, such as:xxx@sina.com" value="$!{cusUser.email}"></td>
+						
+        				<td class="head" noWrap>MobilePhone:</td>
+        				<td>
+        				<input class="easyui-validatebox"  id="busMobilephone" name="cusUser.busMobilephone"  value="$!{cusUser.mobile}" 
+							missingMessage="Please enter your Phone" ></td>
+						
+        			</tr>
+					<tr>
+			
+        				<td class="head" noWrap>Sample Funloc:</td>
+        				<td>
+							<input class="easyui-validatebox"  id="trafficExpense" name="cusUser.trafficExpense" data-options="required:true"  value="$!{cusUser.trafficExpense}">	
+							<div id="toolbarCustomer" class="datagrid-toolbar">
+								<input class="easyui-searchbox" searcher="searcherCustomer" prompt="Key word search" style="width:250px"></input>		
+							 </div>	
+						</td>
+						
+        			</tr>
+					<!--
+					<td class="head" noWrap>Office Telephone:</td>
+        				<td><input class="easyui-validatebox"  id="phone" name="cusUser.phone" value="$!{cusUser.phone}"></td>
+					<tr>
+						<td class="head" noWrap>IdCard:</td>
+        				<td><input class="easyui-validatebox"  id="idCard" name="cusUser.idCard" value="$!{cusUser.idCard}"></td>
+						<td class="head" noWrap>岗位:</td>
+        				<td>
+							<input colspan='3' id="roleIds" name="cusUser.roleIds"  style="width:250px;" value="$!{roleIds}" >
+								<input  id="stationNames" type="hidden"  style="width:155px;" value="$!{stationNames}" >
+                                        </input>
+						</td>
+						<td class="head" noWrap>办公传真:</td>
+        				<td><input class="easyui-validatebox"  id="workFax" name="cusUser.workFax" value="$!{cusUser.workFax}"></td>
+                    </tr>
+					-->
+					
+					
+					
+
+					<!--
+					<tr>
+        				<td class="head" noWrap>Remark:</td>
+        				<td colspan="3"><textarea id="remark" name="cusUser.remark" rows="3" cols="50" class="easyui-validatebox">$!{cusUser.remark}</textarea></td>
+        			</tr>
+							   <td class="head" noWrap>Address:</td>
+					   <td >
+						<input class="easyui-validatebox"  id="address" name="cusUser.address" value="$!{cusUser.address}">
+					   </td>
+											<td class="head" noWrap>Sex:</td>
+						<td>
+							<input type="hidden" id="sexValue" value="$!{cusUser.sex}"/>
+                        <select id="sex"  name="cusUser.sex" style="width:100px;" required="true" >
+									<option value="M"   readonly>Male</option>
+									<option value="F"   readonly>Female</option>
+						</select>			
+						</td>	
+        				<td class="head" noWrap>手机号码:</td>
+        				<td>
+        				<input class="easyui-validatebox"  id="mobile" name="cusUser.mobile"  value="$!{cusUser.mobile}" 
+							missingMessage="请输入手机号" ></td>
+					<tr style="display:none">
+        				<td class="head" noWrap>交通费:</td>
+        				<td>
+        				<input class="easyui-validatebox"  id="trafficExpense" name="cusUser.trafficExpense" value="$!{cusUser.trafficExpense}"></td>
+						<td class="head" noWrap>餐费补贴:</td>
+        				<td><input class="easyui-validatebox"  id="mealAllowances" name="cusUser.mealAllowances" value="$!{cusUser.mealAllowances}"></td>
+					   <td class="head" noWrap>通讯费:</td>
+        			   <td>
+						<input class="easyui-validatebox"  id="communicationFees" name="cusUser.communicationFees" value="$!{cusUser.communicationFees}"></input>
+					   </td>
+        			</tr>
+					-->
+					
+						<!--
+					<tr >
+						<td class="head" noWrap>Personnel Category:</td>
+						
+						<td>
+						#if($!{cusUser.hqSign} == '1')
+						 <input type="radio" name="cusUser.hqSign" value="1" checked> 总部  </input>
+						 <input type="radio" name="cusUser.hqSign" value="0"> 非总部  </input>
+						#else
+						 <input type="radio" name="cusUser.hqSign" value="1" > 总部  </input>
+						 <input type="radio" name="cusUser.hqSign" value="0" checked> 非总部  </input>
+						#end	
+                        </td>	
+                    </tr>	
+					<tr>
+						<td class="head" noWrap>员工属性:</td>
+						<td>
+						#if($!{cusUser.userAttr} == '0')
+						  <input type="radio" name="cusUser.userAttr" value="0" checked> 全部  </input>
+						  <input type="radio" name="cusUser.userAttr" value="1"> 分配组织  </input>
+						  <input type="radio" name="cusUser.userAttr" value="2"> 分配对象  </input>
+						#elseif($!{cusUser.userAttr} == '1')
+						  <input type="radio" name="cusUser.userAttr" value="0" > 全部  </input>
+						  <input type="radio" name="cusUser.userAttr" value="1" checked> 分配组织  </input>
+						  <input type="radio" name="cusUser.userAttr" value="2"> 分配对象  </input>
+						#elseif($!{cusUser.userAttr} == '2')
+						  <input type="radio" name="cusUser.userAttr" value="0" > 全部  </input>
+						  <input type="radio" name="cusUser.userAttr" value="1"> 分配组织  </input>
+						  <input type="radio" name="cusUser.userAttr" value="2" checked> 分配对象  </input>
+						#else
+						  <input type="radio" name="cusUser.userAttr" value="0" > 全部  </input>
+						  <input type="radio" name="cusUser.userAttr" value="1"> 分配组织  </input>
+						  <input type="radio" name="cusUser.userAttr" value="2" > 分配对象  </input>
+						 #end
+                        </td>	
+        			</tr>
+						-->
+        			
+					<tr style="display:none">
+						<td class="head" noWrap><font color='green'>Tips:</font></td>
+						<td>
+							<font color='green'>LoginId cannot be modified</font>
+						</td>
+					</tr>
+		    </table><div style="display:none">
+			<div id="toolbar" class="datagrid-toolbar" >
+				<input id="ss" class="easyui-searchbox" searcher="searcher" prompt="请填写查询条件" menu="#mm" style="width:300px"></input>		
+			</div></div>
+			</div>
+			<div region="south" border="false" style="text-align:right;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton"  href="javascript:resetPwd(document.getElementById('userId').value)">Reset Password</a>
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:close()">Cancel</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		 <div id="maintWindow"/>
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/alluser/updateUserInfo.js"></script>
+</html>

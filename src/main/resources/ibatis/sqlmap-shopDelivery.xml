@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="delvs">
+	<typeAlias alias="delv" type="com.jingtong.platform.sap.pojo.ShopDelivery" />
+ 	<typeAlias alias="acc" type="com.jingtong.platform.sap.pojo.Accrual"/> 
+ 	 
+	<select id="getDeliverys" parameterClass="delv" resultClass="java.lang.Integer">
+		<![CDATA[
+		    select count(y.id) from crm.crm_tb_shop_delivery y where y.vbeln =#vbeln# and y.matnr=#matnr# and y.vgpos=#vgpos#
+		]]>
+	</select>
+	
+	<select id="checkExistAccrual" parameterClass="acc" resultClass="java.lang.Long">
+		<![CDATA[
+		    select count(1) from crm.crm_tb_accrual where belnr = #belnr# and bukrs = #bukrs# and gjahr = #gjahr# and buzei = #buzei#
+		]]>
+	</select>
+	 
+	<update id="updateAccrual">
+	    <![CDATA[
+		    update crm.crm_tb_shop_delivery y set status='15' where status='10'
+		]]>
+	</update> 
+	 
+	 
+	<insert id="insertDelivery" parameterClass="delv">
+	<selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				select CRM.CRM_SEQ_SHOP_DELIVERY.NEXTVAL as id from dual
+			]]>
+			</selectKey>
+	insert into crm.crm_tb_shop_delivery (
+			  id           ,
+			  crm_order_id ,
+			  sap_order_id ,
+			  vbeln        ,
+			  erdat        ,
+			  posnr        ,
+			  matnr        ,
+			  werks        ,
+			  lgort        ,
+			  arktx        ,
+			  brgew        ,
+			  volum        ,
+			  lfimg        ,
+			  vrkme        ,
+			  dele         ,
+			  createuser   ,
+			  createdate   ,
+			  modifyuser   ,
+			  modifydate   ,
+			  status    ,
+			  vgpos  ,
+			  credit_Id,
+			  price,
+			  kunnr
+	) values (
+	 		  #id#           ,
+			  #crmOrderId# ,
+			  #sapOderId# ,
+			  #vbeln#        ,
+			  to_date(#erdat#,'yyyy/MM/dd')        ,
+			  #posnr#        ,
+			  #matnr#        ,
+			  #werks#        ,
+			  #lgort#        ,
+			  #arktx#        ,
+			  #brgew#        ,
+			  #volum#        ,
+			  #lfimg#        ,
+			  #vrkme#        ,
+			  #dele#         ,
+			  #createUser#   ,
+			  sysdate   ,
+			  #modifyUser#   ,
+			  sysdate   ,
+			  #status#  ,
+			  #vgpos#,
+			  #creditId#,
+			  #price#,
+			  #kunnr_we#
+	
+	)
+	</insert>
+	 
+    <update id="updateDelivery" parameterClass="delv">
+    	update crm.crm_tb_shop_delivery set 
+    		  crm_order_id =#crmOrderId# ,
+			  sap_order_id = #sapOderId# ,
+			  vbeln=#vbeln#        , 
+			  erdat= to_date(#erdat#,'yyyy/MM/dd')        ,
+			  posnr=#posnr#        ,
+			  matnr=#matnr#        ,
+			  werks=#werks#        ,
+			  lgort=#lgort#        ,
+			  arktx=#arktx#        ,
+			  brgew=#brgew#        ,
+			  volum=#volum#        ,
+			  lfimg=#lfimg#        ,
+			  vrkme=#vrkme#        ,
+			  dele=#dele#         ,
+			  modifyuser=#modifyUser#   ,
+			  modifydate=sysdate   ,
+			  status=#status# ,
+			  kunnr=#kunnr_we#,
+			  credit_id= #creditId#,
+			  price=#price#
+		where 	vbeln=#vbeln#   and 	matnr=#matnr#    and   status='0'
+	
+    </update>
+   
+     <!-- 存储过程参数声明列表   -->
+	<parameterMap id="parameterMap" class="java.util.HashMap">
+		<parameter property="deliveryId" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN"/>
+  		<parameter property="RESULTS" jdbcType="VARCHAR" javaType = "java.lang.String" mode="OUT"/>
+ 	</parameterMap>
+	<procedure id="updateOrderPrc" parameterMap="parameterMap"  resultClass="java.lang.String">
+	<![CDATA[
+		{ call  crm.BEFORE_SYNCHRO_DELIVERY(?,?) }
+	]]>
+	</procedure>
+	
+	<select id="getCreditByOrder" parameterClass="acc" resultClass="acc">
+		<![CDATA[
+		   select aa.sap_order_id sapOrderId,aa.vbeln deliveryId,aa.credit_id creditId,bb.credit_range creditRange,
+                bb.interest_rate rate,aa.erdat useDate,bb.repayment_date repayMentDate ,sum(aa.price) repayMentAmount,aa.kunnr,bb.repayment_days repaymentDays from crm.crm_tb_shop_delivery aa
+				left outer join crm.crm_tb_credit bb on aa.credit_id =bb.credit_id 
+				where aa.status='10'  and bb.credit_range not in('1020')
+				group by aa.vbeln,aa.credit_id,bb.credit_range,bb.interest_rate,aa.erdat,bb.repayment_date,aa.kunnr,aa.sap_order_id,bb.repayment_days 
+        
+  		]]>
+	</select>
+    
+    
+    
+    
+    <insert id="insetAccrual" parameterClass="acc" >
+			<selectKey resultClass="java.lang.Long" keyProperty="id">
+					<![CDATA[
+						select crm.crm_sq_accrual.NEXTVAL as id from dual
+					]]>
+			</selectKey>
+			<![CDATA[
+				insert into crm.crm_tb_accrual
+					(id,kunnr,credit_Id,creditRange,sap_order_id,delivery_Id,use_date,repayMent_amount,status,repayment_date,rate,createDate,gjahr,bukrs,belnr,buzei,firstrepayment_date)
+				values
+					(#id#,#kunnr#,#creditId#,#creditRange#,#sapOrderId#,#deliveryId#,#useDate#,#repayMentAmount#,1,#repayMentDate#,#rate#,sysdate,#gjahr#,#bukrs#,#belnr#,#buzei#,#repayMentDate#)
+			]]>
+	</insert>
+   
+    
+</sqlMap>

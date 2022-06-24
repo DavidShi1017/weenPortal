@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="order">
+	<typeAlias alias="starderOrder" type="com.jingtong.platform.order.pojo.StarderOrder"/>
+	<typeAlias alias="od" type="com.jingtong.platform.order.pojo.OrderDetail"/>		
+	<!-- 经销商客户信息主数据 -->
+	<select id="getOrderById" parameterClass="starderOrder" resultClass="starderOrder">
+		<![CDATA[
+			select 
+				aa.id,aa.order_id,aa.type_id,aa.branch_id,bb.customer_name customer_name,aa.currency_code,
+				(cc.partnerName||'  --  '||cc.address) shipToName,aa.ship_to,dd.partnerName payerToName,aa.payer_to,
+				ee.partnerName billingToName,aa.billing_to,aa.saler,
+				aa.state,aa.remark,aa.sync_state,sap_order_id,
+				aa.create_time,ff.emp_name create_userId,
+				aa.latest_time,gg.emp_name latest_userId,aa.org_code
+			from basis.basis_tb_orderInfo aa
+				left outer join basis.basis_tb_customerInfo bb  on aa.branch_id=bb.customer_code
+				left outer join basis.basis_tb_cus_relationship cc  on aa.ship_to=cc.partnerId and cc.partnerType='WE' and aa.branch_id=cc.customer_code
+				left outer join basis.basis_tb_cus_relationship dd  on aa.payer_to=dd.partnerId and dd.partnerType='RG' and aa.branch_id=dd.customer_code
+				left outer join basis.basis_tb_cus_relationship ee  on aa.billing_to=ee.partnerId and ee.partnerType='RE' and aa.branch_id=ee.customer_code
+				left outer join basis.basis_tb_salesemp_info ff on aa.create_userId = ff.emp_id
+				left outer join basis.basis_tb_salesemp_info gg on aa.latest_userId = gg.emp_id
+			where aa.id=#id#
+		]]>	
+	</select>
+	
+	<select id="getOrderList" parameterClass="starderOrder" resultClass="starderOrder">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+			  aa.id,aa.order_id,aa.type_id,bb.customer_name branch_id,aa.currency_code,
+			  (cc.partnerName||'  --  '||cc.address)  ship_to,dd.partnerName payer_to,ee.partnerName billing_to,aa.saler,
+			  aa.state,aa.remark,aa.sync_state,aa.sap_order_id,
+			  aa.create_time,ff.emp_name create_userId,
+			  aa.latest_time,gg.emp_name latest_userId,aa.org_code
+		from basis.basis_tb_orderInfo aa
+			left outer join basis.basis_tb_customerInfo bb  on aa.branch_id=bb.customer_code
+			left outer join basis.basis_tb_cus_relationship cc  on aa.ship_to=cc.partnerId and cc.partnerType='WE' and aa.branch_id=cc.customer_code
+			left outer join basis.basis_tb_cus_relationship dd  on aa.payer_to=dd.partnerId and dd.partnerType='RG' and aa.branch_id=dd.customer_code
+			left outer join basis.basis_tb_cus_relationship ee  on aa.billing_to=ee.partnerId and ee.partnerType='RE' and aa.branch_id=ee.customer_code
+			left outer join basis.basis_tb_salesemp_info ff on aa.create_userId = ff.emp_id
+			left outer join basis.basis_tb_salesemp_info gg on aa.latest_userId = gg.emp_id
+	 	where aa.type_id='ZOR1'  
+	]]>
+		<dynamic>
+			<isNotEmpty property="order_id" prepend="and">
+				<![CDATA[ aa.order_id like #order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="branch_id" prepend="and">
+				<![CDATA[ aa.branch_id = #branch_id#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="sap_order_id" prepend="and">
+				<![CDATA[ aa.sap_order_id like #sap_order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="loginId" prepend="and">
+				<![CDATA[ aa.branch_id in (select customer_code from basis_tb_customer_user where loginId=#loginId#) ]]>
+			</isNotEmpty> 
+		</dynamic>
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	<select id="getOrderListCount" parameterClass="starderOrder"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+		select count(*) from basis.basis_tb_orderInfo  aa
+			left outer join basis.basis_tb_customerInfo bb  on aa.branch_id=bb.customer_code
+			left outer join basis.basis_tb_cus_relationship cc  on aa.ship_to=cc.partnerId and cc.partnerType='WE' and aa.branch_id=cc.customer_code
+			left outer join basis.basis_tb_cus_relationship dd  on aa.payer_to=dd.partnerId and dd.partnerType='RG' and aa.branch_id=dd.customer_code
+			left outer join basis.basis_tb_cus_relationship ee  on aa.billing_to=ee.partnerId and ee.partnerType='RE' and aa.branch_id=ee.customer_code
+	 	where aa.type_id='ZOR1' 			
+		]]>
+		<dynamic>
+			<isNotEmpty property="order_id" prepend="and">
+				<![CDATA[ aa.order_id like #order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="branch_id" prepend="and">
+				<![CDATA[ aa.branch_id = #branch_id#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="sap_order_id" prepend="and">
+				<![CDATA[ aa.sap_order_id like #sap_order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty property="loginId" prepend="and">
+				<![CDATA[ aa.branch_id in (select customer_code from basis_tb_customer_user where loginId=#loginId#) ]]>
+			</isNotEmpty> 
+		</dynamic>		 
+	</select>
+	
+	
+	<insert id="createOrder" parameterClass="starderOrder">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_orderInfo.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_orderInfo   
+			(
+			  id,order_id,type_id,branch_id,currency_code,
+			  ship_to,payer_to,billing_to,saler,
+			  state,remark,sale_group,distri_channel,product_groupId,
+			  create_time,create_userId,
+			  latest_time,latest_userId,org_code
+			)
+			values
+			(
+			  #id#,#order_id#,#type_id#,#branch_id#,#currency_code#,
+			  #ship_to#,#payer_to#,#billing_to#,#saler#,
+			  #state#,#remark#,#sale_group#,'00','00',
+			  sysdate,#create_userId#,
+			  sysdate,#latest_userId#,#org_code#
+			)
+		
+		]]>
+	</insert>
+	
+	<update  id="updateOrder" parameterClass="starderOrder">
+		update basis.basis_tb_orderInfo   set 
+			  branch_id=#branch_id#,currency_code=#currency_code#,
+			  ship_to=#ship_to#,payer_to=#payer_to#,billing_to=#billing_to#,saler=#saler#,
+			  remark=#remark#,
+			  latest_time=sysdate,latest_userId=#latest_userId#,org_code=#org_code#
+		where id=#id#
+	</update>
+
+	
+	<delete id="deleteOrder" parameterClass="starderOrder">
+		delete from basis.basis_tb_orderInfo   
+		where id=#id#
+	</delete>
+	<delete id="deleteOrderOfMain" parameterClass="od">
+		delete from basis.basis_tb_order_detail   
+		where main_id =#main_id#
+	</delete>
+	
+	
+<!-- 订单明细 -->	
+	
+	<select id="getOrderDetailList" parameterClass="od" resultClass="od">
+	<![CDATA[
+		select 
+			  id,order_id,row_no,material_id,material_name,material_typeId,
+			  material_groupId,sale_unit,pq,moq,order_QTY,lead_time,po_item,
+			  delivery_date,to_char(delivery_date,'YYYY-MM-DD') delivery_dateStr,confirm_date,
+			  to_char(confirm_date,'YYYY-MM-DD') confirm_dateStr,price,remark
+		from basis.basis_tb_order_detail
+	 	where main_id=#main_id#  
+	 	order by  row_no asc
+	]]>
+	</select>
+	
+	
+	<insert id="createOrderDetail" parameterClass="od">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_order_detail.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_order_detail   
+			(
+			  id,order_id,row_no,material_id,material_name,material_typeId,main_id,
+			  material_groupId,sale_unit,moq,order_QTY,pq,po_item,
+			  lead_time,delivery_date,confirm_date,price,remark
+			)
+			values
+			(
+			  #id#,#order_id#,#row_no#,#material_id#,#material_name#,#material_typeId#,#main_id#,
+			  #material_groupId#,#sale_unit#,#moq#,#order_QTY#,#pq#,#po_item#,
+			  #lead_time#,#delivery_date#,#confirm_date#,#price#,#remark#
+			)
+		
+		]]>
+	</insert>
+	
+	<update  id="updateOrderDetail" parameterClass="od">
+		update basis.basis_tb_order_detail   set 
+			  material_id=#material_id#,material_name=#material_name#,material_typeId=#material_typeId#,
+			  material_groupId=#material_groupId#,sale_unit=#sale_unit#,
+			  moq= #moq#,order_QTY=#order_QTY#,po_item=#po_item#,
+			  lead_time=#lead_time#,delivery_date=#delivery_date#,
+			  remark=#remark#
+		where id=#id#
+	</update>
+
+	
+	<delete id="deleteOrderDetail" parameterClass="od">
+		delete from basis.basis_tb_order_detail   
+		where id in $ids$
+	</delete>
+	
+	
+	<!-- 存储过程参数声明列表 -->
+	<parameterMap id="parameterMap" class="java.util.HashMap">
+		<!-- 默认填 6 -->
+		<parameter property="incount" javaType="java.lang.String"
+			jdbcType="VARCHAR" mode="IN" />
+		<!-- 模块类型编码 -->
+		<parameter property="intype" javaType="java.lang.String"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="RESULTCODE" jdbcType="VARCHAR"
+			javaType="java.lang.String" mode="OUT" />
+	</parameterMap>
+
+	<procedure id="getSystemIdPrc" parameterMap="parameterMap"
+		resultClass="java.lang.String">
+	<![CDATA[
+		{ call basis.prc_getSysGenkey(?,?,?) }
+	]]>
+	</procedure>
+
+<!-- 导出查询所有信息   表头 明细 -->
+	<select id="getAllOrderInfoNoPage" parameterClass="od" resultClass="od">
+	<![CDATA[
+		select 
+			  aa.id,aa.order_id,aa.row_no,aa.material_id,aa.material_name,aa.material_typeId,
+			  material_groupId,aa.sale_unit,aa.pq,aa.moq,aa.order_QTY,aa.lead_time,aa.po_item,
+			  delivery_date,to_char(aa.delivery_date,'YYYY-MM-DD') delivery_dateStr,aa.confirm_date,
+			  to_char(aa.confirm_date,'YYYY-MM-DD') confirm_dateStr,aa.price,aa.remark,
+			  
+			  bb.type_id,cc.customer_name branch_id,bb.currency_code,
+			  dd.address ship_to,ee.partnerName payer_to,ff.partnerName billing_to,bb.saler,
+			  bb.state,bb.remark,bb.sync_state,bb.sap_order_id,
+			  bb.create_time,gg.emp_name create_userId,
+			  bb.latest_time,hh.emp_name latest_userId,bb.org_code
+		from basis.basis_tb_order_detail aa
+			left outer join basis.basis_tb_orderInfo bb on aa.main_id=bb.id
+			left outer join basis.basis_tb_customerInfo cc  on bb.branch_id=cc.customer_code
+			left outer join basis.basis_tb_cus_relationship dd  on bb.ship_to=dd.partnerId and dd.partnerType='WE' and bb.branch_id=dd.customer_code
+			left outer join basis.basis_tb_cus_relationship ee  on bb.payer_to=ee.partnerId and ee.partnerType='RG' and bb.branch_id=ee.customer_code
+			left outer join basis.basis_tb_cus_relationship ff  on bb.billing_to=ff.partnerId and ff.partnerType='RE' and bb.branch_id=ff.customer_code
+			left outer join basis.basis_tb_salesemp_info gg on  bb.create_userId = gg.emp_id
+			left outer join basis.basis_tb_salesemp_info hh on bb.latest_userId = hh.emp_id
+	 	where  bb.type_id='ZOR1' 
+	 	]]> 
+	 	<dynamic>
+			<isNotEmpty property="order_id" prepend="and">
+				<![CDATA[ aa.order_id like #order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="branch_id" prepend="and">
+				<![CDATA[ bb.branch_id = #branch_id#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="sap_order_id" prepend="and">
+				<![CDATA[ bb.sap_order_id like #sap_order_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="loginId" prepend="and">
+				<![CDATA[ bb.branch_id in (select customer_code from basis_tb_customer_user where loginId=#loginId#) ]]>
+			</isNotEmpty> 
+		</dynamic>  
+		<![CDATA[ 
+	 	order by  bb.id desc,aa.row_no asc
+		]]>
+	</select>
+	
+	
+</sqlMap>

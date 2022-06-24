@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()	
+	</head>
+	<body class="easyui-layout">
+		<form method="post" target="hideFrame">
+			<input type="hidden" name="scheduleList.id" id="ids" value="$!{scheduleList.id}">
+			<div region="center" class="easyui-panel" data-options="iconCls:'icon-edit'">
+				<br /><br /><br />
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+        		
+				<tr> 
+            			<td class="head" noWrap>开始时间:</td>
+            				<td>
+						    <input class="easyui-datetimebox" required style="width:200px" id="scheduleList.workstart_date" name="scheduleList.workstart_date" value="$!{scheduleList.workstart_date}">		
+            			</td>
+				</tr>
+				<tr>
+						<td class="head" noWrap>结束时间:</td>
+            				<td>
+								<input class="easyui-datetimebox" required style="width:200px" id="scheduleList.workend_date" name="scheduleList.workend_date" value="$!{scheduleList.workend_date}">		
+            			    </td>
+               	</tr>
+    		</table>
+			</div>
+			<div region="south" border="false" style="text-align:right;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">保存</a>
+			</div>
+		</form>
+		
+		<iframe id="hideFrameDetail" name="hideFrameDetail"  style="height: 0; width: 0"></iframe>
+	</body>
+	
+
+</html>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/schedulelist/editShceduleList.js"></script>

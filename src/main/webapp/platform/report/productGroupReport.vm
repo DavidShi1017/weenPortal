@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+		<title>中山榄菊经销商订单管理系统(ECP-CRM)</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+        #CSSM(["easyui","style"])
+        #JSM(["jquery", "easyui"])
+        #JS_ENV_VAL()
+		<link rel="stylesheet" type="text/css" href="$!{env.imgUrl}/css/reportcss/css/detail.css" />
+<script type="text/javascript" src="$!{env.imgUrl}/js/reportjs/FusionCharts.js"></script>
+    </head>
+	<body>
+		 
+            	<!-- 基本信息 -->
+            <table class="files_main_table">
+            	 
+            	 
+                     
+                            <!-- 产品分析 -->
+            				<table class="files_child_table">
+            					<tr>
+            						<td colspan="14" class="child_title">促销产品</td>
+            					</tr>
+            						<tr>
+            							<td class="child_col_style3" colspan="2">产品</td>
+            							<td class="child_col_style3" colspan="4">价格(PC/元)</td>
+            							<td class="child_col_style3" colspan="2">费用(元)</td>
+                                        <td class="child_col_style3" colspan="4">销量</td>  
+                                        <td class="child_col_style3"  rowspan="2">单品执行情况</td>                      
+            						</tr>
+            						<tr>
+            							<td class="child_col_style3">促销产品</td>
+                                        <td class="child_col_style3">活动类型</td>
+            							<td class="child_col_style3">常态供货价</td>
+            							<td class="child_col_style3">促销供货价</td>
+            							<td class="child_col_style3">原零售价</td>
+            							<td class="child_col_style3">促销零售价</td>
+            							<td class="child_col_style3">促销费</td>
+            							<!--<td class="child_col_style3">陈列费</td>
+                                        <td class="child_col_style3">DM费</td>-->
+										<td class="child_col_style3">是否堆头</td>
+                                        <!--<td class="child_col_style3">费用率</td>-->
+            							<td class="child_col_style3">需货量(CAR)</td>
+                                        <td class="child_col_style3">进发货量(CAR)</td>
+										<td class="child_col_style3">达成率</td>
+                                        <td class="child_col_style3">销售额(万元)</td>
+            						</tr>
+            						#foreach($rep in $replist)
+            						<tr>
+            							<td class="child_col_style4" width="15%">$!{rep.materialName}</td>
+										#if("1"==$!{rep.discountType})
+											<td class="child_col_style4" width="8%">买赠</td>
+										#elseif("2"==$!{rep.discountType})
+											<td class="child_col_style4" width="8%">战略</td>
+									    #elseif("3"==$!{rep.discountType})
+											<td class="child_col_style4" width="8%">特价</td>
+										#else
+                                        <td class="child_col_style4" width="8%"></td>
+										#end
+										 
+            							<td class="child_col_style4" width="8%">$!{rep.channelPrice}</td>
+										 
+										
+										#if($!{rep.outPrice}>0)
+            							<td class="child_col_style4" width="8%">$!{rep.outPrice}</td>
+										#else
+                                        <td class="child_col_style4" width="8%"></td>
+										#end
+										
+										#if($!{rep.channelRetailPrice}>0)
+            							<td class="child_col_style4" width="8%">$!{rep.channelRetailPrice}</td>
+										#else
+                                        <td class="child_col_style4" width="8%"></td>
+										#end
+            							
+										#if($!{rep.outRetailPrice}>0)
+            							<td class="child_col_style4" width="8%">$!{rep.outRetailPrice}</td>
+										#else
+                                        <td class="child_col_style4" width="8%"></td>
+										#end
+										
+            							<td class="child_col_style4" width="6%">$!{rep.cxCost}</td>
+            							<!--<td class="child_col_style4" width="6%">$!{rep.displayCost}</td>
+            							<td class="child_col_style4" width="6%">$!{rep.dmcost}</td>-->
+										#if("Y"==$!{rep.isShippromo})
+                                        <td class="child_col_style4" width="6%">是</td>
+										#elseif("N"==$!{rep.isShippromo})
+										<td class="child_col_style4" width="6%">否</td>
+										#else
+											<td class="child_col_style4" width="6%"></td>
+										#end
+                                       <!-- <td class="child_col_style4" width="6%">$!{rep.costRate}%</td>-->
+            							<td class="child_col_style4" width="6%">$!{rep.demandNumI}</td>
+                                        <td class="child_col_style4" width="6%">$!{rep.salesNums}</td>
+										
+										#if($!{rep.dclv}>0)
+                                        <td class="child_col_style4" width="4%">$!{rep.dclv}%</td>
+										#else
+											<td class="child_col_style4" width="6%">0.0%</td>
+										#end
+										<td class="child_col_style4" width="6%">$!{rep.netwrs}</td>
+									<!--	#if($!{rep.netwr}>0)
+                                        <td class="child_col_style4" width="6%">$!{rep.netwr}</td>
+										#else
+											<td class="child_col_style4" width="6%">0.0</td>
+										#end-->
+										#if($!{rep.materialName}!="合计:")
+										<td class="child_col_style4" width="6%"><a href="http://dms.lanju.cn:8092/LanjuASP/dms/rep/retailerPromotionCostReport4retDetail.html?prtid=$!{rep.PromotionId}&product_id=$!{rep.MaterialNumber}"  target="_blank">详情</a></td>
+										#else
+										<td class="child_col_style4" width="6%"></td>
+										#end
+            						</tr>
+            						#end
+            						<tr> 
+                                        <td class="child_col_style4"><p style="font-size:12px;color:red"><b>费用总计:</b></p></td>
+            							<td class="child_col_style4" colspan="13" style="text-align:left;">
+										<p style="font-size:12px;color:red"><b>
+    										  促销费:$!{sapReport.cxCost}
+                							 &nbsp;&nbsp;陈列费:$!{sapReport.clCost}
+    										 &nbsp;&nbsp;DM费:$!{sapReport.dmCostI}
+    										 &nbsp;&nbsp;费用合计:$!{sapReport.fyAll}
+    										 &nbsp;&nbsp;销售额:$!{sapReport.xsCost}
+    										 &nbsp;&nbsp;费用率:$!{sapReport.costRate}%
+										 </b></p></td>
+                                        
+            						</tr> 
+            				</table>
+            				<!-- 业务信息 -->
+                            
+                            
+                            
+                            
+             
+            <!-- 基本信息 -->
+            
+            			</td>
+            		</tr>
+            	</tbody>
+            </table>
+            <!-- 组织维度小结 -->
+            
+            
+            
+            <!-- 活动总结 -->
+            
+            
+            <script>
+            $(document).ready(function() {
+            	$('.main_title img').mousedown(function (e) {
+            		e.stopPropagation();    
+            	}).toggle(function () {
+            		$(this).attr("src","statics/css/reportcss/img/files_open.gif")
+            				.parents(".files_main_table")
+            				.find(".main_tbody").hide();
+            		return false;
+            	},function () {
+            		$(this).attr("src","statics/css/reportcss/img/files_close.gif")
+            				.parents(".files_main_table")
+            				.find(".main_tbody").show();
+            		return false;
+            	});
+            	
+            	$('.child_title img').mousedown(function (e) {
+            		e.stopPropagation();    
+            	}).toggle(function () {
+            		$(this).attr("src","statics/css/reportcss/img/files_open1.gif")
+            				.parents(".files_child_table")
+            				.find(".child_tbody").hide();
+            		return false;
+            	},function () {
+            		$(this).attr("src","statics/css/reportcss/img/files_close1.gif")
+            				.parents(".files_child_table")
+            				.find(".child_tbody").show();
+            		return false;
+            	});
+            	 
+            });
+           
+           
+            </script>
+</body>
+</html>

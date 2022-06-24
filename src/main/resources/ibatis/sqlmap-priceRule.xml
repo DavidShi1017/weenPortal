@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="priceRule">
+	<typeAlias alias="priceRule" type="com.jingtong.platform.priceRule.pojo.PriceRule"/>	
+	<!-- 经销商客户信息主数据 -->
+	<select id="getPriceRuleById" parameterClass="priceRule" resultClass="priceRule">
+		<![CDATA[
+			select 
+				aa.id,org_id,aa.material_id,aa.material_name,aa.material_type,aa.office_id,
+				aa.basic_type,aa.currency_code,aa.price_type,aa.customer_code,
+				aa.sale_price,aa.start_date,aa.end_date,gg.material_name material_desc,
+				to_char(start_date,'YYYY-MM-DD') start_dateStr,
+				to_char(end_date,'YYYY-MM-DD') end_dateStr,aa.state,aa.remark,aa.isDeleted,aa.perUnit				
+			from basis.basis_tb_price_rule aa
+			left outer join basis.basis_tb_productinfo gg on ltrim(gg.material_id,'0') =ltrim(aa.material_id,'0') and factory= 'HK10'
+			where aa.id=#id#
+		]]>	
+	</select>
+	
+	<select id="getPriceRuleList" parameterClass="priceRule" resultClass="priceRule">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+		  	aa.id,aa.org_id,aa.material_id,gg.material_name material_desc,aa.material_type,
+			aa.basic_type,aa.currency_code,ee.item_name price_type,
+			aa.sale_price,aa.start_date,aa.end_date,aa.customer_code,aa.perUnit,
+			to_char(start_date,'YYYY-MM-DD') start_dateStr,
+			to_char(end_date,'YYYY-MM-DD') end_dateStr,aa.state,aa.remark,aa.isDeleted,
+			aa.create_time,dd.emp_name create_userId,office_id,
+		    aa.latest_time,cc.emp_name latest_userId,aa.org_code,ff.customer_name customer_name
+		from basis.basis_tb_price_rule aa
+			left outer join basis.basis_tb_salesemp_info cc 
+			on aa.latest_userId = cc.emp_id
+			left outer join basis.basis_tb_salesemp_info dd 
+			on aa.create_userId = dd.emp_id  
+			left outer join basis.basis_tb_dict ee on aa.price_type=ee.item_value and ee.dict_type_id=550
+      		left outer join basis.basis_tb_customerinfo ff on ff.customer_code = aa.customer_code
+      		left outer join basis_tb_productinfo gg on ltrim(gg.material_id,'0') =ltrim(aa.material_id,'0') and gg.factory='HK10'
+      		where 1=1 and (aa.price_type = 'ZPB1' or aa.price_type = 'ZMP1')
+	]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(gg.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="org_id" prepend="and">
+				<![CDATA[ aa.org_id like #org_id#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="price_type" prepend="and">
+				<![CDATA[ aa.price_type like #price_type# ]]>
+			</isNotEmpty>
+			
+			<isNotEmpty property="currency_code" prepend="and">
+				<![CDATA[ aa.currency_code like #currency_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_date" prepend="and">
+				<![CDATA[ aa.start_date >= #start_date#]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_date" prepend="and">
+				<![CDATA[ aa.end_date <= #end_date#]]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_name" prepend="and">
+				<![CDATA[ upper(ff.customer_name) like #customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	
+	<select id="getPriceRuleListCount" parameterClass="priceRule"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.basis_tb_price_rule aa 
+			left outer join basis.basis_tb_customerinfo ff on ff.customer_code = aa.customer_code 	
+			left outer join basis_tb_productinfo gg on ltrim(gg.material_id,'0') =ltrim(aa.material_id,'0')	 and gg.factory='HK10'	
+			where 1=1 and (price_type = 'ZPB1' or price_type = 'ZMP1')
+		]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(gg.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="org_id" prepend="and">
+				<![CDATA[ aa.org_id like #org_id#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="price_type" prepend="and">
+				<![CDATA[ aa.price_type like #price_type#]]>
+			</isNotEmpty>
+			<isNotEmpty property="currency_code" prepend="and">
+				<![CDATA[ aa.currency_code like #currency_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_date" prepend="and">
+				<![CDATA[ aa.start_date >= #start_date#]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_date" prepend="and">
+				<![CDATA[ aa.end_date <= #end_date#]]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_name" prepend="and">
+				<![CDATA[ upper(ff.customer_name) like #customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>	 
+	</select>
+	
+	<select id="getPriceRuleListCountCmRm" parameterClass="priceRule" resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.basis_tb_price_rule aa 
+			left outer join basis.basis_tb_customerinfo ff on ff.customer_code = aa.customer_code 	
+			left outer join basis_tb_productinfo gg on ltrim(gg.material_id,'0') =ltrim(aa.material_id,'0')	
+			 and gg.factory='HK10'	
+			where 1=1 and price_type in ('CM','RM','QM')
+		]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(gg.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="org_id" prepend="and">
+				<![CDATA[ aa.org_id like #org_id#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="price_type" prepend="and">
+				<![CDATA[ aa.price_type like #price_type#]]>
+			</isNotEmpty>
+			<isNotEmpty property="office_id" prepend="and">
+				<![CDATA[ aa.office_id like #office_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="currency_code" prepend="and">
+				<![CDATA[ aa.currency_code like #currency_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_date" prepend="and">
+				<![CDATA[ aa.start_date >= #start_date#]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_date" prepend="and">
+				<![CDATA[ aa.end_date <= #end_date#]]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_name" prepend="and">
+				<![CDATA[ upper(ff.customer_name) like #customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>	 
+	</select>
+		<!-- 为更新数据信息获得对应Id主数据20180513 xcfeng -->
+	<select id="getPriceRuleListCmRmQm" parameterClass="priceRule" resultClass="priceRule">
+		<![CDATA[
+			select aa.id,aa.org_id,aa.material_id,gg.material_name material_desc,aa.material_type
+			 from basis.basis_tb_price_rule aa 
+			left outer join basis.basis_tb_customerinfo ff on ff.customer_code = aa.customer_code 	
+			left outer join basis_tb_productinfo gg on ltrim(gg.material_id,'0') =ltrim(aa.material_id,'0')	
+			 and gg.factory='HK10'	
+			where 1=1 and price_type in ('CM','RM','QM')
+		]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(gg.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="org_id" prepend="and">
+				<![CDATA[ aa.org_id like #org_id#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="price_type" prepend="and">
+				<![CDATA[ aa.price_type like #price_type#]]>
+			</isNotEmpty>
+			<isNotEmpty property="office_id" prepend="and">
+				<![CDATA[ aa.office_id like #office_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="currency_code" prepend="and">
+				<![CDATA[ aa.currency_code like #currency_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_date" prepend="and">
+				<![CDATA[ aa.start_date >= #start_date#]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_date" prepend="and">
+				<![CDATA[ aa.end_date <= #end_date#]]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_name" prepend="and">
+				<![CDATA[ upper(ff.customer_name) like #customer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>	 
+	</select>
+	
+	<insert id="createPriceRule" parameterClass="priceRule">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_price_rule.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_price_rule  
+			(
+				id,org_id,office_id,material_id,material_name,material_type,
+				basic_type,material_desc,currency_code,price_type,
+				sale_price,start_date,end_date,customer_code,
+				state,remark,isDeleted,create_time,create_userId,
+			    latest_time,latest_userId,org_code,perUnit,customer_name
+			)
+			values
+			(
+				#id#,#org_id#,#office_id#,#material_id#,#material_name#,#material_type#,
+				#basic_type#,#material_desc#,#currency_code#,#price_type#,
+				#sale_price#,#start_date#,#end_date#,#customer_code#,
+				0,#remark#,0,sysdate,#create_userId#,
+			    #latest_time#,#latest_userId#,#org_code#,#perUnit#,#customer_name#
+			)
+		
+		]]>
+	</insert>
+	
+	<update  id="updatePriceRule" parameterClass="priceRule">
+		update basis.basis_tb_price_rule  set 
+			org_id=#org_id#,office_id=#office_id#,material_id=#material_id#,material_name=#material_name#,
+			currency_code=#currency_code#,price_type=#price_type#,
+			sale_price=#sale_price#,
+			start_date=#start_date#,end_date=#end_date#,remark=#remark#,
+			latest_time=#latest_time#,latest_userId=#latest_userId#,org_code=#org_code#,perUnit=#perUnit#,customer_name=#customer_name#
+		where id=#id#
+	</update>
+	
+	
+	<delete id="deletePriceRule" parameterClass="priceRule">
+		delete from basis.basis_tb_price_rule  
+		where id=#id#
+	</delete>
+	
+	
+	<select id="getControlPriceRuleList" parameterClass="priceRule" resultClass="priceRule">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+		  	aa.id,aa.org_id,aa.material_id,gg.material_name material_desc,aa.material_type,
+			aa.basic_type,aa.currency_code,ee.item_name price_type,
+			aa.sale_price,aa.start_date,aa.end_date,aa.perUnit,
+			to_char(start_date,'YYYY-MM-DD') start_dateStr,
+			to_char(end_date,'YYYY-MM-DD') end_dateStr,aa.state,aa.remark,aa.isDeleted,
+			aa.create_time,dd.emp_name create_userId,office_id,
+		    aa.latest_time,cc.emp_name latest_userId,aa.org_code
+		from basis.basis_tb_price_rule aa
+			left outer join basis.basis_tb_salesemp_info cc 
+			on aa.latest_userId = cc.emp_id
+			left outer join basis.basis_tb_salesemp_info dd 
+			on aa.create_userId = dd.emp_id  
+			left outer join basis.basis_tb_dict ee on aa.price_type=ee.item_value and ee.dict_type_id=550
+      	
+      		left outer join basis_tb_productinfo gg on ltrim(gg.material_id,'0') =ltrim(aa.material_id,'0') and gg.factory='HK10'
+      		where 1=1 and aa.price_type in ('CM','RM','QM')
+	]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(gg.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="org_id" prepend="and">
+				<![CDATA[ aa.org_id like #org_id#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="price_type" prepend="and">
+				<![CDATA[ aa.price_type like #price_type# ]]>
+			</isNotEmpty>
+			
+			<isNotEmpty property="currency_code" prepend="and">
+				<![CDATA[ aa.currency_code like #currency_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_date">
+				<isNotEmpty property="end_date" prepend="and">
+					<![CDATA[
+					 (aa.start_date >= #start_date# and aa.end_date <= #start_date#) or 
+					 (aa.start_date <= #end_date# and aa.end_date >= #end_date#)
+					]]>
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty property="latest_time" prepend="and">
+				<![CDATA[ aa.latest_time >= #latest_time#]]>
+			</isNotEmpty>
+			<isNotEmpty property="latest_time" prepend="and">
+				<![CDATA[ aa.latest_time <= to_date(to_char(#latest_time#,'mm-dd-yyyy hh24:mi:ss'),'mm-dd-yyyy hh24:mi:ss')+1]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	
+	<select id="getControlPriceRuleListCount" parameterClass="priceRule"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*) from basis.basis_tb_price_rule aa
+			left outer join basis_tb_productinfo gg on ltrim(gg.material_id,'0') =ltrim(aa.material_id,'0')   and gg.factory='HK10'			
+			where 1=1  and aa.price_type in ('CM','RM','QM')
+		]]>
+		<dynamic>
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(gg.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="org_id" prepend="and">
+				<![CDATA[ aa.org_id like #org_id#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="price_type" prepend="and">
+				<![CDATA[ aa.price_type like #price_type#]]>
+			</isNotEmpty>
+			<isNotEmpty property="currency_code" prepend="and">
+				<![CDATA[ aa.currency_code like #currency_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_date" prepend="and">
+				<![CDATA[ aa.start_date >= #start_date#]]>
+			</isNotEmpty>
+			<isNotEmpty property="end_date" prepend="and">
+				<![CDATA[ aa.end_date <= #end_date#]]>
+			</isNotEmpty>
+			
+			<isNotEmpty property="latest_time" prepend="and">
+				<![CDATA[ aa.latest_time >= #latest_time#]]>
+			</isNotEmpty>
+			<isNotEmpty property="latest_time" prepend="and">
+				<![CDATA[ aa.latest_time <= to_date(to_char(#latest_time#,'mm-dd-yyyy hh24:mi:ss'),'mm-dd-yyyy hh24:mi:ss')+1]]>
+			</isNotEmpty>
+		</dynamic>	 
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+<!-- 获取销售办公室列表 -->
+	
+	<select id="getOrgListCount" parameterClass="borg"
+		resultClass="java.lang.Integer">
+		
+	<![CDATA[
+		 select count(*)
+			 from basis.basis_tb_org g
+		   where g.state = 'Y' and g.org_level=#orgLevel#
+	]]>
+	<!-- 
+		<isNotEmpty property="orgId" prepend="and">
+		<![CDATA[ g.org_id= #orgId# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="orgName" prepend="and">
+		<![CDATA[ g.org_name = #orgName# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="search" prepend="and">
+		<![CDATA[
+			  ( g.sapOrgId like #search,handler=wildcard# escape '\'
+			 or g.org_name like #search,handler=wildcard# escape '\' )
+		]]>
+		</isNotEmpty>
+	 -->
+	</select>
+	
+	
+	<select id="getOrgList" parameterClass="borg" resultClass="borg">
+	<![CDATA[
+		 select g.org_id as orgId
+		      , g.sap_org_id as sapOrgId
+		      , g.org_name as orgName
+		   from basis.basis_tb_org g
+		  where g.state = 'Y' and g.org_level=#orgLevel#
+	]]>
+		<include refid="global.orderBy" />
+	</select>
+</sqlMap>

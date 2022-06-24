@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="travelApp">
+	
+	<typeAlias alias="travelTotal" type="com.jingtong.platform.account.pojo.TravelTotal" />
+	<typeAlias alias="travelDetail" type="com.jingtong.platform.account.pojo.TravelDetail" />
+		<typeAlias alias="budgetNumber" type="com.jingtong.platform.account.pojo.BudgetNumber" />
+	
+	<insert id="createTravelTotal" parameterClass="travelTotal">
+		<selectKey resultClass="java.lang.Long" keyProperty="travelId">
+		<![CDATA[
+			SELECT basis.basis_seq_form_total.nextval as travelId from dual
+		]]>
+		</selectKey> 
+	<![CDATA[
+		insert into office.OFFICE_TB_NTRAVEL_TOTAL(TRAVEL_ID, TRANSACTION_ID, ORG_ID, COST_ORG_ID, COST_TYPE, BNDETAIL_ID, TOTAL_MONEY, AUDIT_MONEY,
+			 MEMO, FLAG, CREATE_DATE, CREATOR_ID, MODIFY_DATE, OPERATOR_ID, WRITE_EVENTID, PAYCASH, CHOUQIAN, PAY_EE,PAY_ACCOUNT,PAY_BANK,PAY_TYPE,budget_number)
+		values(#travelId#, #transactionId#, #orgId#, #costOrgId#, #costType#, #bndetailId#, #totalMoney:NUMBER#, #auditMoney#, #memo#, 'U',
+			sysdate, #createUserId#, sysdate, #operatorId#, #writeEventId#, #paycash#,#chouqian#,#payee#, #payaccount#,#payBank#,#payType#,#budgetNumber#)
+	]]>	
+	</insert>
+	
+	<insert id="createTravelDetail" parameterClass="travelDetail">
+		<selectKey resultClass="java.lang.Long" keyProperty="travleDtId">
+		<![CDATA[
+			SELECT basis.basis_seq_form_detail.nextval as travleDtId from dual
+		]]>
+		</selectKey> 
+	<![CDATA[
+		insert into office.OFFICE_TB_NTRAVEL_Detail(DETAIL_ID, TRAVEL_ID, TRAVEL_NUM, INVOICE_AMOUNT, AUDIT_MONEY, MEMO,
+			 FLAG, TRAVELSTARTDATE, TRAVELENDDATE,PEERPERSON,TRAVEL_PLACE,MODIFY_DATE)
+		values(#travleDtId#, #travelId#, #travelNum#, #invoiceAmount:NUMBER#, #auditMoney#, #meno#, 
+			'U', #travelStartDate#, #travelEndDate#,#peerPerson#,#travelPlace#,sysdate)
+	]]>	
+	</insert>
+	
+	<select id="searchTravelList" parameterClass="travelTotal" resultClass="travelTotal">
+	<include refid="global.paginationStart" />
+	<![CDATA[
+		select wt.TRAVEL_ID			travelId, 
+			wt.transaction_id		transactionId, 
+			r.event_title			title, 
+			wr.event_title			writeEvent,
+			wt.pay_ee				payee,
+			wt.PAY_ACCOUNT         payaccount,
+			wt.PAY_BANK             payBank,
+			wt.org_id				orgId, 
+			g.org_name				orgName, 
+			wt.cost_org_id			costOrgId, 
+			g1.org_name				costOrgName,
+			wt.total_money  		totalMoney,
+			nvl(wt.audit_money, wt.total_money) auditMoney,
+      		wt.PAY_TYPE    	 		payType,
+      		wt.memo  				memo,
+      		wt.CREATE_DATE 			createDate,
+      		r.status				status,
+      		wt.write_eventid        writeEventId,
+      		wr.status               writeStatus,
+      		wt.budget_number        budgetNumber,
+      		wt.BNDETAIL_ID          bndetailId,
+      		wt.PAYCASH              paycash,
+      		wt.CHOUQIAN             chouqian,
+      		wt.DKMONEY			    dkMoney,
+      		e.cost_type_name		costTypeName,
+      		wt.CREATOR_ID   createUserId
+		from office.OFFICE_TB_NTRAVEL_TOTAL wt,
+			 workflow.workflow_tb_event_total r,
+			 workflow.workflow_tb_event_total wr,
+			 basis.basis_tb_org g,
+			 basis.basis_tb_org g1,
+			 market.market_tb_plan_cost_type e
+		where  wt.flag = 'U'
+		and wt.transaction_id = to_char(r.event_id(+))
+		and wt.write_eventid = to_char(wr.event_id(+))
+		and wt.org_id = g.org_id(+)
+		and wt.cost_org_id = g1.org_id(+)
+		and r.status in (0,1,2)
+		and wt.cost_type = e.cost_type_id
+	]]>
+	<dynamic>
+		<isNotEmpty property="eventId" prepend="and">
+		<![CDATA[ r.event_id like #eventId,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="title" prepend="and">
+		<![CDATA[ r.event_title like #title,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+		<![CDATA[ r.status = #status# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="payee" prepend="and">
+		<![CDATA[ wt.pay_ee like #payee,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="startDate" prepend="and">
+		<![CDATA[ wt.create_date > #startDate# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="endDate" prepend="and">
+		<![CDATA[ wt.create_date < #endDate# + 1 ]]>
+		</isNotEmpty>
+		<isNotEmpty property="createUserId" prepend="and">
+		<![CDATA[ wt.CREATOR_ID = #createUserId# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="id" prepend="and">
+		<![CDATA[ wt.TRAVEL_ID= #id# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="writeEventId" prepend="and">
+		<![CDATA[ wr.event_id like #writeEventId,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="writeEvent" prepend="and">
+		<![CDATA[ wr.event_title like #writeEvent,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="writeStatus" prepend="and">
+		<![CDATA[ wr.status = #writeStatus# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="orgId" prepend="and">
+				<![CDATA[ wt.org_id = #orgId# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="orgIds" prepend="and">
+			<![CDATA[ wt.org_id in ]]>
+					<iterate property="orgIds" open="(" close=")" conjunction=",">#orgIds[]#
+			</iterate>
+		</isNotEmpty>
+	</dynamic>
+	<![CDATA[ order by wt.create_date desc ]]>
+	<include refid="global.paginationEnd" />
+	</select>
+	
+	
+	<select id="searchTravelListCount" parameterClass="travelTotal" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(wt.TRAVEL_ID)
+		from office.OFFICE_TB_NTRAVEL_TOTAL wt,
+			 workflow.workflow_tb_event_total r,
+			 workflow.workflow_tb_event_total wr,
+			 basis.basis_tb_org g,
+			 basis.basis_tb_org g1
+		where  wt.flag = 'U'
+		and wt.transaction_id = to_char(r.event_id(+))
+		and wt.write_eventid = to_char(wr.event_id(+))
+		and wt.org_id = g.org_id(+)
+		and wt.cost_org_id = g1.org_id(+)
+		and r.status in (0,1,2)
+	]]>
+		<dynamic>
+			<isNotEmpty property="eventId" prepend="and">
+			<![CDATA[ r.event_id like #eventId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="title" prepend="and">
+			<![CDATA[ r.event_title like #title,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+			<![CDATA[ r.status = #status# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="payee" prepend="and">
+			<![CDATA[ wt.pay_ee like #payee,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="startDate" prepend="and">
+			<![CDATA[ wt.create_date > #startDate# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="endDate" prepend="and">
+			<![CDATA[ wt.create_date < #endDate# + 1 ]]>
+			</isNotEmpty>
+			<isNotEmpty property="createUserId" prepend="and">
+			<![CDATA[ wt.CREATOR_ID = #createUserId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="writeEventId" prepend="and">
+			<![CDATA[ wr.event_id like #writeEventId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="writeEvent" prepend="and">
+			<![CDATA[ wr.event_title like #writeEvent,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="writeStatus" prepend="and">
+			<![CDATA[ wr.status = #writeStatus# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="orgId" prepend="and">
+				<![CDATA[ wt.org_id = #orgId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="orgIds" prepend="and">
+			<![CDATA[ wt.org_id in ]]>
+				<iterate property="orgIds" open="(" close=")" conjunction=",">#orgIds[]#
+			</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+		<select id="searchTravelDetail" parameterClass="travelTotal" resultClass="travelDetail">
+	<![CDATA[
+		select 	d.DETAIL_ID   as travleDtId, 
+				d.TRAVEL_ID as  travelId,
+			   	d.TRAVEL_NUM as travelNum, 
+			    d.INVOICE_AMOUNT as invoiceAmount, 
+			    d.AUDIT_MONEY as auditMoney,
+			    d.MEMO as meno,
+			    d.FLAG  as flag,
+			    d.TRAVELENDDATE as travelEndDate,
+			    d.TRAVELSTARTDATE as travelStartDate,
+			    d.PEERPERSON as peerPerson,
+			    d.TRAVEL_PLACE as travelPlace
+  		from office.OFFICE_TB_NTRAVEL_Detail d
+ 		where d.TRAVEL_ID = #travelId# and d.flag='U'
+   	]]>
+	</select>
+	
+	<update id="updateTravelTotal" parameterClass="travelTotal">
+		<![CDATA[
+			update office.OFFICE_TB_NTRAVEL_TOTAL t
+			set t.MODIFY_DATE=sysdate,
+		    	t.OPERATOR_ID=#operatorId#
+		]]>
+		<isNotEmpty property="payee" prepend=",">
+			<![CDATA[ t.pay_ee =#payee#]]>
+		</isNotEmpty>
+		<isNotEmpty property="memo" prepend=",">
+			<![CDATA[ t.memo =#memo#]]>
+		</isNotEmpty>
+		<isNotEmpty property="payaccount" prepend=",">
+			<![CDATA[ t.PAY_ACCOUNT =#payaccount#]]>
+		</isNotEmpty>
+		<isNotEmpty property="payBank" prepend=",">
+			<![CDATA[ t.PAY_BANK =#payBank#]]>
+		</isNotEmpty>
+		<isNotEmpty property="payType" prepend=",">
+			<![CDATA[ t.pay_type =#payType#]]>
+		</isNotEmpty>
+		<isNotEmpty property="auditMoney" prepend=",">
+			<![CDATA[ t.AUDIT_MONEY =#auditMoney#]]>
+		</isNotEmpty>
+		<isNotEmpty property="totalMoney" prepend=",">
+			<![CDATA[ t.TOTAL_MONEY =#totalMoney#]]>
+		</isNotEmpty>
+		<isNotEmpty property="writeEventId" prepend=",">
+			<![CDATA[ t.write_eventid =#writeEventId#]]>	
+		</isNotEmpty>
+		<isNotEmpty property="paycash" prepend=",">
+			<![CDATA[ t.PAYCASH =#paycash#]]>
+		</isNotEmpty>
+		<isNotEmpty property="dkMoney" prepend=",">
+			<![CDATA[ t.DKMONEY =#dkMoney#]]>
+		</isNotEmpty>
+		<isNotEmpty property="chouqian" prepend=",">
+			<![CDATA[ t.CHOUQIAN =#chouqian#]]>	
+		</isNotEmpty>
+		<![CDATA[where t.TRAVEL_ID =#travelId#]]>
+	</update>
+	
+	<update id="updateTravelDetail" parameterClass="travelDetail">
+		<![CDATA[
+			update office.OFFICE_TB_NTRAVEL_Detail d
+			set d.MODIFY_DATE=sysdate
+		]]>
+		<isNotEmpty property="travelEndDate" prepend=",">
+			<![CDATA[ d.TRAVELENDDATE =#travelEndDate#]]>
+		</isNotEmpty>
+		<isNotEmpty property="travelStartDate" prepend=",">
+			<![CDATA[ d.TRAVELSTARTDATE =#travelStartDate#]]>
+		</isNotEmpty>
+		<isNotEmpty property="meno" prepend=",">
+			<![CDATA[ d.MEMO =#meno#]]>
+		</isNotEmpty>
+		<isNotEmpty property="travelNum" prepend=",">
+			<![CDATA[ d.TRAVEL_NUM =#travelNum#]]>
+		</isNotEmpty>
+		<isNotEmpty property="auditMoney" prepend=",">
+			<![CDATA[ d.AUDIT_MONEY =#auditMoney#]]>
+		</isNotEmpty>
+		<isNotEmpty property="invoiceAmount" prepend=",">
+			<![CDATA[ d.INVOICE_AMOUNT =#invoiceAmount#]]>
+		</isNotEmpty>
+		<![CDATA[where d.DETAIL_ID =#travleDtId#]]>
+	</update>
+	
+	<select id="getBudgetNumberList" parameterClass="budgetNumber" resultClass="budgetNumber">
+	<![CDATA[
+		 select 
+		 	t.bnumber_id,
+       		t.subject_id as subjectId,
+       		t.subject_name as subjectName,
+       		t.budget_number,
+       	   (select sum(nvl(r.budget_money, 0))
+          from market.market_vw_budgetnumber_xiwang r
+         where 1 = 1
+           and r.tra_flag = 'D'
+           and r.budget_type = '02'
+           and r.costcenter_orgid = #costCentId#
+           and r.subject_id = #subjectId# 
+           and r.the_year =#theYear#
+           and r.the_month =#theMonth#) as budget_money,
+       		t.init_money,
+       		t.budget_type,
+       		t.costcenter_orgid as costCentId,
+       		t.costcenter_name as costCenterName,
+       		t.creatdate,
+       		t.channel_id as channelId,
+       		t.channel_name as channelName,
+       		t.the_year    as theYear,
+       		t.the_month      as theMonth,
+       		t.tra_flag,
+       		t.creator
+	  		from  market.market_vw_budgetnumber_xiwang t
+	 		where 1 = 1 and t.tra_flag = 'D' and t.budget_type = '02'
+	 		and t.the_year = #theYear#
+	 		and t.the_month = #theMonth#
+		]]>
+		<dynamic>
+			<isNotEmpty property="costCentId" prepend="and">
+			<![CDATA[   t.costcenter_orgid = #costCentId#  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="bId" prepend="and">
+			<![CDATA[   t.bnumber_id = #bId#  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="subjectId" prepend="and">
+			<![CDATA[   t.subject_id= #subjectId#   ]]>
+			</isNotEmpty>
+			<isNotEmpty property="budget_number" prepend="and">
+			<![CDATA[   t.budget_number like #budget_number,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+	
+</sqlMap>

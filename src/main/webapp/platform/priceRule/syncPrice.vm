@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+        #CSSM(["easyui","style"])
+        #JSM(["jquery", "easyui"])
+        #JS_ENV_VAL()
+    </head>
+    <body>
+        <form action="" method="post">
+            <div  class="easyui-panel" border="0" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+                <table width="100%" border="0" cellpadding="0" cellspacing="5">
+                    <input type="hidden" id="id" name="pr.id" value="$!{pr.id}"/>
+					<tr>
+						<td class="head" noWrap><label for="name">12NC :</label></td>
+							<td noWrap  class="context">
+								 <input class="easyui-validatebox"  id="material_number" name='pr.material_number' value='$!{pr.material_number}' ></input>
+							</td>
+					 </tr>
+                    <tr>
+						<td class="head" noWrap><label for="name">priceType:</label></td>
+                            <td  class="context">
+								<input id="priceType" name="pr.priceType" value="$!{pr.priceType}" class="easyui-numberbox" ></input>  
+							</td>
+                    </tr>
+                </table>
+</p>
+<br/>
+</div>
+<br/>
+<div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+    <a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+</div>
+</form>
+<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+<div id="hiddenWin"/>
+</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/priceRule/syncPrice.js"></script>
+</html>

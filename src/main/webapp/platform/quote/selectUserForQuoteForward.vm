@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+	
+			<form id="form1" action="" method="post">
+				<div id="p_search" title="" style="height:65px;padding: 2px; background: #fafafa;" data-options="region:'north',split:true,iconCls:'icon-search'">
+    				<table width="100%" border="0" cellpadding="0" cellspacing="1">
+    					<tr>
+        					<td class="head" noWrap>LoginId:</td> 
+    						<td>
+    							<input type="text" id="loginId" name="loginId" data-options="required:true"></input>
+    						</td>	
+        					<td class="head" noWrap>Name:</td>
+        					<td>
+    							<input type="text" id="userName" name="userName" data-options="required:true"></input>
+        					</td>
+        					<td>			
+        					<a href="javascript:search()"  class="easyui-linkbutton" iconCls="icon-search">Search</a>
+        					<a href="javascript:clearValue()" id='clearV' class="easyui-linkbutton" iconCls="icon-clear">Cancel</a> 	
+    						</td>
+    					</tr>	
+    					<tr style ="display:none">
+        					<td class="head" noWrap>Org:</td>
+        					<td><input class="easyui-numberbox" id="orgId" name="orgId" type="hidden" value="$!{orgId}">
+    								<input type="text" id="orgName" name="orgName" readonly value="$!{orgName}">
+        							<input type="checkbox" name="bhxjFlag" id="bhxjFlag" value="C" checked/>Contains the subordinate
+    								<a class="easyui-linkbutton"  href="javascript:selectOrgTree()">Org</a>
+    						</td>		
+        					<td class="head" noWrap></td>
+        					
+                        </tr>	
+    				 </table>
+    			</div>
+				<div data-options="region:'center'">
+					<table id="con_list"></table>
+				</div>
+			</form>
+			<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+			<div id="maintWindow"/> 
+	
+	</body>
+<script type="text/javascript">
+var store;
+</script>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/quote/selectUserForQuoteForward.js"></script>
+</html>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+ 
+	<bean id="sampleOrderAction" class="com.jingtong.platform.sampleOrder.action.SampleOrderAction"
+		parent="baseAction" scope="request">
+		<property name="sampleOrderService" ref="sampleOrderService" />
+		<property name="customerService" ref="customerService" />
+		<property name="allUserService" ref="allUserService"></property>
+		<property name="messageService" ref="messageService" />
+		<property name="productService" ref="productService" />
+		<property name="roleService" ref="roleService"></property>
+		<property name="orderToSapService" ref="orderToSapService"></property>
+                <property ref="dictService" name="dictService"/>
+	</bean>
+	<bean id="sampleOrderService" class="com.jingtong.platform.sampleOrder.service.impl.SampleOrderServiceImpl">
+		<property name="sampleOrderDao" ref="sampleOrderDao"/>
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+	
+	<bean id="sampleOrderDao" class="com.jingtong.platform.sampleOrder.dao.impl.SampleOrderDaoImpl" parent="baseDao">
+	</bean>
+	 
+</beans>

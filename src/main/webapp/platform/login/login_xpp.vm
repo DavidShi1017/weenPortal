@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>系统登录页面</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+	    #CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()	
+		<style>
+			body,html{width:100%;height:100%;-webkit-text-size-adjust:none}
+            body,div,dl,dt,dd,ul,li,form,input,textarea,select,p,h1,h2,h3,h4,h5,h6,a{font:12px/24px "微软雅黑";padding:0;margin:0;color:#666}
+            img{border:0;-ms-interpolation-mode:bicubic}
+            ul{list-style:none;float:left}
+            li{float:left;display:inline}
+            a{text-decoration:none;cursor:pointer;outline:none;blr:expression(this.onFocus=this.blur())}
+            a:link,a:visited,a:hover{text-decoration:none;/*transition:text-shadow 500ms ease-in 0ms, color 500ms ease-in 0ms;*/}
+            input{padding-left:3px;outline:none}
+            /*清除浮动*/
+            .clear{clear:both}
+            
+            body{ background:url($!{env.imgUrl}/images/xpp/indexBg.jpg) no-repeat center top #f39801}
+            .main{ width:936px; margin:0 auto; position:relative}
+            .main form{ width:221px; height:153px; position:absolute; top:254px; right:0}
+            .main td{ height:29px; line-height:29px; padding-bottom:20px;}
+            .main input{ width:218px; height:29px; line-height:29px; border:0}
+            .main input.submit{ width:120px; height:52px; background:url($!{env.imgUrl}/images/xpp/input.jpg) no-repeat; padding:0; border:0; cursor:pointer; margin-top:3px;}
+        </style>
+	</head>
+<body>
+	<div class="main">
+		<form  action="loginAction!login.jspa" method="post">
+			<table border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td><input type="text" maxLength='50' id='passport' name='passport' autocomplete="on" value="$!{passport}"></input></td>
+				</tr>
+				<tr>
+					<td><input type="password"  maxLength='50' name='password' autocomplete="off"/></td>
+				</tr>
+				<tr>
+					<td><input type="submit" value="" class="submit" onclick="submit()"/></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/login/login.js"></script>
+
+</html>

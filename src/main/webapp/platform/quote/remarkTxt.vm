@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+		<div  class="easyui-panel"  style="width:360px;border:0" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+			<input type='hidden' id="rowIndex" value="$!{rowIndex}"></input>
+			<input type='hidden' id="id" value="$!{id}"></input>
+			<input type='hidden' id="forWho" value="$!{forWho}"></input>
+			<input type='hidden' id="fromWho" value="$!{fromWho}"></input>
+			<input type='hidden' id="useFor" value="$!{useFor}"></input>
+			<input type='hidden' id="userName" value="$!{q.create_userId}"></input>
+			<p id="oldremark" style="width:30px,height:300px">$!{remark}</p>
+			
+			
+			#if($!forWho == 'Ween')  
+				<div style="display:none" class="ween_reject" >
+					<label for="name">Reject Reason:</label>
+					<input class="easyui-validatebox ween_reject" id="reject_reason" name="reject_reason" value="$!{reject_reason}" ></input> 
+				</div>
+			#else  
+                	<div   class="ween_reject" >
+						<label for="name">Reject Reason:</label>
+						<input class="easyui-validatebox ween_reject" id="reject_reason" name="reject_reason" value="$!{reject_reason}" ></input> 
+					</div>
+            #end  
+			
+			<textarea id="remark" style="height: 100px;"  cols="47"></textarea>
+
+			
+			
+			<!--<input id="audit_opinion" name="ec.audit_opinion" style="width:360px;height:60px">
+			</input>-->
+			<br/>
+		</div>
+		</div>  
+		
+		<br/>
+			<div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="maintWindow"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/quote/remarkTxt.js"></script>
+</html>

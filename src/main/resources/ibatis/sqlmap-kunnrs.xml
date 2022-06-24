@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="kunnr">
+	<typeAlias alias="kunnr" type="com.jingtong.platform.sap.pojo.Kunnr" />
+	<typeAlias alias="tools" type="com.jingtong.platform.sap.pojo.ToolsClass" />
+	<typeAlias alias="orgs" type="com.jingtong.platform.org.pojo.Borg" />
+	<typeAlias alias="vtweg" type="com.jingtong.platform.sap.pojo.KunnrVtweg"/>
+	<typeAlias alias="knvp" type="com.jingtong.platform.sap.pojo.Knvp"/>
+	<typeAlias alias="role" type="com.jingtong.platform.role.pojo.Role"/>
+	<typeAlias alias="credit" type="com.jingtong.platform.sap.pojo.Credit"/>
+	
+	<!--  <insert id="createKunnrs" parameterClass="kunnr">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				select crm.CRM_SQ_KUNNR.NEXTVAL as id from dual
+			]]>
+			</selectKey>
+		<![CDATA[
+			insert into crm.crm_tb_kunnr
+			  (ID, kunnr,name1,customer_type,street1,tel_number,fax_number,vkorg,cooperation_start,org_id,province,city,status,channel_id,kdgrp,counc,cityc,kvgr4,bill_type,create_date,create_type,spart)
+			values
+			  (#id#, #kunnr#, #name1#, #customerType#, #street1#, #telNumber#,#faxNumber#,#vkorg#,#cooperationStart#,#orgId#,#province#,#city#,#status#,#prchannelId#,#kdgrp#,#counc#,#cityc#,#kvgr4#,#billType#,sysdate,'Y','00')
+		]]>
+	</insert>
+  
+	<update id="updateKunnr" parameterClass="kunnr">
+		<![CDATA[
+			update crm.crm_tb_kunnr a
+			   set a.kunnr=#kunnr#,a.name1=#name1#,a.customer_type=#customerType#,a.province=#province#,a.city=#city#,a.street1=#street1#,a.tel_number=#telNumber#,a.fax_number=#faxNumber#,a.vkorg=#vkorg#,a.cooperation_start=#cooperationStart#,a.status=#status#
+			   ,a.org_name =#orgName#,a.channel_id=#prchannelId#,a.org_id=#orgId#,a.kdgrp=#kdgrp#,a.counc=#counc#,a.cityc=#cityc#,a.kvgr4=#kvgr4#,a.bill_type=#billType#,a.create_date=sysdate
+			where a.kunnr=#kunnr#
+		]]>
+		<dynamic>
+				<isNotEmpty property="kunnr" prepend="and">
+					<![CDATA[a.kunnr=#kunnr#]]>
+				</isNotEmpty>
+			 <isNotEmpty property="kunnr" prepend="and">
+					<![CDATA[t.vkorg=#vkorg#]]>
+				</isNotEmpty>
+				<isNotEmpty property="kunnr" prepend="and">
+					<![CDATA[t.channel_id=#prchannelId#]]>
+				</isNotEmpty> 
+			</dynamic>
+	</update> 
+	
+	<select id="getKunnrCount" parameterClass="kunnr" resultClass="java.lang.Integer">
+		<![CDATA[
+			   select 
+			   count( t.id)
+			   from crm.crm_tb_kunnr t 
+			   where 1=1
+		]]>
+			<dynamic>
+				<isNotEmpty property="kunnr" prepend="and">
+					<![CDATA[t.kunnr=#kunnr#]]>
+				</isNotEmpty>
+			 	<isNotEmpty property="kunnr" prepend="and">
+					<![CDATA[t.vkorg=#vkorg#]]>
+				</isNotEmpty>
+				<isNotEmpty property="kunnr" prepend="and">
+					<![CDATA[t.channel_id=#prchannelId#]]>
+				</isNotEmpty>
+			</dynamic>
+	</select>	-->
+
+	<select id="getDictTypeValue" parameterClass="java.lang.String" resultClass="tools">
+		<![CDATA[
+		 select   
+			 d.dict_type_value dictTypeValue,
+			 t.item_id itemId
+		 from crm.crm_tb_dict_type d left join crm.crm_tb_dict t on d.dict_type_id = t.dict_type_id
+		 where  t.item_state='U' and  t.item_description= #itemValue# 
+		]]>
+	</select>
+	
+	<select id="getKunnrAttributeColumn" parameterClass="java.lang.String" resultClass="java.lang.String">
+		<![CDATA[
+		 select COLUMN_NAME
+		    from   dba_tab_columns
+			where  table_name =upper('crm_tb_kunnr_attribute') and COLUMN_NAME=#column#
+			order by COLUMN_NAME
+		]]>
+	</select>
+	
+	<select id="getKunnrAttributeCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	<![CDATA[
+		 select count(*)  from   crm.crm_tb_kunnr_attribute where kunnr=#kunnr#
+		]]>
+	</select>
+	
+	<delete id="deleteKunnrAttribute" parameterClass="java.lang.String">
+		<![CDATA[
+			 delete crm.crm_tb_kunnr_attribute where kunnr=#kunnr#
+		]]>
+	</delete>
+	
+	<select id="getSequences" parameterClass="java.lang.String"
+		resultClass="java.lang.Long">
+		<![CDATA[
+				select crm.CRM_SQ_KUNNR_ATTRIBUTE.nextval as id from dual
+		]]>
+	</select>
+	 <insert id="insertKunnrAttribute" parameterClass="java.util.HashMap"> 
+        <selectKey resultClass="java.lang.Long" keyProperty="customerGroupDetailId">
+			select crm.CRM_SQ_KUNNR_ATTRIBUTE.currval as id from dual
+		</selectKey>
+         <isNotEmpty property="sql">$sql$</isNotEmpty> 
+    </insert>   
+    <!--<select id="getOrgs" parameterClass="kunnr" resultClass="orgs">
+		<![CDATA[
+		 select g.org_id as orgId,g.org_code as orgCode,g.sap_org_id as sapOrgId from basis.basis_tb_org g where g.sap_org_id=#orgId#
+		]]>
+	</select> 
+	<select id="getKunnrs" parameterClass="java.lang.String" resultClass="kunnr">
+	<![CDATA[
+		   select 
+		   		id, kunnr,name1,customer_type,street1,tel_number,fax_number,vkorg,cooperation_start,org_id,city,status,channel_id,kdgrp,counc,cityc
+		   from crm.crm_tb_kunnr 
+		   where kunnr=#kunnr#
+		]]>
+	</select>-->
+	
+	<select id="getVtwegCount" parameterClass="vtweg" resultClass="java.lang.Integer">
+	  <![CDATA[
+	       select count(*) from crm.crm_tb_kunnr_vtweg
+            where kunnr=#kunnr# and vkorg=#vkorg# and channelId=#channelId#	 
+	  ]]>
+	     <isNotEmpty property="status" prepend="and">
+					<![CDATA[status=#status#]]>
+		 </isNotEmpty>
+ 	</select>
+	
+	<select id="getVtwegKtCount" parameterClass="vtweg" resultClass="java.lang.Integer">
+	 <![CDATA[
+	       select count(*) from crm.crm_tb_kunnr_vtweg
+            where kunnr=#kunnr#  
+	  ]]>
+	     <isNotEmpty property="status" prepend="and">
+					<![CDATA[status=#status#]]>
+		 </isNotEmpty>
+	
+	</select>
+	
+	
+	<insert id="createKunnrVtweg" parameterClass="vtweg">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				select crm.crm_sq_kunnr_vtweg.NEXTVAL as id from dual
+			]]>
+			</selectKey>
+		<![CDATA[
+			insert into crm.crm_tb_kunnr_vtweg
+			  (ID, kunnr,vkorg,channelId,orgId,status,create_date)
+			values
+			  (#id#, #kunnr#,#vkorg#,#channelId#,#orgId#,#status#,sysdate)
+		]]>
+	</insert>
+  
+    <delete id="deleteKunnrVtweg" parameterClass="vtweg">
+	    <![CDATA[
+	    delete from crm.crm_tb_kunnr_vtweg a where kunnr=#kunnr# and vkorg=#vkorg# and channelId=#channelId# and orgId=#orgId#
+	    
+	    ]]>
+    
+    </delete>
+  
+	<update id="updateKunnrVtweg" parameterClass="vtweg">
+		<![CDATA[
+			update crm.crm_tb_kunnr_vtweg a
+			   set a.kunnr=#kunnr#,a.vkorg=#vkorg#,a.channelId=#channelId#,orgId=#orgId#,status=#status#,a.create_date=sysdate
+			where 1=1
+		]]>
+		<dynamic>
+				<isNotEmpty property="kunnr" prepend="and">
+					<![CDATA[a.kunnr=#kunnr#]]>
+				</isNotEmpty>
+			  <isNotEmpty property="vkorg" prepend="and">
+					<![CDATA[a.vkorg=#vkorg#]]>
+				</isNotEmpty>
+				<isNotEmpty property="channelId" prepend="and">
+					<![CDATA[a.channelId=#channelId#]]>
+				</isNotEmpty> 
+				 
+			</dynamic>
+	</update> 
+	
+	<insert id="createKunnrKnvp">
+	    <selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				select crm.crm_sq_kunnr_knvp.NEXTVAL as id from dual
+			]]>
+			</selectKey>
+		<![CDATA[
+			insert into crm.crm_tb_kunnr_knvp
+			  (ID, kunnr,vkorg,vtweg,spart,parvw,parza,kunn2,lifnr,pernr,parnr,knref,defpa,create_date)
+			values
+			  (#id#, #kunnr#, #vkorg#, #vtweg#, #spart#, #parvw#,#parza#,#kunn2#,#lifnr#,#pernr#,#parnr#,#knref#,#defpa#,sysdate)
+		]]>
+	
+	</insert>
+	
+	<insert id="createUserRole" parameterClass="role">
+	    <selectKey resultClass="java.lang.Long" keyProperty="stationRoleId">
+		<![CDATA[
+ 			SELECT basis.basis_sq_user_role.nextval AS stationRoleId FROM DUAL
+		]]>
+		</selectKey>
+	    <![CDATA[
+		insert into basis.basis_tb_user_role values
+		  (#stationRoleId#, #emp_code#, 'kunnr_order',TO_DATE(to_char(sysdate,'YYYY-MM-DD'),'YYYY-MM-DD'),to_date('9999-01-01','yyyy-MM-dd'),sysdate,'',sysdate,'','U','')
+	    ]]>
+ 	</insert>
+	<select id="getUserRoleCount" parameterClass="role" resultClass="java.lang.Integer">
+	<![CDATA[
+			select count(*) from  basis.basis_tb_user_role where emp_code=#emp_code#
+ 			 
+		]]>
+ 	</select>
+	<insert id="createCredit" parameterClass="credit">
+	    <selectKey resultClass="java.lang.Long" keyProperty="creditid">
+			<![CDATA[
+				select crm.crm_sq_credit.NEXTVAL as creditid from dual
+			]]>
+			</selectKey>
+		<![CDATA[
+			insert into crm.crm_tb_credit(id,credit_id,kunnr,credit_range,credit_amount,credit_useAmount,interest_rate,begin_date,end_date,
+create_user,create_date,modify_date,system_source,status,overdue_interest_rate,credit_name,creditSort,renewal_interest_rate,xytake)
+values(#creditid#,#creditid#,#kunnr#,'1020',0,0,0,sysdate,sysdate+1000,'admin',sysdate,sysdate,0,'U',0,'现款现货',1,0,0)
+
+	
+		]]>
+ 	</insert>
+	
+	<select id="getCreditCount" parameterClass="credit" resultClass="java.lang.Integer">
+	<![CDATA[
+			select count(*) from  crm.crm_tb_credit where  kunnr=#kunnr#
+ 		]]>
+ 	</select>
+	
+	<select id="getNewKunnrList" resultClass="kunnr">
+	    <![CDATA[
+			select kunnr,name1 from  crm.crm_tb_kunnr where create_type='Y' 
+ 		]]>
+ 	</select>
+	
+	<update id="updateNewKunnrList" >
+	    <![CDATA[
+			update  crm.crm_tb_kunnr set create_type='N' where create_type='Y' 
+ 		]]>
+ 	</update>
+	
+</sqlMap>

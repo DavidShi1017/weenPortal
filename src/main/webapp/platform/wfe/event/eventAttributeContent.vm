@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+	</head>
+	
+	<fieldset>
+		<input type="hidden" id="size" name="size" value="$!{oaXmlBeanList.size()}" />
+		<table width="100%" border="0" cellpadding="0" cellspacing="1">
+    		#foreach($oaXmlBean in $oaXmlBeanList)
+    		<tr>
+    			<td class="head" noWrap style="text-align: right">
+    				$!{oaXmlBean.parameter2}：
+					<input type="hidden" id="name_$!{oaXmlBean.parameter1}" value="$!{oaXmlBean.parameter2}" />
+					<input type="hidden" id="modelKey_$!{oaXmlBean.parameter1}" value="$!{oaXmlBean.parameter4}"/>
+					<input type="hidden" id="dataType_$!{oaXmlBean.parameter1}" value="$!{oaXmlBean.parameter5}" />
+					<input type="hidden" id="isNull_$!{oaXmlBean.parameter1}" value="$!{oaXmlBean.parameter6}"/>
+    			</td>
+    			<td noWrap style="text-align: left">
+					#if($!{oaXmlBean.parameter5}=="blob")
+                        <textarea id="text_$!{oaXmlBean.parameter1}" rows="6" cols="45">$!{oaXmlBean.parameter3}</textarea>
+					#else
+						<input type='text' id="text_$!{oaXmlBean.parameter1}" value="$!{oaXmlBean.parameter3}"/>
+					#end
+				</td>
+    		</tr> 
+    		#end
+    	</table>							
+    </fieldset>
+</html>

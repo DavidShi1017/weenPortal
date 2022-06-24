@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="exc">
+	<typeAlias alias="excu" type="com.jingtong.platform.sap.pojo.Exclude" />
+	 
+	<insert id="saveExclude" parameterClass="excu" >
+	<selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				select crm.CRM_SEQ_EXCLUDE.NEXTVAL as id from dual
+			]]>
+	</selectKey>
+	<![CDATA[
+	   insert into crm.crm_tb_exclude 
+		(
+		  id,
+		  kappl,
+		  kschl,
+		  kunnr,
+		  matnr,
+		  datab,
+		  datbi,
+		  dtype,
+		  createuser,
+		  createate,
+		  modifyuser,
+		  modifydate
+		 )
+		 values
+		 (
+		  #id#,
+		  #kappl#,
+		  #kschl#,
+		  #kunnr#,
+		  #matnr#,
+		  #datab#,
+		  #datbi#,
+		  #dtype#,
+		  #createUser#,
+		  sysdate,
+		  #modifyUser#,
+		  sysdate
+		 )
+	]]>
+	</insert>
+ 
+	<update id="updateExclude" parameterClass="excu">
+		<![CDATA[
+			update crm.crm_tb_exclude a
+			set 
+			  a.kappl=#kappl#,
+			  a.kschl=#kschl#,
+			  a.kunnr=#kunnr#,
+			  a.matnr=#matnr#,
+			  a.datab=#datab#,
+			  a.datbi=#datbi#,
+			  a.dtype=#dtype#,
+			  a.modifyuser=#modifyUser#,
+			  a.modifydate=sysdate
+			where a.matnr=#matnr# and a.kunnr=#kunnr#
+		]]>
+	</update> 
+	
+	<delete id="getExcludeCount">
+		<![CDATA[
+			  delete from crm.crm_tb_exclude  t 
+ 		]]>
+			 
+	</delete>
+	
+	<select id="getExcludeTotal" parameterClass="excu"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(e.id) from crm.crm_tb_exclude e 
+			WHERE 1=1 
+		]]>
+		<dynamic>
+				<isNotEmpty property="matnr" prepend="and">
+					<![CDATA[e.matnr like '%' || #matnr# || '%']]>
+				</isNotEmpty>
+				<isNotEmpty property="kunnr" prepend="and">
+					<![CDATA[e.kunnr like '%' || #kunnr# || '%']]>
+				</isNotEmpty>
+		</dynamic> 
+	</select>
+	 
+	<select id="getExcludeList" parameterClass="excu"
+		resultClass="excu">
+		<include refid="global.paginationStart" />
+		<![CDATA[
+			 SELECT
+			 	id, kappl,kschl,kunnr,matnr, to_char(datab,'yyyy-mm-dd') as datab1,to_char(datbi,'yyyy-mm-dd') as datbi1,dtype,createuser as createUser,createate as createDate, modifyuser as modifyUser,modifydate as modifyDate
+			 FROM crm.crm_tb_exclude
+			 WHERE 1=1 
+		]]>
+		<dynamic>
+			    <isNotEmpty property="matnr" prepend="and">
+					<![CDATA[matnr like '%' || #matnr# || '%']]>
+				</isNotEmpty>
+				<isNotEmpty property="kunnr" prepend="and">
+					<![CDATA[kunnr like '%' || #kunnr# || '%']]>
+				</isNotEmpty>
+		</dynamic>  
+		<![CDATA[ order by id desc]]>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select> 
+	
+</sqlMap>

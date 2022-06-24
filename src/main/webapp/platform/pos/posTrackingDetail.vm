@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		
+		
+		<!-- 查询 -->
+		<div class="easyui-layout" data-options="fit:true,border:false"> 
+
+	        <form method="post" target="hideFrame">
+			<div id="p_search" title="" style="height:120px;padding: 1px; background: #fafafa;" data-options="region:'north',iconCls:'icon-search'">
+                <input type="hidden" id="file_id" name="file_id" value="$!{file_id}"/>
+				
+				<table width="100%" border="0" cellpadding="0" cellspacing="5">
+				 <tr>
+					<td class="head" noWrap>DISTI NAME</td>
+                    <td><input class="easyui-validatebox" id="disti_name" name="disti_name"></td>
+                     <td class="head" noWrap>BOOK PART</td>
+                    <td><input class="easyui-validatebox" id="book_part" name="book_part"></td>
+					<td class="head" noWrap>SHIP FROM</td>
+                    <td><input class="easyui-datebox" id="start_time" name="start_time1"></td>
+
+				</tr>
+				<tr>
+					<td class="head" noWrap>CUSTOMER NAME</td>
+                    <td><input class="easyui-validatebox" id="purchasing_customer_name" name="purchasing_customer_name"></td>
+                     <td class="head" noWrap>ENDCUST NAME</td>
+                    <td><input class="easyui-validatebox" id="endcust_name" name="endcust_name"></td>
+					<td class="head" noWrap>SHIP TO</td>
+                    <td><input class="easyui-datebox" id="end_time" name="end_time1"></td>
+
+ 					<td colspan="2">
+						<a id="search" href="javascript:search()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">Search</a>
+                    	<a id ="clearV" href="javascript:clearValue()" class="easyui-linkbutton" iconCls="icon-clear">Cancel</a> 	
+					</td>		
+                 </tr>
+				 <tr>
+					<td class="head" noWrap>FILE_ID</td>
+					<td><input class="easyui-validatebox" id="file_ids" name="file_ids"></td>
+				 <td class="head" noWrap>Status</td>
+				 <td>
+ 					<select id="status" name="status" value="(0,1,3,9)"style="width:155px;" data-options="editable:false">
+						<option value="(0,1,3,9)">ALL</option>  
+					
+						<option value="(1)">Pending</option>  
+						<option value="(0)">Reject</option>  
+						<option value="(3)">Approve</option>  
+						<option value="(9)">No_check</option>  
+                    </select>
+					</td>
+						 <td class="head" noWrap>Data From</td>
+					<td>
+ 					<select id="data_from" name="data_from" value="(1,2)"style="width:155px;" data-options="editable:false">
+						<option value="(1,2)">ALL</option>  
+					
+						<option value="(1)">Portal</option>  
+						<option value="(2)">EDI</option>  
+                    </select>
+					</td>
+				</tr>
+				<tr>
+					<td class="head" noWrap>INVOICE NBR</td>
+					<td>
+						<input class="easyui-validatebox" id="disti_invoice_nbr" name="disti_invoice_nbr">
+					</td>
+				</tr>
+                </table>
+				 </div>
+			    <div data-options="region:'center'">
+					<table id="datagrid"></table>
+				</div>
+	</form>
+	
+	<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+	<div id="hiddenWin"/> 
+	</div>
+		
+		
+		 
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/pos/posTrackingDetail.js?time=New Date()"></script>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui","upload"])
+		#JS_ENV_VAL()	
+		<title>事务处理</title>
+	</head>
+	<body>
+	<form method="post" enctype="multipart/form-data" id="processed">
+    	<div id="tt" class="easyui-tabs"  style="width:1130px">
+    	<div title="业务数据" data-options="closable:false,selected:true">
+    		#if($!{operationType} == "process")
+                 #set($url = $!{proEventTotal.actionId}+"?eventId="+$!{proEventTotal.eventId}+"&subFolders="+$!{proEventTotal.subFolders}+"&modifyFlag="+"Y"+"&curStaId="+$!{curStaId})
+            #else
+                 #set($url = $!{proEventTotal.actionId}+"?eventId="+$!{proEventTotal.eventId}+"&subFolders="+$!{proEventTotal.subFolders})
+    		#end
+    		<iframe frameborder="no" id="iframepage" name="iframepage"  width="100%"   height="500px"  src="$!url"></iframe>
+        </div>
+		<div title="流程数据" data-options="closable:false">
+    			#if($!{proEventTotal.status}=="0")
+                	#set($status = "未处理")
+                #elseif($!{proEventTotal.status}=="1")
+                	#set($status = "处理中")
+                #elseif($!{proEventTotal.status}=="2")
+                	#set($status = "已完成")
+                #elseif($!{proEventTotal.status}=="3")
+                	#set($status = "已拒绝")
+                #elseif($!{proEventTotal.status}=="4")
+                	#set($status = "已取消")
+                #end
+		<div class="easyui-panel" data-options="collapsible:true,iconCls:'icon-tip'" title="评审列表  事务ID：$!{proEventTotal.eventId} 事务状态：$status">
+			<table width="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td colspan="2">
+									<table width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+										<tr>
+											<td class="head1" align="center"  noWrap  colspan="1">
+												事务标题:
+											</td>
+											<td class="even"  noWrap colspan="5">
+												$!{proEventTotal.eventTitle}
+											</td>
+										</tr>
+										#set($detail=$eventDetailList.get(0))
+										<tr>
+											<td class="head2" align="center" noWrap colspan="1">
+												发起人:
+											</td>
+											<td class="even3" noWrap  style="width:165px">
+												<a href="#" onclick="searchAllUserInfo('$!{detail.curUserId}')" >
+													$!{detail.userName}
+												</a>
+												#if($!{shortcutFlag})
+        											|<a href="javascript:shortcuts('$!{detail.userName}','$!{detail.curUserId}','$!{detail.curOrgId}')" >
+        												复制作为处理人
+        											</a>
+												#end
+											</td>
+											<td class="head2" align="center"  noWrap colspan="1">
+												角色:
+											</td>
+											<td class="even3" noWrap  style="width:165px">
+												$!{detail.roleName}
+											</td>
+											<td class="head2" align="center"  noWrap colspan="1">
+												发起时间:
+											</td>
+											<td class="even3" noWrap  style="width:165px">
+												$!dateUtil.datetime($!{detail.time},"yyyy-MM-dd HH:mm:ss")
+											</td>
+										</tr>
+										<tr>
+											<td class="head1" align="center"  noWrap colspan="1">
+												备注:
+											</td>
+											<td class="even"  noWrap colspan="5">
+												$!{detail.memo}
+											</td>
+										</tr>
+										<tr>
+											<td class="head2"  align="center"  noWrap colspan="1">
+												附件:
+											</td>
+											<td class="even3"  noWrap colspan="5">
+												$!{detail.link}
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<table width="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td colspan="2">
+									#foreach($detail in $eventDetailList)
+										#if($velocityCount != 0)
+											<table width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+										<tr>
+											<td class="head1" noWrap colspan="1">
+        										处理人:
+											</td>
+        									<td class="even" noWrap   style="width:165px">
+        									<a href="#" onclick="searchAllUserInfo('$!{detail.curUserId}')" >
+        										$!{detail.userName}
+        									</a>
+    											#if($!{shortcutFlag})
+    											|<a href="javascript:shortcuts('$!{detail.userName}','$!{detail.curUserId}','$!{detail.curOrgId}')" >
+    												复制作为处理人
+    												</a>
+    											#end
+											</td>
+											<td class="head1" noWrap colspan="1">
+												角色:
+        									</td>
+        									<td class="even"  noWrap style="width:165px">
+        										$!{detail.roleName}
+        									</td>
+											 <td class="head1" noWrap colspan="1">
+        										处理时间:
+        									  </td>
+        									  <td class="even" noWrap  style="width:165px">
+												#if($!{detail.operation} != "9")
+    												#if(${detail.lastModify})
+    													$dateUtil.datetime($!{detail.lastModify},"yyyy-MM-dd HH:mm:ss")
+													#end
+												#end
+        									</td>
+										</tr>
+										<tr>
+        								<td class="head2" colspan="1" noWrap>
+        												操作状态:
+        								</td>
+											<td class="even3" colspan="5" noWrap>
+        										#if($!{detail.operation}=="0")
+        											拒绝
+        										#elseif($!{detail.operation}=="1")
+        													同意
+        												#elseif($!{detail.operation}=="9")
+        													未处理
+														#elseif($!{detail.operation}=="2")
+															已回退
+        												#end
+        											</td>
+        										</tr>
+        										<tr>
+        											<td class="head1" colspan="1" noWrap>
+        												提交意见:
+        											</td>
+        											<td class="even" colspan="5" noWrap>
+        												$!{detail.memo}
+        											</td>
+        										</tr>
+        										<tr>
+        											<td class="head2" colspan="1" noWrap>
+        												附件:
+        											</td>
+        											<td class="even3" colspan="5" noWrap>
+        												$!{detail.link}
+        											</td>
+        										</tr>
+												#if($!{detail.repalyCount})
+													<tr>
+        											<td class="head1" colspan="1" noWrap>
+        												抄送意见:
+        											</td>
+        											<td class="even" colspan="5" noWrap>
+        												<a href="#" onclick="getRepaly($detail.eventDtlId)">查看回复</a>
+        											</td>
+        										</tr>
+												#end
+											</table>
+										#end
+									#end
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+            </div>
+			<input  type="hidden"  id="cc_id" value="$!{cc_id}" name="cc_id"/>
+			#if($!{cc_id})
+			<div class="easyui-panel" title="协商处理" data-options="collapsible:true,iconCls:'icon-edit'">
+				<table width="100%" border="0" cellpadding="0" cellspacing="1">
+					<tr>
+						<td class="head">
+							意见 :
+						</td>
+						<td class="even" colspan="3">
+							<textarea id="memo" name="memo" rows="5" cols="80">$!{proEventTotal.replayMemo}</textarea>
+						</td>
+    				</tr>
+    				<tr>
+						<td class="head">
+							操作 :
+						</td>
+						<td id="test" class="even" colspan="3">
+							<a class="easyui-linkbutton" icon="icon-ok" href="javascript:saveMemo()">保存</a>
+						</td>
+					</tr>
+                </table>
+            </div>
+			#end
+			#if($!{operationType} == "process")
+			<div class="easyui-panel" title="事务处理" id="process_div" data-options="collapsible:true,iconCls:'icon-edit'">
+				<table width="100%" border="0" cellpadding="0" cellspacing="1">
+					#if($!{modelIdType}=='any')
+					<tr>
+						<td class="head" noWrap>请选择环节 :</td>
+							<td class="even" colspan="3">
+								<input id="chooseFlag" class="easyui-combobox" name="chooseFlag" data-options="valueField:'value',textField:'text',data : [ {
+								'value' : 'M',
+								'text' : '继续处理'
+							}, {
+								'value' : 'E',
+								'text' : '处理完成'
+							} ],onLoadSuccess : function() {
+								$('#chooseFlag').combobox('setValue', 'M');
+							},
+							onSelect : function(re) {
+								chooseFlags(re.value);
+							}" /> 
+							</td>
+					</tr>
+					<tr id="showflag">
+						<td class="head" noWrap>处理人 :</td>
+						<td class="even" colspan="3">
+							<input class="easyui-validatebox" name="nextUserName" id="nextUserName" readonly />
+							<input type="hidden" name="nextUserId" id="nextUserId" />
+							<input type="hidden" name="nextOrgId" id="nextOrgId" />
+							<a class="easyui-linkbutton" href="javascript:openOrgtree()">选择</a>
+							<a class="easyui-linkbutton" href="javascript:linkMan()">常用联系人</a>
+						</td>
+					</tr>
+					#end
+					<tr>
+						<td class="head">
+							审批意见 :
+						</td>
+						<td class="even" colspan="3">
+							<textarea  id="memo" name="memo" rows="8" cols="100"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="head">
+							附件上传 :
+						</td>
+						<td class="even" colspan="3">
+							<div id="input">
+								<input name="upload" id="file0" type="file" value="添加附件" onchange="addFile()" />
+								<font size="2.5" color="red">继续点击添加多个附件</font>
+							</div>
+							<div id="_file"></div>
+						</td>
+					</tr>
+					<tr>
+						<td class="head">
+							操作 :
+						</td>
+						<td id="test" class="even" colspan="3">
+								<a class="easyui-linkbutton" icon="icon-ok" href="javascript:agree()">同意</a>
+								#if($!{curStaId} != "start")
+								<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:refuse()">拒绝</a>
+								#end
+								#if($!{modelIdType}=='fix')
+								<a class="easyui-linkbutton" icon="icon-back" href="javascript:back()">回退</a>
+								#end
+								<a class="easyui-linkbutton" icon="icon-email_go" href="javascript:cc()">抄送</a>
+						</td>
+					</tr>
+				</table>
+				</div>	
+				#end	
+				</div>
+			</div>
+			<input type="hidden" name="eventId" id="eventId" value="$!{proEventTotal.eventId}" />
+			<input type="hidden" name="keys" id="keys" value="$!{proEventTotal.keys}" />
+			<input type="hidden" name="toDoDetail" id="toDoDetail" value="$!{toDoDetail}" />
+			<input type="hidden" name="modelId" id="modelId" value="$!{modelId}" />
+			<input type="hidden" name="curStaId" id="curStaId" value="$!{curStaId}" />
+			<input type="hidden" name="actionId" id="actionId" value="$!{proEventTotal.actionId}" />
+			<input type="hidden" name="subFolders" id="subFolders" value="$!{proEventTotal.subFolders}" />
+			<input type="hidden"  name="operationType" id="operationType" value="$!{operationType}" />
+		</form>
+		<iframe id="hideFrameWfe" name="hideFrameWfe"  style="height: 0; width: 0"></iframe>
+		<div id="maintWindow">
+        </div>
+	</body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/wfe/event/processEvent.js"></script>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/wfe/event/workflow.js"></script>
+</html>

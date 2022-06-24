@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		<!-- 查询 -->
+		<div class="easyui-layout" data-options="fit:true,border:false"  border="0"> 
+	        <form method="post" target="hideFrame">
+
+			    <div data-options="region:'center'"  border="0">
+			<input type="hidden" id="id" value="$!{qd.id}"/>
+			<input class="easyui-validatebox" type="hidden" id="customer_id" name="customer_id" value="$!{qd.customer_id}"/>
+			<input class="easyui-validatebox" type="hidden" id="endCustomer_name" name="endCustomer_name" value="$!{qd.endCustomer_name}"/>
+			<input class="easyui-validatebox" type="hidden" id="purchaseCustomer_name" name="purchaseCustomer_name" value="$!{qd.purchaseCustomer_name}"/>
+			<input class="easyui-validatebox" type="hidden" id="pcGroup_id" name="pcGroup_id" value="$!{qd.pcGroup_id}"/>
+			<input class="easyui-validatebox" type="hidden" id="ecGroup_id" name="ecGroup_id" value="$!{qd.ecGroup_id}"/>
+			<input class="easyui-validatebox" type="hidden" id="start_dateStr" name="start_dateStr" value="$!{qd.start_dateStr}"/>
+			<input type="hidden" id="material_name" name="material_name" value="$!{qd.material_name}"/>
+				<table id="datagrid" border="0"></table>
+				</div>
+	</form>
+	</div>
+	<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+	<div id="hiddenWin"/> 
+	</div>
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/quote/toCheck.js"></script>
+</html>

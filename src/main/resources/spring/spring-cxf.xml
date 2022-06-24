@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+
+	<!-- 接口业务DAO层 -->
+	<bean id="iWebDao"
+		class="com.jingtong.platform.webservice.dao.impl.WebDaoImpl"
+		parent="baseDao"></bean>
+
+	<!-- 接口日志dao -->
+	<bean id="iLogInfoDao"
+		class="com.jingtong.platform.webservice.dao.impl.LogInfoDaoImpl"
+		parent="baseDao">
+	</bean>
+
+	<!-- 接口业务Service层 <bean id="iWebService" class="com.jingtong.platform.webservice.service.impl.WebServiceImpl"> 
+		<property name="iWebDao" ref= "iWebDao"></property> </bean> -->
+
+
+
+	<!-- 接口客户端业务类 -->
+	<bean id="iClient"
+		class="com.jingtong.platform.webservice.service.impl.IClientImpl">
+		<property name="iWebDao" ref="iWebDao" />
+		<!-- <property name="iLogInfoService" ref="iLogInfoService"/> -->
+
+		<property name="transactionTemplate"
+			ref="transactionTemplate" />
+	</bean>
+
+	<!-- 接口Action -->
+	<bean id="webserviceAction"
+		class="com.jingtong.platform.webservice.action.WebserviceAction"
+		parent="baseAction" scope="request">
+		<property name="iClient" ref="iClient" />
+
+	</bean>
+
+	<!-- 接口日志service -->
+	<bean id="iLogInfoService"
+		class="com.jingtong.platform.webservice.service.impl.ILogInfoServiceImpl">
+		<property name="iLogInfoDao" ref="iLogInfoDao"></property>
+	</bean>
+
+
+	<!-- 定时任务TASK -->
+	<bean id="myTask"
+		class="com.jingtong.platform.webservice.client.TimeScheduleTask">
+		<property name="iClient" ref="iClient"></property>
+	</bean>
+
+	<bean autowire="no"
+		class="com.jingtong.platform.framework.util.SchedulerFactoryBeanWithShutdownDelay">
+		<property name="triggers">
+			<list>
+				<!-- yw -->
+				<ref bean="cronTriggerEmailExpireDR" />
+				<ref bean="cronTriggerSendEmail" />
+				<ref bean="cronTriggerEmailExpireQuote" />
+
+				<!-- mjj -->
+				<ref bean="cronTriggerInventoryCheck" />
+				<ref bean="cronTriggerPosCheck" />
+				<ref bean="cronTriggerClaimCheck" />
+			</list>
+		</property>
+		<property name="waitForJobsToCompleteOnShutdown" value="true" />
+	</bean>
+
+	<!-- 失效DR邮件提醒调度(凌晨1点) -->
+	<bean id="emailExpireDRJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="myTask" />
+		<property name="targetMethod"
+			value="executeClientEmailExpireDR" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="cronTriggerEmailExpireDR"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="emailExpireDRJobMethod" />
+		<property name="cronExpression" value="0 0 1 * * ?" />
+		<!-- <property name="cronExpression" value="0 0/5 * * * ?" /> -->
+	</bean>
+
+	<!-- 失效Quote邮件提醒调度(凌晨1点) -->
+	<bean id="emailExpireQuoteJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="myTask" />
+		<property name="targetMethod"
+			value="executeClientEmailExpireQuote" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="cronTriggerEmailExpireQuote"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="emailExpireQuoteJobMethod" />
+		<property name="cronExpression" value="0 0 1 * * ?" />
+		<!-- <property name="cronExpression" value="0 0/5 * * * ?" /> -->
+	</bean>
+
+	<!-- 邮件表逐个发送调度（10分钟一次） -->
+	<bean id="sendEmailJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="myTask" />
+		<property name="targetMethod" value="executeClientSendEmail" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="cronTriggerSendEmail"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="sendEmailJobMethod" />
+		<property name="cronExpression" value="0 0/10 * * * ? 2199" />
+	</bean>
+
+
+
+
+
+
+	<!-- inventoryCheckEDI定时任务（2小时一次 120分钟一次）start xcfeng add -->
+	<bean id="cusInventroyDao"
+		class="com.jingtong.platform.cusInventroy.dao.impl.CusInventroyDaoImpl"
+		parent="baseDao"></bean>
+	<bean id="inverntoryService"
+		class="com.jingtong.platform.cusInventroy.service.impl.CusInventroyServiceImpl">
+		<property name="cusInventroyDao" ref="cusInventroyDao" />
+	</bean>
+	<bean id="inventoryCheckServiceTask"
+		class="com.jingtong.platform.cusInventroy.service.impl.CusInventroyCheckEDIJobServiceImpl">
+		<property name="inverntoryService" ref="inverntoryService" />
+		<property name="iWebDao" ref="iWebDao" />
+	</bean>
+	<bean id="sendInventoryCheckJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="inventoryCheckServiceTask" />
+		<property name="targetMethod" value="checkEDI" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="cronTriggerInventoryCheck"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="sendInventoryCheckJobMethod" />
+		<property name="cronExpression" value="0 0/120 * * * ? 2199" />
+	</bean>
+	<!-- inventoryCheckEDI定时任务（2小时一次 120分钟一次）end xcfeng add -->
+
+	<!-- posCheckEDI定时任务（2小时一次 120分钟一次）start xcfeng add -->
+	<bean id="posDao"
+		class="com.jingtong.platform.pos.dao.impl.PosDaoImpl" parent="baseDao"></bean>
+	<bean id="posService"
+		class="com.jingtong.platform.pos.service.impl.PosServiceImpl">
+		<property name="posDao" ref="posDao" />
+	</bean>
+	<bean id="posCheckServiceTask"
+		class="com.jingtong.platform.pos.service.impl.PosCheckEDIJobServiceImpl">
+		<property name="posService" ref="posService" />
+		<property name="iWebDao" ref="iWebDao" />
+	</bean>
+	<bean id="sendPosCheckJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="posCheckServiceTask" />
+		<property name="targetMethod" value="posCheckEDI" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="cronTriggerPosCheck"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="sendPosCheckJobMethod" />
+		<property name="cronExpression" value="0 0/120 * * * ? 2199" />
+	</bean>
+	<!-- posCheckEDI定时任务（2小时一次 120分钟一次）end xcfeng add -->
+
+	<!-- claimCheckEDI定时任务（2小时一次 120分钟一次）start xcfeng add -->
+	<bean id="sendClaimCheckJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="posCheckServiceTask" />
+		<property name="targetMethod" value="claimCheckEDI" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="cronTriggerClaimCheck"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="sendClaimCheckJobMethod" />
+		<property name="cronExpression" value="0 0/120 * * * ? 2199" />
+	</bean>
+	<!-- claimCheckEDI定时任务（2小时一次 120分钟一次）end xcfeng add -->
+
+</beans>

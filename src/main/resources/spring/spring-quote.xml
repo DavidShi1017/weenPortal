@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+ 
+	<bean id="quoteAction" class="com.jingtong.platform.quote.action.QuoteAction"
+		parent="baseAction" scope="request">
+		<property name="quoteService" ref="quoteService" />
+		<property name="customerService" ref="customerService" />
+		<property name="roleService" ref="roleService"></property>
+		<property name="allUserService" ref="allUserService"></property>
+		<property name="productService" ref="productService"></property>
+		<property name="posService" ref="posService"/>
+		<property name="dictService" ref="dictService" />
+		<property name="endCustomerService" ref="endCustomerService" />
+		<property name="messageService" ref="messageService" />
+	</bean>
+	<bean id="quoteService" class="com.jingtong.platform.quote.service.impl.QuoteServiceImpl">
+		<property name="quoteDao" ref="quoteDao"/>
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+	
+	<bean id="quoteDao" class="com.jingtong.platform.quote.dao.impl.QuoteDaoImpl" parent="baseDao">
+	</bean>
+	 
+</beans>

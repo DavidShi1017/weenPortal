@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+ 				<table width="100%" border="0" cellpadding="0" cellspacing="5">
+					<input type="hidden" id="id" name="db.id" value="$!{db.id}"/>
+						<tr>
+							<td class="head" noWrap><label for="name">Disti Name:</label></td>
+                            <td>
+								<input type="validatebox" id="disti_name" name="db.disti_name" value='$!{db.disti_name}' ></input>
+								<div id="toolbarDistiBranch" class="datagrid-toolbar">
+									<input class="easyui-searchbox" searcher="searcherDistiBranch" prompt="Pls Serach Disti Name Key" style="width:280px"></input>		
+								</div>	
+
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Paycode:</label></td>
+                            <td>
+								<input  class="easyui-validatebox" id="payer_to" name="db.payer_to" value='$!{db.payer_to}'  ></input>
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Disti Branch:</label></td>
+                            <td>
+								<input type="text" id="disti_branch" name="db.disti_branch" value='$!{db.disti_branch}' ></input>
+								<!--<div id="toolbarBranch" class="datagrid-toolbar">
+									<input class="easyui-searchbox" searcher="searcherBranch" prompt="Key Word" style="width:300px"></input>		
+								</div>	-->
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Branch_code:</label></td>
+                            <td>
+								<input type="text" id="branch_code" name="db.branch_code" value='$!{db.branch_code}' ></input>
+							</td>
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Region:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="pricing_region" name="db.pricing_region" value='$!{db.pricing_region}'></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Currency:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="currency" name="db.currency" value='$!{db.currency}' readonly></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">SOLD TO:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="sold_to" name="db.sold_to" value='$!{db.sold_to}' ></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">SHIP TO:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="ship_to" name="db.ship_to" value='$!{db.ship_to}' ></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">BILL TO:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="bill_to" name="db.bill_to" value='$!{db.bill_to}' ></input>
+							</td>							
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>
+<br><br>
+			<div region="south" border="false" style="text-align:center;height:20px;line-height:20px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/customer/createDistiBranch.js"></script>
+</html>

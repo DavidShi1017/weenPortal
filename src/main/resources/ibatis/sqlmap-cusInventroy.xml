@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="cusInventroy">
+
+	<typeAlias alias="cusInventroy"
+		type="com.jingtong.platform.cusInventroy.pojo.CusInventroy" />
+
+	<select id="searchCusInventroyList" parameterClass="cusInventroy"
+		resultClass="cusInventroy">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+		SELECT	  
+		DISTINCT aa.file_id,
+		aa.cus_name,
+		ff.emp_name created_user,
+		aa.file_url,
+		'' status_num,
+		aa.data_from,
+		aa.synchronization_time,
+		to_char(aa.synchronization_time,'YYYY-MM-DD') synchronization_timestr,  
+	 	ff.emp_name synchronization_user,
+		'' frequency ,
+		0 qty ,
+		0  amount
+		FROM
+		basis.basis_tb_customer_inventroy aa
+		left outer join basis.basis_tb_salesemp_info ff on aa.synchronization_user = to_char(ff.emp_id)
+		WHERE
+		1=1 and not exists(select 1 from basis_tb_customer_inventroy where file_id =aa.file_id and id<aa.id)
+		
+	 	
+		]]>
+		<dynamic>
+		<isNotEmpty property="cus_name" prepend="and">
+			<![CDATA[ upper(aa.cus_name) like #cus_name,handler=wildcard# escape '\' and aa.cus_name is not null ]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+			<![CDATA[ aa.file_url like #file_url,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="part_name" prepend="and">
+			<![CDATA[ upper(aa.part_name) like #part_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+			<![CDATA[ aa.status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_id_str" prepend="and">
+			<![CDATA[ to_char(aa.file_id) = #file_id_str#]]>
+		</isNotEmpty>
+		<isNotEmpty property="synchronization_user" prepend="and">
+			<![CDATA[ aa.synchronization_user = #synchronization_user#]]>
+		</isNotEmpty>
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ aa.SENDER_DATE >= TO_char(#start_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ aa.SENDER_DATE <= TO_char(#end_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+
+	<select id="getInvByfileId" parameterClass="cusInventroy"	resultClass="cusInventroy">
+		<![CDATA[
+			SELECT
+				((select count(1) from basis_tb_customer_inventroy i where i.file_id =  #file_id# and status = 1 ) ||'/'||
+		 (select count(1) from basis_tb_customer_inventroy i where i.file_id =  #file_id# and status = 0 ) ||'/'||
+		(select count(1) from basis_tb_customer_inventroy i where i.file_id =  #file_id# )) status_num,
+		(select frequency from basis_tb_customer_inventroy where file_id =  #file_id# and status = 3 and rownum = 1) frequency ,
+		(select nvl(sum(QUANTITY),0) from basis_tb_customer_inventroy where file_id = #file_id# and status = 3) qty ,
+		(select round(nvl(sum(QUANTITY * (PRICE / price_basis)) ,0),4) from basis_tb_customer_inventroy where file_id =  #file_id# and status = 3)  amount
+			FROM dual
+	   	  ]]>
+	</select>
+	
+	<select id="getCusInventroyListCount" parameterClass="cusInventroy"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(distinct aa.file_id) from basis.basis_tb_customer_inventroy aa
+ 		where 1=1
+	]]>
+		<dynamic>
+		<isNotEmpty property="cus_name" prepend="and">
+			<![CDATA[ upper(aa.cus_name) like #cus_name,handler=wildcard# escape '\' and aa.cus_name is not null ]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+			<![CDATA[ aa.file_url like #file_url,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="part_name" prepend="and">
+			<![CDATA[ upper(aa.part_name) like #part_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+			<![CDATA[ aa.status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="synchronization_user" prepend="and">
+			<![CDATA[ aa.synchronization_user = #synchronization_user#]]>
+		</isNotEmpty>
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ aa.SENDER_DATE >= TO_char(#start_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ aa.SENDER_DATE <= TO_char(#end_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_id_str" prepend="and">
+			<![CDATA[ to_char(aa.file_id) = #file_id_str#]]>
+		</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getCusInventroyById" parameterClass="cusInventroy"
+		resultClass="cusInventroy">
+		<![CDATA[
+select  aa.id,aa.message_number,aa.doc_id,aa.doc_code,aa.doc_identifier,aa.function_code,aa.sender_id,aa.recipient_id,
+	 	aa.sender_date,aa.by_party,aa.st_party,aa.line_item,aa.part_name,aa.item_type,aa.inventroy_method,aa.quantity_type,aa.quantity,
+	 	aa.unit_code,aa.currency,aa.price_code,aa.price,aa.price_type,aa.price_basis,
+	 	aa.synchronization_time,to_char(aa.synchronization_time,'YYYY-MM-DD') synchronization_timestr,
+	 	aa.synchronization_user,aa.update_time,to_char(aa.update_time,'YYYY-MM-DD') update_timestr,aa.update_user,
+	 	aa.data_from,aa.status,aa.cus_name  cus_name,aa.sales_org,aa.material_id,aa.tips,aa.file_id,aa.file_url,aa.status_num
+		from basis.basis_tb_customer_inventroy aa
+		
+
+			where
+			 	 id = #id#
+		]]>
+		</select>
+
+	<insert id="createCusInventroy" parameterClass="cusInventroy">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_cus_inventroy.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_customer_inventroy  
+			(
+				id,St_party,Sender_date,Doc_identifier,Doc_code,Part_name,Currency,Price,Cus_name,Sales_org,Price_basis,status,synchronization_time,synchronization_user,data_from,quantity,update_time,tips,file_id,file_url,status_num
+			)
+			values
+			(
+				#id#,#st_party#,#sender_date#,#doc_identifier#,#doc_code#,#part_name#,#currency#,#price#,#cus_name#,#sales_org#,#price_basis#,#status#,sysdate,#synchronization_user#,'1',#quantity#,sysdate,#tips#,#file_id#,#file_url#,#status_num#
+			)		
+		]]>
+	</insert>
+	
+	<update  id="updateCusInventroy" parameterClass="cusInventroy">
+		update basis.basis_tb_customer_inventroy  set 			
+			tips = #tips# , status = #status# , cus_name=#cus_name#
+		where id = #id#
+	</update>
+	
+	<update  id="updateCusInventroyStatus" parameterClass="cusInventroy">
+		update basis.basis_tb_customer_inventroy  set 			
+			tips = #tips# , status = #status# , cus_name=#cus_name#
+		where id = #id#
+	</update>
+	
+	
+	<update  id="updateCusInventroyByFileId" parameterClass="cusInventroy">
+		update basis.basis_tb_customer_inventroy  set 			
+			 status_num=#status_num#
+		where file_id = #file_id#
+	</update>
+	
+	<update  id="resetCusInventroy" parameterClass="cusInventroy">
+		update basis.basis_tb_customer_inventroy  set 			
+			status = '9' where id = #id#
+	</update>
+	
+	<update  id="approvedCusInventroy" parameterClass="cusInventroy">
+		update basis.basis_tb_customer_inventroy  set 			
+			status = '3' where id = #id#
+	</update>
+	
+	<update  id="rejectCusInventroy" parameterClass="cusInventroy">
+		update basis.basis_tb_customer_inventroy  set 			
+			status = '0' where id = #id#
+	</update>
+	
+<select id="searchCusInventroyListNoPage" parameterClass="cusInventroy" resultClass="cusInventroy">
+	<![CDATA[
+		select id,message_number,doc_id,doc_code,doc_identifier,function_code,sender_id,recipient_id,
+	 	sender_date,by_party,st_party,line_item,part_name,item_type,inventroy_method,quantity_type,quantity,
+	 	unit_code,currency,price_code,price,price_type,price_basis,
+	 	synchronization_time,to_char(synchronization_time,'YYYY-MM-DD') synchronization_timestr,  
+	 	synchronization_user,update_time,to_char(update_time,'YYYY-MM-DD') update_timestr,update_user,
+	 	data_from,status,cus_name,sales_org,material_id
+		from basis.basis_tb_customer_inventroy
+		where 1=1
+	]]>
+	<dynamic>
+		<isNotEmpty property="cus_name" prepend="and">
+			<![CDATA[ upper(aa.cus_name) like #cus_name,handler=wildcard# escape '\' and aa.cus_name is not null ]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+			<![CDATA[ aa.file_url like #file_url,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="part_name" prepend="and">
+			<![CDATA[ upper(aa.part_name) like #part_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+			<![CDATA[ aa.status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="synchronization_user" prepend="and">
+			<![CDATA[ aa.synchronization_user = #synchronization_user#]]>
+		</isNotEmpty>
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ to_date(TO_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') >=to_date(TO_char(#start_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ to_date(TO_char(aa.update_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(TO_char(#end_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd')]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_id_str" prepend="and">
+			<![CDATA[ to_char(aa.file_id) = #file_id_str#]]>
+		</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="searchProductCount" parameterClass="cusInventroy"
+		resultClass="java.lang.Integer">
+		 <![CDATA[
+		       select  count(*)  from basis.basis_tb_productinfo
+                       where factory='HK10' and upper(material_name)=#part_name#
+		 ]]>
+	</select>
+	
+	<select id="getProductInfo" parameterClass="cusInventroy"	resultClass="com.jingtong.platform.product.pojo.Product">
+		 <![CDATA[
+		       select  *  from basis.basis_tb_productinfo
+              where factory='HK10' and (upper(material_name)=#part_name# or upper(material_id)=#part_name# ) and rownum = 1
+		 ]]>
+	</select>
+	
+	<select id="searchCustomerCount" parameterClass="cusInventroy"
+		resultClass="java.lang.Integer">
+		 <![CDATA[
+		       select  count(*)  from basis.BASIS_TB_CUSTOMERINFO
+                       where  ltrim(customer_code,'0')=#st_party#
+		 ]]>
+	</select>
+	
+	<select id="searchCustomerName" parameterClass="cusInventroy"
+		resultClass="java.lang.String">
+		 <![CDATA[
+		       select  customer_name  from basis.BASIS_TB_CUSTOMERINFO
+                       where  ltrim(customer_code,'0')=#st_party#
+		 ]]>
+	</select>
+	
+	<select id="searchCusInventroyListForEDI" parameterClass="cusInventroy"
+		resultClass="cusInventroy">
+		<![CDATA[
+	 	select id, message_number,doc_id,doc_code,doc_identifier,function_code,sender_id,recipient_id,
+	 	sender_date,by_party,st_party,line_item,part_name,item_type,inventroy_method,quantity_type,quantity,
+	 	unit_code,currency,price_code,price,price_type,price_basis,
+	 	synchronization_time,to_char(synchronization_time,'YYYY-MM-DD') synchronization_timestr, 
+	 	synchronization_user,update_time,to_char(update_time,'YYYY-MM-DD') update_timestr,update_user,
+	 	data_from,status,cus_name,sales_org,material_id,tips
+		from basis.basis_tb_customer_inventroy
+		where status=9
+		]]>
+	</select>
+
+	<select id="getCusInventroyListCountForEDI" parameterClass="cusInventroy"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_customer_inventroy
+ 		where status = 9
+	]]>
+	</select>
+	
+	
+	<select id="getFileId"  resultClass="java.lang.Long">
+ 	<![CDATA[
+		SELECT basis.basis_seq_cus_inventroyFileId.nextval AS id FROM DUAL	
+	]]>
+	</select>
+	
+	
+	<select id="getCusInventroyDetailListCount" parameterClass="cusInventroy"
+		resultClass="java.lang.Integer">
+	 	<![CDATA[
+			select count(*) from basis.basis_tb_customer_inventroy
+	 		where file_id = #file_id#
+		]]>
+	</select>
+	
+	<select id="getCusInventroyDetailListCountForError" parameterClass="cusInventroy" resultClass="java.lang.Integer">
+	 	<![CDATA[
+			select count(*) from basis.basis_tb_customer_inventroy
+	 		where file_id = #file_id# and status != 3
+		]]>
+		<dynamic>
+			<isNotEmpty property="status" prepend="and">
+				<![CDATA[ status = #status#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<select id="searchCusInventroyListById" parameterClass="cusInventroy"
+		resultClass="cusInventroy">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+	 	select  aa.id,aa.message_number,aa.doc_id,aa.doc_code,aa.doc_identifier,aa.function_code,aa.sender_id,aa.recipient_id,
+	 	aa.sender_date,aa.by_party,aa.st_party,aa.line_item,aa.part_name,aa.item_type,aa.inventroy_method,aa.quantity_type,aa.quantity,
+	 	aa.unit_code,aa.currency,aa.price_code,aa.price,aa.price_type,aa.price_basis,
+	 	aa.synchronization_time,to_char(aa.synchronization_time,'YYYY-MM-DD') synchronization_timestr,  
+	 	ff.emp_name synchronization_user,aa.update_time,to_char(aa.update_time,'YYYY-MM-DD') update_timestr,aa.update_user,
+	 	aa.data_from,aa.status,aa.cus_name  cus_name,aa.sales_org,aa.material_id,aa.tips,aa.file_id,aa.file_url,aa.status_num,aa.frequency
+		from basis.basis_tb_customer_inventroy aa
+		left outer join basis.BASIS_TB_CUSTOMERINFO bb on ltrim(bb.customer_code,'0') =ltrim(aa.st_party,'0')
+		left outer join basis.basis_tb_salesemp_info ff on aa.synchronization_user = ff.emp_id
+
+		where 1=1
+		]]>
+		<dynamic>
+		<isNotEmpty property="cus_name" prepend="and">
+			<![CDATA[ upper(cus_name) like #cus_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+			<![CDATA[ upper(file_url) like #file_url,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="part_name" prepend="and">
+			<![CDATA[ upper(part_name) like #part_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+			<![CDATA[ status in $status$]]>
+		</isNotEmpty>
+		
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ SENDER_DATE >= TO_char(#start_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ SENDER_DATE <= TO_char(#end_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_id" prepend="and">
+			<![CDATA[ file_id = #file_id#]]>
+		</isNotEmpty>
+		</dynamic>
+		 <![CDATA[
+	 	       order by aa.id  
+  
+	 	   ]]>
+		<include refid="global.paginationEnd" />
+	</select>
+
+	<select id="getCusInventroyListCountById" parameterClass="cusInventroy"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_customer_inventroy aa
+ 		where 1=1
+	]]>
+		<dynamic>
+		<isNotEmpty property="cus_name" prepend="and">
+			<![CDATA[ upper(cus_name) like #cus_name,handler=wildcard# escape '\']]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+			<![CDATA[ upper(file_url) like #file_url,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="part_name" prepend="and">
+			<![CDATA[ upper(part_name) like #part_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+			<![CDATA[ status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ SENDER_DATE >= TO_char(#start_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ SENDER_DATE <= TO_char(#end_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_id" prepend="and">
+			<![CDATA[ file_id = #file_id#]]>
+		</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<select id="searchCusInventroyListByIdForOne" parameterClass="cusInventroy"
+		resultClass="cusInventroy">
+		
+		<![CDATA[
+	 	select  aa.id,aa.message_number,aa.doc_id,aa.doc_code,aa.doc_identifier,aa.function_code,aa.sender_id,aa.recipient_id,
+	 	aa.sender_date,aa.by_party,aa.st_party,aa.line_item,aa.part_name,aa.item_type,aa.inventroy_method,aa.quantity_type,aa.quantity,
+	 	aa.unit_code,aa.currency,aa.price_code,aa.price,aa.price_type,aa.price_basis,
+	 	aa.synchronization_time,to_char(aa.synchronization_time,'YYYY-MM-DD') synchronization_timestr,  
+	 	ff.emp_name synchronization_user,aa.update_time,to_char(aa.update_time,'YYYY-MM-DD') update_timestr,aa.update_user,
+	 	aa.data_from,decode(aa.status,0,'Reject',1,'Pending',3,'Approved',9,'Transfer',aa.status) status,aa.cus_name  cus_name,aa.sales_org,aa.material_id,aa.tips,aa.file_id,aa.file_url,aa.status_num
+		from basis.basis_tb_customer_inventroy aa
+		left outer join basis.BASIS_TB_CUSTOMERINFO bb on ltrim(bb.customer_code,'0') =ltrim(aa.st_party,'0')
+		left outer join basis.basis_tb_salesemp_info ff on aa.synchronization_user = ff.emp_id
+		where 1=1
+		]]>
+		<dynamic>
+		<isNotEmpty property="cus_name" prepend="and">
+			<![CDATA[ upper(cus_name) like #cus_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+			<![CDATA[ upper(file_url) like #file_url,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="part_name" prepend="and">
+			<![CDATA[ upper(part_name) like #part_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+			<![CDATA[ status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ to_date(TO_char(update_time,'yyyy-mm-dd'),'yyyy-mm-dd') >=to_date(TO_char(#start_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ to_date(TO_char(update_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(TO_char(#end_time#  ,'yyyy-mm-dd'),'yyyy-mm-dd')]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_id" prepend="and">
+			<![CDATA[ file_id = #file_id#]]>
+		</isNotEmpty>
+		</dynamic>
+		 <![CDATA[
+	 	       order by aa.id  
+  
+	 	   ]]>
+		
+	</select>
+	
+	
+	
+	<select id="searchCusInventroyListForB" parameterClass="cusInventroy"
+		resultClass="cusInventroy">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+	 	select distinct  aa.id,aa.message_number,aa.doc_id,aa.doc_code,aa.doc_identifier,aa.function_code,aa.sender_id,aa.recipient_id,
+	 	aa.sender_date,aa.by_party,aa.st_party,aa.line_item,aa.part_name,aa.item_type,aa.inventroy_method,aa.quantity_type,aa.quantity,
+	 	aa.unit_code,aa.currency,aa.price_code,aa.price,aa.price_type,aa.price_basis,
+	 	aa.synchronization_time,to_char(aa.synchronization_time,'YYYY-MM-DD') synchronization_timestr,  
+	 	ff.emp_name synchronization_user,aa.update_time,to_char(aa.update_time,'YYYY-MM-DD') update_timestr,aa.update_user,
+	 	aa.data_from,aa.status,aa.cus_name  cus_name,aa.sales_org,aa.tips,aa.file_id,aa.file_url,aa.status_num,
+       decode(
+        aa.material_id,
+        NULL,
+          (
+            SELECT
+                MATERIAL_ID
+            FROM
+                basis.basis_tb_productinfo pro
+            WHERE
+                upper(trim(aa.part_name)) = upper(trim(pro.material_name))
+            AND rownum = 1
+        ), aa.material_id) material_id
+		from basis.basis_tb_customer_inventroy aa
+		left outer join basis.BASIS_TB_CUSTOMERINFO bb on ltrim(bb.customer_code,'0') =ltrim(aa.st_party,'0')
+		left outer join basis.basis_tb_salesemp_info ff on aa.synchronization_user = to_char(ff.emp_id)
+		join basis.basis_tb_productinfo cc on upper(trim(aa.part_name)) = upper(trim(cc.material_name))
+		where 1=1 and aa.status = 3 and aa.frequency='Monthly'
+		]]>
+		<dynamic>
+		<isNotEmpty property="cus_name" prepend="and">
+			<![CDATA[ upper(aa.cus_name) like #cus_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+			<![CDATA[ aa.file_url like #file_url,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="part_name" prepend="and">
+			<![CDATA[ upper(aa.part_name) like #part_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+			<![CDATA[ aa.status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_id_str" prepend="and">
+			<![CDATA[ to_char(aa.file_id) = #file_id_str#]]>
+		</isNotEmpty>
+		<isNotEmpty property="synchronization_user" prepend="and">
+			<![CDATA[ aa.synchronization_user = #synchronization_user#]]>
+		</isNotEmpty>
+		
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ aa.SENDER_DATE >= TO_char(#start_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ aa.SENDER_DATE <= TO_char(#end_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+	<select id="getCusInventroyListCountForB" parameterClass="cusInventroy"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(distinct aa.id) from basis.basis_tb_customer_inventroy aa
+
+		left outer join basis.BASIS_TB_CUSTOMERINFO bb on ltrim(bb.customer_code,'0') =ltrim(aa.st_party,'0')
+		left outer join basis.basis_tb_salesemp_info ff on aa.synchronization_user = to_char(ff.emp_id)
+		join basis.basis_tb_productinfo cc on upper(trim(aa.part_name)) = upper(trim(cc.material_name))
+		where 1=1 and aa.status = 3 and aa.frequency='Monthly'
+	]]>
+		<dynamic>
+		<isNotEmpty property="cus_name" prepend="and">
+			<![CDATA[ upper(aa.cus_name) like #cus_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+			<![CDATA[ aa.file_url like #file_url,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="part_name" prepend="and">
+			<![CDATA[ upper(aa.part_name) like #part_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+			<![CDATA[ aa.status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="synchronization_user" prepend="and">
+			<![CDATA[ aa.synchronization_user = #synchronization_user#]]>
+		</isNotEmpty>
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ aa.SENDER_DATE >= TO_char(#start_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ aa.SENDER_DATE <= TO_char(#end_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_id_str" prepend="and">
+			<![CDATA[ to_char(aa.file_id) = #file_id_str#]]>
+		</isNotEmpty>
+		</dynamic>
+	</select>
+	
+		<select id="searchCusInventroyFileIdCount" parameterClass="cusInventroy"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(distinct file_id) from basis.basis_tb_customer_inventroy
+ 		where status = 9
+	]]>
+	</select>
+	
+	<select id="searchCusInventroyFileId" parameterClass="cusInventroy"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select distinct file_id from basis_tb_customer_inventroy where status = 9
+	 ]]>
+	 <dynamic>
+		</dynamic>
+	</select>
+	
+	
+	<select id="searchCusInventroyListForBAll" parameterClass="cusInventroy"
+		resultClass="cusInventroy">
+		<![CDATA[
+	 	select distinct  aa.id,aa.message_number,aa.doc_id,aa.doc_code,aa.doc_identifier,aa.function_code,aa.sender_id,aa.recipient_id,
+	 	aa.sender_date,aa.by_party,aa.st_party,aa.line_item,aa.part_name,aa.item_type,aa.inventroy_method,aa.quantity_type,aa.quantity,
+	 	aa.unit_code,aa.currency,aa.price_code,aa.price,aa.price_type,aa.price_basis,
+	 	aa.synchronization_time,to_char(aa.synchronization_time,'YYYY-MM-DD') synchronization_timestr,  
+	 	ff.emp_name synchronization_user,aa.update_time,to_char(aa.update_time,'YYYY-MM-DD') update_timestr,aa.update_user,
+	 	aa.data_from,aa.status,aa.cus_name  cus_name,aa.sales_org,aa.tips,aa.file_id,aa.file_url,aa.status_num,
+	 	decode(
+        aa.material_id,
+        NULL,
+          (
+            SELECT
+                MATERIAL_ID
+            FROM
+                basis.basis_tb_productinfo pro
+            WHERE
+                upper(trim(aa.part_name)) = upper(trim(pro.material_name))
+            AND rownum = 1
+        ), aa.material_id) material_id
+		from basis.basis_tb_customer_inventroy aa
+		left outer join basis.BASIS_TB_CUSTOMERINFO bb on ltrim(bb.customer_code,'0') =ltrim(aa.st_party,'0')
+		left outer join basis.basis_tb_salesemp_info ff on aa.synchronization_user = to_char(ff.emp_id)
+		join basis.basis_tb_productinfo cc on upper(trim(aa.part_name)) = upper(trim(cc.material_name))
+		where 1=1 and aa.status = 3 and aa.frequency='Monthly'
+		]]>
+		<dynamic>
+		<isNotEmpty property="cus_name" prepend="and">
+			<![CDATA[ upper(aa.cus_name) like #cus_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_url" prepend="and">
+			<![CDATA[ aa.file_url like #file_url,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="part_name" prepend="and">
+			<![CDATA[ upper(aa.part_name) like #part_name,handler=wildcard# escape '\' ]]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+			<![CDATA[ aa.status in $status$]]>
+		</isNotEmpty>
+		<isNotEmpty property="file_id_str" prepend="and">
+			<![CDATA[ to_char(aa.file_id) = #file_id_str#]]>
+		</isNotEmpty>
+		<isNotEmpty property="synchronization_user" prepend="and">
+			<![CDATA[ aa.synchronization_user = #synchronization_user#]]>
+		</isNotEmpty>
+		<isNotEmpty property="start_time" prepend="and">
+			<![CDATA[ aa.SENDER_DATE >= TO_char(#start_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		<isNotEmpty property="end_time" prepend="and">
+			<![CDATA[ aa.SENDER_DATE <= TO_char(#end_time#  ,'yyyymmdd') ]]>
+		</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+	</select>
+	
+	
+	<select id="getDistiName" parameterClass="cusInventroy" resultClass="cusInventroy">
+	 <![CDATA[
+ 	 select disti_name from basis.basis_tb_edi_distiname where sold_to = #st_party#
+	 ]]>
+	</select>	
+	
+<!-- 	只有當這個行項目是approved的才可以被加上weekly/monthly。 -->
+	
+	<update  id="updateFrequencyMarkCusInventroy" parameterClass="cusInventroy">
+		 update basis.basis_tb_customer_inventroy 
+		    set frequency = #frequency# 
+		  where file_id = #file_id# and
+		        status ='3'
+	</update>
+	
+	
+	
+</sqlMap>

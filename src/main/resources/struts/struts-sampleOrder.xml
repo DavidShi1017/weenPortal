@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="sampleOrder" extends="jingtong-default">
+		
+		<action name="sampleOrderAction" class="sampleOrderAction" >
+			<result name="toSearchSampleOrder">/platform/sampleOrder/searchSampleOrder.vm</result>
+			<result name="toApproveSampleOrder">/platform/sampleOrder/approveSampleOrder.vm</result>
+			<result name="toViewSampleOrder">/platform/sampleOrder/viewSampleOrder.vm</result>
+            <result name="toAuditSampleOrder">/platform/sampleOrder/auditSampleOrder.vm</result>
+            <result name="toCreateSampleOrder">/platform/sampleOrder/createSampleOrder.vm</result>
+			<result name="importExcel">/platform/sampleOrder/importExcel.vm</result>
+		    <result name="toImportPage">/platform/sampleOrder/importPage.vm</result>
+		</action>
+	</package>
+</struts>

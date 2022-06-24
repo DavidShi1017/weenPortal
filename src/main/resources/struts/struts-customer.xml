@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="customer" extends="jingtong-default">
+		
+		<action name="customerAction" class="customerAction" >
+			<result name="toSearchCustomer">/platform/customer/searchCustomer.vm</result>
+			<result name="toViewCustomer">/platform/customer/viewCustomer.vm</result>
+			<result name="toCreateCustomerUser">/platform/customer/createCustomerUser.vm</result>
+			<result name="toSearchCustomerUser">/platform/customer/searchCustomerUser.vm</result>
+			<result name="toSyncCustomer">/platform/customer/syncCustomer.vm</result>
+			<result name="toUpdateUserInfo">/platform/alluser/updateUserInfo.vm</result>
+			<result name="toSearchBindUser">/platform/customer/searchBindUser.vm</result>
+			<result name="toBindUser">/platform/customer/bindUser.vm</result>
+			<result name="toSearchCusUser">/platform/customer/toSearchCusUser.vm</result>
+			<result name="toCreateDistiBranch">/platform/customer/createDistiBranch.vm</result>
+			<result name="toUpdateDistiBranch">/platform/customer/updateDistiBranch.vm</result>
+			<result name="tosearchDistiBranch">/platform/customer/searchDistiBranch.vm</result>
+		</action>
+	</package>
+</struts>

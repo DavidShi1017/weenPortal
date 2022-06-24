@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui", "upload"])
+		#JS_ENV_VAL()	
+	</head>
+	<body>
+		<form method="post" enctype="multipart/form-data" target="hideFrame">
+		
+		<input id="detailJsonStr" name="detailJsonStr" type="hidden" />
+		<input id="travelId" name="travelTotal.travelId"  value="$!{travelTotal.travelId}" type="hidden" />
+		<input id="oldTotalMoney" name="travelTotal.oldTotalMoney"  value="$!{travelTotal.oldTotalMoney}" type="hidden" />
+		<input  name="travelTotal.eventId"  value="$!{travelTotal.transactionId}" type="hidden" />
+		<input type="hidden" id="size"  value="$travelTotal.travelDetailList.size()" />
+		<input  value="$!{travelTotal.year}" name="year" class="easyui-validatebox" type='hidden' readonly />
+		<input   value="$!{travelTotal.month}" name="month" class="easyui-validatebox" type='hidden' readonly />
+		<div class="easyui-panel" title="差旅费用申请" data-options="iconCls:'icon-edit'" style="width:1150px;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+				<tr>
+					<td class="head" noWrap style="text-align: center">
+						申请单号:$!{travelTotal.transactionId}
+						<input type="hidden" id="transactionId" name="travelTotal.transactionId" value="$!{travelTotal.transactionId}"/>
+					</td>
+    				<td class="head" noWrap style="text-align: center">
+    					事务标题:$!{travelTotal.title}
+						<input type="hidden" id="title" name="travelTotal.title" value="$!{travelTotal.title}"/>
+    				</td>
+                </tr>
+		    </table>
+		</div>
+		
+		<div region="south" border="false" style="height:12px;"></div>
+		
+		<div class="easyui-panel" title="申请--总单信息"  style="width:1150px;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+				<tr>
+    			#if($!{curStaId} == "start")
+					<input type="hidden" id="modfiy"  value="y"/>
+    				<td class="head" noWrap style="text-align: right">
+    					收款人
+    				</td>
+					<td>
+						<input type="text" id="payee" name="payee" />
+						<input type="hidden" id="pay_ee" name="travelTotal.payee" value="$!{travelTotal.payee}"/>
+					</td>
+					<td class="head" noWrap style="text-align: right">
+						收款账号
+                    </td>
+					<td>
+						<input id="payAccount" name="payAccount" type='text' class="easyui-combobox" />
+						<input type="hidden" id="pay_account" name="travelTotal.payaccount"  value="$!{travelTotal.payaccount}"/>
+                    </td>
+				#else
+    				<td class="head" noWrap style="text-align: right">
+    					收款人
+    				</td>
+					<td class="even">
+						$!{travelTotal.payee}
+						<input type="hidden" id="pay_ee" name="travelTotal.payee" value="$!{travelTotal.payee}"/>
+					</td>
+					<td class="head" noWrap style="text-align: right">
+						收款账号
+                    </td>
+					<td class="even"> 
+						$!{travelTotal.payaccount}
+						<input type="hidden" id="pay_account" name="travelTotal.payaccount"  value="$!{travelTotal.payaccount}"/>
+                    </td>
+				#end
+					
+					<td class="head" noWrap style="text-align: right">
+    					支付类型
+    				</td>
+					<td class="even">
+                        #if($!{travelTotal.payType}=="1")
+							现金
+						#elseif($!{travelTotal.payType}=="2")
+							银行
+						#elseif($!{travelTotal.payType}=="3")
+							其他
+						#end
+					</td>
+				</tr>
+				 <tr>
+					<td class="head" noWrap style="text-align: right">
+    					合计金额
+    				</td>
+					<td class="even">
+						<input type="text" id="totalMoney" name="travelTotal.totalMoney"  value="$!{travelTotal.totalMoney}" readonly/>
+					</td>
+    				<td class="head" noWrap style="text-align: right">
+    					出差事由
+    				</td>
+					#if($!{curStaId} == "start")
+					<td colspan="3">
+						<input id="memo" name="travelTotal.memo" class="easyui-validatebox" value="$!{travelTotal.memo}" validType="length[0,100]"  data-options ="required:true" size="95"/>
+					</td>
+					#else
+					<td colspan="3">
+						$!{travelTotal.memo}
+					</td>
+					#end	
+                 </tr>	
+		    </table>
+		</div>
+		
+		<div region="south" border="false" style="height:6px;"></div>
+		
+		<div class="easyui-panel" title="申请--明细信息" style="width:1150px;">
+			<table id="myTab" width="100%" cellpadding="0" border="1px" bordercolor="#cccccc" cellspacing="0px" style="border-collapse:collapse">
+				<tr style="height:25px;BACKGROUND-COLOR:#f4f4f4">
+					<td width="8%" style="text-align: center">
+						出差起始日期
+                    </td>
+					<td width="8%" style="text-align: center">
+						出差结束日期
+                    </td>
+					<td width="6%"style="text-align: center">
+						出差天数
+                    </td>
+					<td width="8%"style="text-align: center">
+						同行人
+                    </td>
+					
+					<td width="11%"style="text-align: center">
+						出差目的地
+                    </td>
+					<td width="10%" style="text-align: center">
+						报销金额
+                    </td>
+					<td width="30%" style="text-align: center">
+						申请报销详细说明
+                    </td>
+                </tr>
+				#foreach($travelDetail in $travelTotal.travelDetailList)
+				#set($num = $velocityCount%2+1)
+				<input type="hidden" id="travleDtId_$velocityCount" value="$!{travelDetail.travleDtId}" />
+				<tr id="tr_$velocityCount" style="height:23px" class="even$num">
+				
+						<td>
+							#if($!{curStaId} == "start")
+							<input id="travelStartDateSt_$velocityCount" size="9" class="easyui-datebox" value="$dateUtil.datetime($!{travelDetail.travelStartDate},"yyyy-MM-dd")" />
+							#else
+							 <input id="travelStartDateSt_$velocityCount" type="hidden"  value="$dateUtil.datetime($!{travelDetail.travelStartDate},"yyyy-MM-dd")" />
+    					     $dateUtil.datetime($!{travelDetail.travelStartDate},"yyyy-MM-dd")
+							#end
+						</td>
+						<td>
+							#if($!{curStaId} == "start")
+							<input id="travelEndDateSt_$velocityCount" size="9" class="easyui-datebox" value="$dateUtil.datetime($!{travelDetail.travelEndDate},"yyyy-MM-dd")" />
+							#else
+							 <input id="travelEndDateSt_$velocityCount" type="hidden"  value="$dateUtil.datetime($!{travelDetail.travelEndDate},"yyyy-MM-dd")" />
+    						$dateUtil.datetime($!{travelDetail.travelEndDate},"yyyy-MM-dd")
+							#end
+						</td>
+						<td>
+							#if($!{curStaId} == "start")
+							<input id="travelNum_$velocityCount" size="5"  class="easyui-validatebox" style="text-align: center" type="text" value="$!{travelDetail.travelNum}" readonly/>
+						    #else
+							<input id="travelNum_$velocityCount" type="hidden" value="$!{travelDetail.travelNum}" />
+							$!{travelDetail.travelNum}
+							#end
+						</td>
+					<td>
+							<input id="peerPerson_$velocityCount" type="hidden" value="$!{travelDetail.peerPerson}" />
+							$!{travelDetail.peerPerson}
+					</td>
+					<td>
+							<input id="travelPlace_$velocityCount" type="hidden" value="$!{travelDetail.travelPlace}" />
+							$!{travelDetail.travelPlace}
+					</td>
+    				<td>
+    				#if($!{curStaId} == "start")
+    				    <input id="invoiceAmount_$velocityCount" onblur="checkIsNumber('$velocityCount','amount')" type="text" class="easyui-validatebox" value="$!{travelDetail.invoiceAmount}" />
+    				#else
+        				<input id="invoiceAmount_$velocityCount" type="hidden" value="$!{travelDetail.invoiceAmount}" />
+        				$!{travelDetail.invoiceAmount}
+    				#end	
+    				</td>
+					<td>
+					#if($!{curStaId} == "start")
+					<input id="costMemo_$velocityCount" type="text" validType="length[0,75]" class="easyui-validatebox" size="45" value="$!{travelDetail.meno}" />
+					#else
+						$!{travelDetail.meno}
+						<input id="costMemo_$velocityCount" type="hidden" size="45" value="$!{travelDetail.meno}" />
+					#end
+					</td>
+					
+				</tr> 
+				#end
+		    </table>
+		</div>
+		<br/>
+		
+		
+		<div id="expTypeToolBar">
+        </div>
+		
+		<div region="" border="false" style="text-align:right;height:100px;line-height:100px;">
+			#if($!{curStaId} == "start")
+			<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">提交</a>
+			#end
+		</div>
+		
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		</form>
+	</body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/travelapp/travelAppTr.js"></script>
+	<script type="text/javascript">
+			var payBank = "$!{travelTotal.payBank}";
+			var costType = "$!{travelTotal.costType}";
+    		var payee = "$!{travelTotal.payee}";
+    		var payAccount="$!{travelTotal.payaccount}";
+    		var payType="$!{travelTotal.payType}";
+    		var totalMoney="$!{travelTotal.totalMoney}";
+			var travelId="$!{travelTotal.travelId}";
+			var writeEventId="$!{travelTotal.writeEventId}";
+			var userId="$!{travelTotal.createUserId}";
+			var orgId="$!{travelTotal.orgId}";
+    </script>
+</html>

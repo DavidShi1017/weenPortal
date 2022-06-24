@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	<!-- 客户 -->
+	<bean id="kunnrsAction"
+		class="com.jingtong.platform.sap.action.KunnrsAction"
+		parent="baseAction" scope="request">
+		<property name="kunnrsSerivce" ref="kunnrsSerivce"></property>
+		<property name="allUserService" ref="allUserService"></property>
+	</bean>
+
+	<bean id="kunnrsSerivce"
+		class="com.jingtong.platform.sap.service.impl.KunnrsServiceImpl">
+		<property name="kunnrsDao" ref="kunnrsDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="kunnrsDao"
+		class="com.jingtong.platform.sap.dao.impl.KunnrsDaoImpl"
+		parent="baseDao"></bean>
+
+
+	<!-- 代理商终端客户 -->
+	<bean id="endCustomerToSapAction"
+		class="com.jingtong.platform.sap.action.EndCustomerToSapAction"
+		parent="baseAction" scope="request">
+		<property name="endCustomerToSapSerivce"
+			ref="endCustomerToSapSerivce"></property>
+	</bean>
+
+	<bean id="endCustomerToSapSerivce"
+		class="com.jingtong.platform.sap.service.impl.EndCustomerToSapServiceImpl">
+		<property name="endCustomerToSapDao"
+			ref="endCustomerToSapDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="endCustomerToSapDao"
+		class="com.jingtong.platform.sap.dao.impl.EndCustomerToSapDaoImpl"
+		parent="baseDao"></bean>
+
+
+	<!-- 物料 -->
+	<bean id="materialsAction"
+		class="com.jingtong.platform.sap.action.MaterialAction"
+		parent="baseAction" scope="request">
+		<property name="materialsSerivce" ref="materialsSerivce"></property>
+	</bean>
+
+	<bean id="materialsSerivce"
+		class="com.jingtong.platform.sap.service.impl.MaterialServiceImpl">
+		<property name="materialsDao" ref="materialsDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="materialsDao"
+		class="com.jingtong.platform.sap.dao.impl.MaterialDaoImpl"
+		parent="baseDao"></bean>
+
+
+	<!-- 报价单 -->
+	<bean id="quoteToSapAction"
+		class="com.jingtong.platform.sap.action.QuoteToSapAction"
+		parent="baseAction" scope="request">
+		<property name="quoteToSapService" ref="quoteToSapService"></property>
+	</bean>
+
+	<bean id="quoteToSapService"
+		class="com.jingtong.platform.sap.service.impl.QuoteToSapServiceImpl">
+		<property name="quoteToSapDao" ref="quoteToSapDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="quoteToSapDao"
+		class="com.jingtong.platform.sap.dao.impl.QuoteToSapDaoImpl"
+		parent="baseDao"></bean>
+
+	<!-- 标准订单 -->
+	<bean id="sampleOrderToSapAction"
+		class="com.jingtong.platform.sap.action.SampleOrderToSapAction"
+		parent="baseAction" scope="request">
+		<property name="sampleOrderToSapService"
+			ref="sampleOrderToSapService"></property>
+	</bean>
+
+	<bean id="sampleOrderToSapService"
+		class="com.jingtong.platform.sap.service.impl.SampleOrderToSapServiceImpl">
+		<property name="sampleOrderToSapDao"
+			ref="sampleOrderToSapDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="sampleOrderToSapDao"
+		class="com.jingtong.platform.sap.dao.impl.SampleOrderToSapDaoImpl"
+		parent="baseDao"></bean>
+
+
+	<!-- 样品订单 -->
+	<bean id="orderToSapAction"
+		class="com.jingtong.platform.sap.action.OrderToSapAction"
+		parent="baseAction" scope="request">
+		<property name="orderToSapService" ref="orderToSapService"></property>
+	</bean>
+
+	<bean id="orderToSapService"
+		class="com.jingtong.platform.sap.service.impl.OrderToSapServiceImpl">
+		<property name="orderToSapDao" ref="orderToSapDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="orderToSapDao"
+		class="com.jingtong.platform.sap.dao.impl.OrderToSapDaoImpl"
+		parent="baseDao"></bean>
+
+
+
+	<!-- 价格 -->
+	<bean id="priceAction"
+		class="com.jingtong.platform.sap.action.PriceAction"
+		parent="baseAction" scope="request">
+		<property name="priceSerivce" ref="priceSerivce"></property>
+	</bean>
+
+	<bean id="priceSerivce"
+		class="com.jingtong.platform.sap.service.impl.PriceServiceImpl">
+		<property name="priceDao" ref="priceDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+		<property name="messageService" ref="messageService" />
+	</bean>
+
+	<bean id="messageService"
+		class="com.jingtong.platform.message.service.impl.MessageServiceImpl">
+		<property name="messageDao" ref="messageDao" />
+	</bean>
+
+	<bean id="messageDao"
+		class="com.jingtong.platform.message.dao.impl.MessageDaoImpl"
+		parent="baseDao"></bean>
+
+	<bean id="priceDao"
+		class="com.jingtong.platform.sap.dao.impl.PriceDaoImpl"
+		parent="baseDao"></bean>
+
+
+	<!-- 返利结算 -->
+	<bean id="posToSapAction"
+		class="com.jingtong.platform.sap.action.PosToSapAction"
+		parent="baseAction" scope="request">
+		<property name="posToSapService" ref="posToSapService"></property>
+	</bean>
+
+	<bean id="posToSapService"
+		class="com.jingtong.platform.sap.service.impl.PosToSapServiceImpl">
+		<property name="posToSapDao" ref="posToSapDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="posToSapDao"
+		class="com.jingtong.platform.sap.dao.impl.PosToSapDaoImpl"
+		parent="baseDao"></bean>
+
+
+
+
+	<!-- 渠道价格 -->
+	<bean id="channelPriceAction"
+		class="com.jingtong.platform.sap.action.ChannelPriceAction"
+		parent="baseAction" scope="request">
+		<property name="channelPriceSerivce"
+			ref="channelPriceSerivce"></property>
+	</bean>
+
+	<bean id="channelPriceSerivce"
+		class="com.jingtong.platform.sap.service.impl.ChannelPriceServiceImpl">
+		<property name="channelPriceDao" ref="channelPriceDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="channelPriceDao"
+		class="com.jingtong.platform.sap.dao.impl.ChannelPriceDaoImpl"
+		parent="baseDao"></bean>
+
+	<!-- 客户价格 -->
+	<bean id="customerPriceAction"
+		class="com.jingtong.platform.sap.action.CustomerPriceAction"
+		parent="baseAction" scope="request">
+		<property name="customerPriceSerivce"
+			ref="customerPriceSerivce"></property>
+	</bean>
+
+	<bean id="customerPriceSerivce"
+		class="com.jingtong.platform.sap.service.impl.CustomerPriceServiceImpl">
+		<property name="channelPriceDao" ref="channelPriceDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<!-- 异常 -->
+	<bean id="logInfoDao"
+		class="com.jingtong.platform.sap.dao.impl.LogInfoDaoImpl"
+		parent="baseDao"></bean>
+	<!-- 报表 -->
+	<bean id="sapReportAction"
+		class="com.jingtong.platform.sap.action.SAPReportAction"
+		parent="baseAction" scope="request">
+		<property name="sapReportService" ref="sapReportService"></property>
+	</bean>
+
+	<bean id="sapReportService"
+		class="com.jingtong.platform.sap.service.impl.SAPReportServiceImpl">
+		<property name="sapReportDao" ref="sapReportDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="sapReportDao"
+		class="com.jingtong.platform.sap.dao.impl.SAPReportDaoImpl"
+		parent="baseDao"></bean>
+
+	<!--开票方、售达方、送达方、付款方主数据 -->
+	<bean id="knvpAction"
+		class="com.jingtong.platform.sap.action.KnvpAction"
+		parent="baseAction" scope="request">
+		<property name="knvpService" ref="knvpService"></property>
+	</bean>
+
+	<bean id="knvpService"
+		class="com.jingtong.platform.sap.service.impl.KnvpServiceImpl">
+		<property name="logInfoDao" ref="logInfoDao" />
+		<property name="kunnrsDao" ref="kunnrsDao" />
+	</bean>
+
+	<!-- 产品区域限制 -->
+	<bean id="excludeAction"
+		class="com.jingt	ong.platform.sap.action.ExcludeAction"
+		parent="baseAction" scope="request">
+		<property name="excludeService" ref="excludeService"></property>
+	</bean>
+
+	<bean id="excludeService"
+		class="com.jingtong.platform.sap.service.impl.ExcludeServiceImpl">
+		<property name="excludeDao" ref="excludeDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="excludeDao"
+		class="com.jingtong.platform.sap.dao.impl.ExcludeDaoImpl"
+		parent="baseDao"></bean>
+
+	<!-- 产品库存可用量 -->
+	<bean id="sapAction"
+		class="com.jingtong.platform.sap.action.SAPAction" parent="baseAction"
+		scope="request">
+		<property name="sapService" ref="sapService"></property>
+	</bean>
+
+	<bean id="sapService"
+		class="com.jingtong.platform.sap.service.impl.SAPServiceImpl">
+		<property name="logInfoDao" ref="logInfoDao" />
+		<property name="sapDao" ref="sapDao" />
+	</bean>
+	<bean id="sapDao"
+		class="com.jingtong.platform.sap.dao.impl.SAPDaoImpl" parent="baseDao"></bean>
+
+
+	<!-- 交货单同步 -->
+	<bean id="shopDeliveryAction"
+		class="com.jingtong.platform.sap.action.ShopDeliveryAction"
+		parent="baseAction" scope="request">
+		<property name="shopDeliveryService"
+			ref="shopDeliveryService"></property>
+	</bean>
+
+	<bean id="shopDeliveryService"
+		class="com.jingtong.platform.sap.service.impl.ShopDeliveryServiceImpl">
+		<property name="logInfoDao" ref="logInfoDao" />
+		<property name="shopDeliveryDao" ref="shopDeliveryDao" />
+	</bean>
+	<bean id="shopDeliveryDao"
+		class="com.jingtong.platform.sap.dao.impl.DeliveryDaoImpl"
+		parent="baseDao"></bean>
+
+	<!-- SAP订单 -->
+	<bean id="crmOrder"
+		class="com.jingtong.platform.sap.action.CrmOrderToSAPAction"
+		parent="baseAction" scope="request">
+		<property name="crmOrderService" ref="crmOrderService"></property>
+		<property name="sapService" ref="sapService"></property>
+	</bean>
+	<bean id="crmOrderService"
+		class="com.jingtong.platform.sap.service.impl.CrmOrderToSAPServiceImpl">
+		<property name="logInfoDao" ref="logInfoDao" />
+		<property name="crmOrderDao" ref="crmOrderDao"></property>
+		<property name="transactionTemplate"
+			ref="transactionTemplate" />
+	</bean>
+
+	<bean id="crmOrderDao"
+		class="com.jingtong.platform.sap.dao.impl.CrmOrderToSAPDaoImpl"
+		parent="baseDao">
+	</bean>
+
+
+
+
+
+	<!-- 开启定时任务 -->
+	<bean autowire="no"
+		class="com.jingtong.platform.framework.util.SchedulerFactoryBeanWithShutdownDelay">
+		<property name="triggers">
+			<list>
+				<ref bean="cronTriggermy" />
+				<ref bean="cronTriggerMaterial" />
+				<ref bean="cronTriggerCustomer" />
+				<ref bean="cronTriggerPricePB" />
+				<ref bean="cronTriggerPriceMPP" />
+			</list>
+		</property>
+		<property name="waitForJobsToCompleteOnShutdown" value="true" />
+	</bean>
+
+	<!-- 经销商定时任务TASK -->
+	<bean id="kunnrTask"
+		class="com.jingtong.platform.sap.service.impl.KunnrsServiceImpl">
+		<property name="kunnrsDao" ref="kunnrsDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<!-- 经销商 定时调度 -->
+	<bean id="kunnrJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="kunnrTask" />
+		<property name="targetMethod" value="getKunnrListFromSAP" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	<bean id="cronTriggermy"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="kunnrJobMethod" />
+		<!-- 调用事件 -->
+		<property name="cronExpression" value="0 0 0 * * ?" />
+	</bean>
+
+	<!-- 物料定时任务TASK -->
+	<bean id="materialTask"
+		class="com.jingtong.platform.sap.service.impl.MaterialServiceImpl">
+		<property name="materialsDao" ref="materialsDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<!-- 物料定时调度 -->
+	<bean id="materialJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="materialTask" />
+		<property name="targetMethod" value="getMaterialListFromSAP" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	<bean id="cronTriggerMaterial"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="materialJobMethod" />
+		<!-- 调用事件 -->
+		<property name="cronExpression" value="0 0 1 * * ?" />
+	</bean>
+
+	<!-- PB价格定时任务TASK -->
+	<bean id="pricePBTask"
+		class="com.jingtong.platform.sap.service.impl.PriceServiceImpl">
+		<property name="priceDao" ref="priceDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<!-- PB价格定时调度 -->
+	<bean id="pricePBJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="pricePBTask" />
+		<property name="targetMethod"
+			value="getPriceListFromSAPForPB" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	<bean id="cronTriggerPricePB"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="pricePBJobMethod" />
+		<!-- 调用事件 -->
+		<property name="cronExpression" value="0 00 2 * * ?" />
+	</bean>
+
+	<!-- MPP价格定时任务TASK -->
+	<bean id="priceMPPTask"
+		class="com.jingtong.platform.sap.service.impl.PriceServiceImpl">
+		<property name="priceDao" ref="priceDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<!-- MPP价格定时调度 -->
+	<bean id="priceMPPJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="priceMPPTask" />
+		<property name="targetMethod"
+			value="getPriceListFromSAPForMPP" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	<bean id="cronTriggerPriceMPP"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="priceMPPJobMethod" />
+		<!-- 调用事件 -->
+		<property name="cronExpression" value="0 00 3 * * ?" />
+	</bean>
+
+
+
+
+	<!-- EC定时任务TASK -->
+	<!-- <bean id="endCustomerToSapTask" class="com.jingtong.platform.sap.service.impl.EndCustomerToSapServiceImpl"> 
+		<property name="endCustomerToSapDao" ref="endCustomerToSapDao" /> <property 
+		name="logInfoDao" ref="logInfoDao" /> </bean> -->
+	<!-- EC定时调度 -->
+	<!-- <bean id="endCustomerToSapJobMethod" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"> 
+		<property name="targetObject" ref="endCustomerToSapTask"/> <property name="targetMethod" 
+		value="endCustomerToSap" /> <property name="concurrent" value="false" /> 
+		</bean> <bean id="cronTriggerEndCustomerToSap" class="org.springframework.scheduling.quartz.CronTriggerBean"> 
+		<property name="jobDetail" ref="endCustomerToSapJobMethod" /> <property name="cronExpression" 
+		value="0 0 2 * * ?" /> </bean> -->
+
+
+	<!-- 渠道价格定时任务TASK -->
+	<bean id="channelTask"
+		class="com.jingtong.platform.sap.service.impl.ChannelPriceServiceImpl">
+		<property name="channelPriceDao" ref="channelPriceDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<!-- 渠道价格定时调度 -->
+	<bean id="channelJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="channelTask" />
+		<property name="targetMethod" value="getChannelPriceFromSAP" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	<bean id="cronTriggerChannel"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="channelJobMethod" />
+		<!-- 调用事件 -->
+		<property name="cronExpression" value="0 0/30 23 * * ?" />
+	</bean>
+
+	<!-- 客户价格定时任务TASK -->
+	<bean id="customerTask"
+		class="com.jingtong.platform.sap.service.impl.CustomerPriceServiceImpl">
+		<property name="channelPriceDao" ref="channelPriceDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<!-- 客户价格定时调度 -->
+	<bean id="customerJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="customerTask" />
+		<property name="targetMethod" value="getCustomerPriceFromSAP" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	<bean id="cronTriggerCustomer"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="customerJobMethod" />
+		<!-- 调用事件 -->
+		<property name="cronExpression" value="0 0/30 22 * * ?" />
+	</bean>
+
+	<!-- 产品区域限制定时任务TASK -->
+	<bean id="excludeTask"
+		class="com.jingtong.platform.sap.service.impl.ExcludeServiceImpl">
+		<property name="excludeDao" ref="excludeDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="excludeJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="excludeTask" />
+		<property name="targetMethod" value="getExcludeFromSap" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	<bean id="cronTriggerExclude"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="excludeJobMethod" />
+		<!-- 调用事件 -->
+		<property name="cronExpression" value="0 0/30 1 * * ?" />
+	</bean>
+
+	<!-- 产品数量限制 -->
+	<bean id="sapServiceTask"
+		class="com.jingtong.platform.sap.service.impl.SAPServiceImpl">
+		<property name="sapDao" ref="sapDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="sapServiceJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="sapServiceTask" />
+		<property name="targetMethod" value="getMaterialInventory" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	<bean id="cronTriggerSapService"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="sapServiceJobMethod" />
+		<!-- 调用事件 -->
+		<property name="cronExpression" value="0 0/30 2 * * ?" />
+	</bean>
+
+
+	<!-- 开票方，付款方，送达方 -->
+	<bean id="knvpServiceTask"
+		class="com.jingtong.platform.sap.service.impl.KnvpServiceImpl">
+		<property name="kunnrsDao" ref="kunnrsDao" />
+		<property name="logInfoDao" ref="logInfoDao" />
+	</bean>
+	<bean id="knvpServiceJobMethod"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="knvpServiceTask" />
+		<property name="targetMethod" value="getKnvpFromSAP" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	<bean id="cronTriggerKnvpService"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="knvpServiceJobMethod" />
+		<!-- 调用事件 -->
+		<property name="cronExpression" value="0 0/50 2 * * ?" />
+	</bean>
+
+
+</beans>

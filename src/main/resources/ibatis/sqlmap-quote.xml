@@ -1,0 +1,1656 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="quote">
+	<typeAlias alias="quote" type="com.jingtong.platform.quote.pojo.Quote"/>
+	<typeAlias alias="quoteDetail" type="com.jingtong.platform.quote.pojo.QuoteDetail"/>
+	<typeAlias alias="cusUser" type="com.jingtong.platform.customer.pojo.CustomerUser" />
+	<typeAlias alias="saleCountry" type="com.jingtong.platform.country.pojo.SaleCountry" />
+			
+<!-- 根据ID查询Quote表头（明细查看页面） -->
+	<select id="getQuoteById" parameterClass="quote" resultClass="quote">
+		<![CDATA[
+			select 
+				  aa.id,aa.quote_id,aa.type_id,aa.currency_code,purchaseCustomer_id,aa.disti_branch,
+				  aa.project_name,aa.customer_id,bb.customer_name,aa.cusGroup_id,aa.endCustomer_id,ff.payer_to,ff.pricing_region,
+				  cc.end_customer_name endCustomer_name,dd.end_customer_name purchaseCustomer_name,aa.isDelivery, 
+				  aa.ecGroup_id,gg.ecgroup_name ecGroup_name,aa.pcGroup_id,hh.ecgroup_name pcGroup_name,
+				  aa.start_date,to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,dd.city pc_city,dd.state pc_state,cc.city ec_city,cc.state ec_state,
+				  aa.latest_expire,to_char(aa.latest_expire,'YYYY-MM-DD') latest_expireStr,
+				  aa.state,aa.remark,to_char(aa.create_time,'YYYY-MM-DD') create_timeStr,decode(instr(ee.emp_email,'@'),0,ee.emp_email,substr(ee.emp_email,0,instr(ee.emp_email,'@')-1)) create_userId,
+				  aa.latest_time,aa.latest_userId,aa.org_code,aa.file_name,aa.file_path,aa.total_amount,aa.total_type,
+				  lds.name segmentnamepur,lda.name applicationnamepur,dict.item_name customertypenamepur,
+                  lds1.name segmentname,lda1.name applicationname,dict1.item_name customertypename
+			from basis.basis_tb_quoteInfo aa
+				  left outer join basis.basis_tb_customerInfo bb  on aa.customer_id=bb.customer_code
+				  left outer join basis.basis_tb_end_customeInfo cc  on aa.endCustomer_id=cc.end_customer_id
+				  left outer join basis.basis_tb_end_customeInfo dd  on aa.purchaseCustomer_id=dd.end_customer_id
+				  left outer join basis.basis_tb_salesemp_info ee on aa.create_userId = ee.emp_id
+				  left outer join basis.basis_tb_disti_branch ff  on aa.disti_branch=ff.disti_branch
+				  left outer join basis.basis_tb_ecgroup gg  on aa.ecGroup_id=gg.ecgroup_id
+				  left outer join basis.basis_tb_ecgroup hh  on aa.pcGroup_id=hh.ecgroup_id
+				  
+				  LEFT OUTER JOIN basis.basis_tb_level_dict lds on dd.segment = lds.id
+                  LEFT OUTER JOIN basis.basis_tb_level_dict lda on dd.application = lda.id 
+                  LEFT OUTER JOIN basis.basis_tb_dict dict on dd.customer_type = dict.item_id AND dict.dict_type_id=554
+                  
+                  LEFT OUTER JOIN basis.basis_tb_level_dict lds1 on cc.segment = lds1.id
+                  LEFT OUTER JOIN basis.basis_tb_level_dict lda1 on cc.application = lda1.id 
+                  LEFT OUTER JOIN basis.basis_tb_dict dict1 on cc.customer_type = dict1.item_id AND dict1.dict_type_id=554 
+			where aa.id=#id#
+		]]>	
+	</select>
+	
+
+<!-- quote表头创建（来源：1 add手动创建，2 通过DR创建， 3 copy） -->
+	<insert id="createQuote" parameterClass="quote">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_quoteInfo.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_quoteInfo   
+			(
+			 	  id,quote_id,type_id,currency_code,purchaseCustomer_id,disti_branch,
+				  project_name,customer_id,endCustomer_id,isDelivery,rate,
+				  start_date,latest_expire,state,remark,cusGroup_id,ecGroup_id,
+				  create_time,create_userId,file_name,file_path,pcGroup_id,
+				  latest_time,latest_userId,org_code,total_amount,total_type,
+				  purchaseCustomer_name,endCustomer_name
+			)
+			values
+			(
+				  #id#,#quote_id#,#type_id#,#currency_code#,#purchaseCustomer_id#,#disti_branch#,
+				  #project_name#,#customer_id#,#endCustomer_id#,#isDelivery#,#rate#,
+				  #start_date#,#latest_expire#,#state#,#remark#,#cusGroup_id#,#ecGroup_id#,
+				  sysdate,#create_userId#,#file_name#,#file_path#,#pcGroup_id#,
+				  sysdate,#latest_userId#,#org_code#,#total_amount#,#total_type#,
+				  #purchaseCustomer_name#,#endCustomer_name#
+			)
+		
+		]]>
+	</insert>
+<!-- quote明细创建（来源：1 add手动创建，2 通过DR创建， 3 copy） -->
+	<insert id="createQuoteDetail" parameterClass="quoteDetail">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_quote_detail.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_quote_detail   
+			(
+			  id,quote_id,row_no,material_id,material_name,drNum,qty,res_qty,main_id,
+			  target_resale,target_cost,amount,reason,competitor,cost,moq,pbMpp, 
+			  product_date,start_date,end_date,cus_remark,qm_price
+			)
+			values
+			(
+			  #id#,#quote_id#,#row_no#,#material_id#,#material_name#,#drNum#,#qty#,#qty#,#main_id#,
+			  #target_resale#,#target_cost#,#amount#,#reason#,#competitor#,#cost#,#moq#,#pbMpp#, 
+			  #product_date#,#start_date#,#end_date#,#cus_remark#,#qm_price#
+			)
+		
+		]]>
+	</insert>
+	
+<!-- quote更新（未使用） -->
+	<update  id="updateQuote" parameterClass="quote">
+		update basis.basis_tb_quoteInfo   set 
+			  type_id=#type_id#,currency_code=#currency_code#,purchaseCustomer_id=#purchaseCustomer_id#,pcGroup_id=#pcGroup_id#,
+			  project_name=#project_name#,customer_id=#customer_id#,endCustomer_id=#endCustomer_id#,isDelivery=#isDelivery#,
+			  start_date=#start_date#,latest_expire=#latest_expire#,remark=#remark#,cusGroup_id=#cusGroup_id#,ecGroup_id=#ecGroup_id#,
+			  latest_time=sysdate,latest_userId=#latest_userId#,org_code=#org_code#,file_name = #file_name#,file_path = #file_path#,
+		where id=#id#
+	</update>
+
+<!-- quote更新（审批，represent） -->
+	<update  id="updateQuoteDetail" parameterClass="quoteDetail">
+		update basis.basis_tb_quote_detail   set 
+			  qty=#qty#,res_qty=#res_qty#,latest_userId=#latest_userId#,latest_time=sysdate,
+			  target_resale=#target_resale#,target_cost=#target_cost#,amount=#amount#,reason=#reason#,competitor=#competitor#,
+			  cus_remark=#cus_remark#,remark=#remark#,suggest_resale=#suggest_resale#,suggest_cost=#suggest_cost#,
+			  cus_profits_percent=#cus_profits_percent#,profits_percent=#profits_percent#,state=#state#,
+			  product_date=#product_date#,start_date=#start_date#,end_date=#end_date#,isRepresent=#isRepresent#
+			  <isNotEmpty property="forward_id" prepend=",">
+				<![CDATA[ forward_id=#forward_id#]]>
+			  </isNotEmpty>			  
+		where id=#id#
+	</update>
+
+<!-- 根据ID删除（未使用） -->
+	<delete id="deleteQuote" parameterClass="quote">
+		delete from basis.basis_tb_quoteInfo   
+		where id=#id#
+	</delete>
+<!-- 修改表头状态 （未使用） -->
+	<update id="auditQuote" parameterClass="quote">
+		update basis.basis_tb_quoteInfo set state=#state#
+		where id=#id#
+	</update>	
+	
+	<update id="setQuoteCode" parameterClass="quote">
+		update
+		basis.basis_tb_quoteInfo set quote_id=#quote_id#
+		where id=#id#
+	</update>
+	
+<!-- 待审核报价物料信息(Sale,Business,Market ，quotecenter列表) -->	<!-- Mpp的customer_id取branch的payCode -->	
+	<select id="getAuditQuoteList" parameterClass="quoteDetail" resultClass="quoteDetail">
+	<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+			  distinct(aa.id),aa.quote_id,aa.main_id,aa.row_no,aa.material_id,aa.drNum,aa.qty,
+			  nvl(aa.target_resale,0) target_resale ,nvl(aa.target_cost,0) target_cost,aa.amount,aa.reason,aa.competitor,aa.res_qty,
+			  aa.product_date,to_char(aa.product_date,'YYYY-MM-DD') product_dateStr,
+			  aa.start_date,to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+			  aa.end_date,to_char(aa.end_date,'YYYY-MM-DD') end_dateStr,
+			  aa.cus_remark,aa.suggest_resale,aa.suggest_cost,aa.state,aa.isAgree,aa.isRepresent,		  
+			  aa.cus_profits_percent,aa.profits_percent,aa.remark,aa.material_name,
+			  (SELECT DECODE (INSTR (mm.emp_email, '@'),0,mm.emp_email,SUBSTR (mm.emp_email,0,INSTR (mm.emp_email, '@') - 1))
+			  FROM basis.basis_tb_salesemp_info mm WHERE aa.latest_userId = mm.emp_id) latest_userId,
+			  aa.latest_time,aa.cost,nvl(bb.rate,0) rate,aa.moq,
+			  bb.data_from,aa.debit_start,aa.debit_end,aa.debit_num,			  
+			  bb.currency_code,bb.project_name,bb.customer_id,bb.disti_branch,
+			  bb.endCustomer_id,bb.isDelivery,bb.cusGroup_id,bb.ecGroup_id,bb.pcGroup_id,			  
+			  ee.customer_name,gg.end_customer_name endCustomer_name,
+			  (SELECT ff.ecgroup_name FROM basis.basis_tb_ecgroup ff WHERE ff.ecgroup_id = bb.ecGroup_id) ecGroup_name,	
+			  (SELECT tt.ecgroup_name FROM basis.basis_tb_ecgroup tt WHERE tt.ecgroup_id = bb.pcGroup_id) pcGroup_name,			  			  		  			  
+			  bb.purchaseCustomer_id,jj.end_customer_name purchaseCustomer_name,bb.create_userId,			 			 
+			  decode(ll.sale_price,null,oo.sale_price/oo.perUnit,ll.sale_price/ll.perUnit) pbMpp,
+			  nvl((select sale_price from basis.basis_tb_price_rule qm  where   qm.office_id = ss.pricing_region and ltrim(aa.material_id,'0')=ltrim(qm.material_id,'0') and  qm.currency_code=bb.currency_code and qm.price_type='QM'  and qm.start_date<sysdate  and qm.end_date>sysdate and rownum =1  ),0) qm_price,			  
+			  ss.pricing_region price_region,ss.payer_to,
+			  ss.pricing_region disti_region, 
+			  (SELECT rr.org_name FROM basis.basis_tb_org rr WHERE qq.org_code = rr.sap_org_id) ec_region,
+			  (SELECT rr1.org_name FROM basis.basis_tb_org rr1 WHERE nn.org_code = rr1.sap_org_id) pc_region,
+			  aa.forward_id,
+			  dd.isDRItem ,
+              (SELECT emp_name FROM basis.basis_tb_salesemp_info mm WHERE aa.forward_id = mm.emp_id) forwarder
+        from basis.basis_tb_quote_detail aa
+			left outer join basis.basis_tb_quoteInfo bb on aa.quote_id=bb.quote_id			
+			left outer join basis.basis_tb_customerInfo ee  on bb.customer_id=ee.customer_code			
+			left outer join basis.basis_tb_disti_branch ss  on trim(bb.disti_branch)=trim(ss.disti_branch)			
+			left outer join basis.basis_tb_org kk on (ee.sale_office = kk.sap_org_id)
+			left outer join basis.basis_tb_price_rule ll on ltrim(aa.material_id,'0')=ltrim(ll.material_id,'0') and ll.currency_code=bb.currency_code and ltrim(ss.payer_to,'0') = ltrim(ll.customer_code,'0') and ll.price_type='ZMP1'  and ll.start_date<sysdate  and ll.end_date>sysdate
+			left outer join basis.basis_tb_price_rule oo on ltrim(aa.material_id,'0')=ltrim(oo.material_id,'0') and oo.office_id = ss.pricing_region and oo.currency_code=bb.currency_code and oo.price_type='ZPB1'  and oo.start_date<sysdate  and oo.end_date>sysdate
+			left outer join basis.basis_tb_productInfo dd on aa.material_id=dd.material_id and dd.factory='HK10'			
+			left outer join basis.basis_tb_end_customeInfo gg  on bb.endCustomer_id=gg.end_customer_id
+			left outer join basis.basis_tb_country qq on gg.country = qq.country_code 			
+			left outer join basis.basis_tb_end_customeInfo jj  on bb.purchaseCustomer_id=jj.end_customer_id	
+			left outer join basis.basis_tb_country nn on jj.country = nn.country_code 
+		]]>
+			<dynamic>
+				<isNotEmpty property="auditorId" prepend="">
+				<![CDATA[left join (select end_customer_id from basis_vm_salecountry_ec se  where se.userID = #auditorId#) pcs on  bb.purchaseCustomer_id = pcs.end_customer_id]]>
+				</isNotEmpty>
+			</dynamic>	
+			
+		<![CDATA[			
+		where  (
+         ((bb.endCustomer_name is not null and bb.endCustomer_id is not null) or (bb.endCustomer_name is null and bb.endCustomer_id is null)) and (bb.purchaseCustomer_name is not null and bb.purchaseCustomer_id is not null)
+         )
+	]]>
+		<dynamic>
+			<isNotEmpty property="forward_id" prepend="">
+				<isNotEmpty property="forwarder" prepend="and">
+					<![CDATA[ (aa.forward_id is null or aa.forward_id = #forward_id# ) ]]>
+				</isNotEmpty> 
+				<isEmpty property="forwarder" prepend="and">
+					<![CDATA[ aa.forward_id = #forward_id#]]>
+				</isEmpty> 
+			</isNotEmpty>
+			<isNotEmpty property="states" prepend="and">
+				<![CDATA[ aa.state in $states$]]>
+			</isNotEmpty>
+			<isNotEmpty property="quote_id" prepend="and">
+				<![CDATA[ upper(aa.quote_id) like #quote_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="debit_num" prepend="and">
+				<![CDATA[ upper(aa.debit_num) like #debit_num,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="project_name" prepend="and">
+				<![CDATA[ upper(bb.project_name) like #project_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="customer_id" prepend="and">
+				<![CDATA[ bb.customer_id like #customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ bb.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchaseCustomer_id" prepend="and">
+				<![CDATA[ bb.purchaseCustomer_id like #purchaseCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endCustomer_id" prepend="and">
+				<![CDATA[ bb.endCustomer_id like #endCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  	
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>  	
+			<isNotEmpty property="cusGroup_id" prepend="and">
+				<![CDATA[ upper(bb.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 	
+			<isNotEmpty property="create_userId" prepend="and">
+				<![CDATA[ bb.create_userId = #create_userId#]]>
+			</isNotEmpty>	
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="pc_region" prepend="and">
+				<![CDATA[  (SELECT rr1.org_name FROM basis.basis_tb_org rr1 WHERE nn.org_code = rr1.sap_org_id)  = #pc_region#  ]]>
+			</isNotEmpty> 
+			
+			<isNotEmpty property="isDelivery" prepend="">
+				<isEqual property="states" compareValue="(0,1,2,3,4,5,6,7,8)" prepend="and">
+						<![CDATA[ ( aa.state IN (1,2,3,4,5,6,7,8) or (aa.forward_id IS NOT NULL and aa.state in (0)) )]]>
+				</isEqual>
+			</isNotEmpty> 
+			
+		</dynamic>	
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	<select id="getAuditQuoteListCount" parameterClass="quoteDetail" resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(distinct(aa.id)) 
+			from basis.basis_tb_quote_detail aa
+				left outer join basis.basis_tb_quoteInfo bb on aa.quote_id=bb.quote_id
+				left outer join basis.basis_tb_end_customeInfo jj  on jj.end_customer_id = bb.purchaseCustomer_id	
+				left outer join basis.basis_tb_country nn on nn.country_code =jj.country 
+		]]>
+			<dynamic>
+				<isNotEmpty property="auditorId" prepend="">
+				<![CDATA[left join (select end_customer_id from basis_vm_salecountry_ec se  where se.userID = #auditorId#) pcs on  bb.purchaseCustomer_id = pcs.end_customer_id]]>
+				</isNotEmpty>
+			</dynamic>	
+			
+		<![CDATA[
+			where  (
+         ((endCustomer_name is not null and endCustomer_id is not null) or (endCustomer_name is null and endCustomer_id is null))
+         and (purchaseCustomer_name is not null and purchaseCustomer_id is not null)
+         )
+		]]>
+		<dynamic>
+			<isNotEmpty property="forward_id" prepend="">
+				<isNotEmpty property="forwarder" prepend="and">
+					<![CDATA[  (aa.forward_id is null or  aa.forward_id = #forward_id# ) ]]>
+				</isNotEmpty> 
+				<isEmpty property="forwarder" prepend="and">
+					<![CDATA[ aa.forward_id = #forward_id#]]>
+				</isEmpty> 
+				
+			</isNotEmpty>
+			<isNotEmpty property="states" prepend="and">
+				<![CDATA[ aa.state in $states$]]>
+			</isNotEmpty>
+			<isNotEmpty property="quote_id" prepend="and">
+				<![CDATA[ upper(aa.quote_id) like #quote_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+				<isNotEmpty property="debit_num" prepend="and">
+				<![CDATA[ upper(aa.debit_num) like #debit_num,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="project_name" prepend="and">
+				<![CDATA[ upper(bb.project_name) like #project_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="customer_id" prepend="and">
+				<![CDATA[ bb.customer_id like #customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ bb.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchaseCustomer_id" prepend="and">
+				<![CDATA[ bb.purchaseCustomer_id like #purchaseCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endCustomer_id" prepend="and">
+				<![CDATA[ bb.endCustomer_id like #endCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>   
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="cusGroup_id" prepend="and">
+				<![CDATA[ upper(bb.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="create_userId" prepend="and">
+				<![CDATA[ bb.create_userId = #create_userId#]]>
+			</isNotEmpty> 	
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 			
+			<isNotEmpty property="pc_region" prepend="and">
+				<![CDATA[  (SELECT rr1.org_name FROM basis.basis_tb_org rr1 WHERE nn.org_code = rr1.sap_org_id)  = #pc_region#  ]]>
+			</isNotEmpty> 		
+			<isNotEmpty property="forwarder" prepend="and">
+				<![CDATA[  (bb.forward_id is null or bb.forward_id = #forward_id# ) ]]>
+			</isNotEmpty> 	 
+			<isNotEmpty property="isDelivery" prepend="">
+				<isEqual property="states" compareValue="(0,1,2,3,4,5,6,7,8)" prepend="and">
+						<![CDATA[ ( aa.state IN (1,2,3,4,5,6,7,8) or (aa.forward_id IS NOT NULL and aa.state in (0)) )]]>
+				</isEqual>
+			</isNotEmpty> 
+			
+		</dynamic>	
+	</select>
+		
+<!-- 待审核报价物料信息（审批查看页面） -->		
+	<select id="getAuditQuoteListNoPage" parameterClass="quoteDetail" resultClass="quoteDetail">
+	<![CDATA[
+		select 
+			  distinct(aa.id),aa.quote_id,aa.main_id,aa.row_no,aa.material_id,aa.drNum,aa.qty,
+			  nvl(aa.target_resale,0) target_resale , nvl(aa.target_cost,0) target_cost,aa.amount,aa.reason,aa.competitor,aa.res_qty,
+			  aa.product_date,to_char(aa.product_date,'YYYY-MM-DD') product_dateStr,
+			  aa.start_date,to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+			  aa.end_date,to_char(aa.end_date,'YYYY-MM-DD') end_dateStr,
+			  aa.cus_remark,nvl(suggest_resale,0) suggest_resale, nvl(suggest_cost,0) suggest_cost,aa.state,aa.isAgree,aa.isRepresent,			  
+			  aa.cus_profits_percent,aa.profits_percent,aa.remark,aa.material_name,
+ 			  (SELECT DECODE (INSTR (mm.emp_email, '@'),0,mm.emp_email,SUBSTR (mm.emp_email,0,INSTR (mm.emp_email, '@') - 1))
+			   FROM basis.basis_tb_salesemp_info mm WHERE aa.latest_userId = mm.emp_id) latest_userId,
+			  aa.latest_time,aa.cost,nvl(bb.rate,0) rate,aa.moq,
+			  bb.data_from,aa.debit_start,aa.debit_end,aa.debit_num,aa.forward_id,		  
+			  bb.currency_code,bb.project_name,bb.customer_id,bb.disti_branch,
+			  bb.endCustomer_id,bb.isDelivery,bb.cusGroup_id,bb.ecGroup_id,bb.pcGroup_id,
+			  ee.customer_name,gg.end_customer_name endCustomer_name,
+			  (SELECT ff.ecgroup_name FROM basis.basis_tb_ecgroup ff WHERE ff.ecgroup_id = bb.ecGroup_id) ecGroup_name,	
+			  (SELECT tt.ecgroup_name FROM basis.basis_tb_ecgroup tt WHERE tt.ecgroup_id = bb.pcGroup_id) pcGroup_name,			  			  
+			  bb.purchaseCustomer_id,jj.end_customer_name purchaseCustomer_name,bb.create_userId,
+			  decode(ll.sale_price,null,oo.sale_price/oo.perUnit,ll.sale_price/ll.perUnit) pbMpp,			  
+			  nvl((select sale_price from basis.basis_tb_price_rule qm  where   qm.office_id = ss.pricing_region and ltrim(aa.material_id,'0')=ltrim(qm.material_id,'0') and  qm.currency_code=bb.currency_code and qm.price_type='QM'  and qm.start_date<sysdate  and qm.end_date>sysdate and rownum =1  ),0) qm_price,
+			  ss.pricing_region price_region,ss.payer_to,
+			  ss.pricing_region disti_region, 
+			  dd.isDRItem,
+			  (SELECT rr.org_name FROM basis.basis_tb_org rr WHERE qq.org_code = rr.sap_org_id) ec_region,
+			  (SELECT rr1.org_name FROM basis.basis_tb_org rr1 WHERE nn.org_code = rr1.sap_org_id) pc_region			  
+		 from basis.basis_tb_quote_detail aa
+			  	left outer join basis.basis_tb_quoteInfo bb on aa.quote_id=bb.quote_id
+				left outer join basis.basis_tb_customerInfo ee  on bb.customer_id=ee.customer_code
+				left outer join basis.basis_tb_disti_branch ss  on trim(bb.disti_branch)=trim(ss.disti_branch)
+				left outer join basis.basis_tb_price_rule ll on ltrim(aa.material_id,'0')=ltrim(ll.material_id,'0') and ll.currency_code=bb.currency_code and ltrim(ss.payer_to,'0') = ltrim(ll.customer_code,'0')  and ll.price_type='ZMP1'  and ll.start_date<sysdate  and ll.end_date>sysdate
+				left outer join basis.basis_tb_price_rule oo on ltrim(aa.material_id,'0')=ltrim(oo.material_id,'0') and oo.office_id = ss.pricing_region and oo.currency_code=bb.currency_code and oo.price_type='ZPB1'  and oo.start_date<sysdate  and oo.end_date>sysdate
+				left outer join basis.basis_tb_productInfo dd on aa.material_id=dd.material_id and dd.factory='HK10'			
+				left outer join basis.basis_tb_end_customeInfo gg  on bb.endCustomer_id=gg.end_customer_id
+				left outer join basis.basis_tb_country qq on gg.country = qq.country_code 			
+				left outer join basis.basis_tb_end_customeInfo jj  on bb.purchaseCustomer_id=jj.end_customer_id	
+				left outer join basis.basis_tb_country nn on jj.country = nn.country_code 
+		]]>
+			<dynamic>
+				<isNotEmpty property="auditorId" prepend="">
+				<![CDATA[left join (select end_customer_id from basis_vm_salecountry_ec se  where se.userID = #auditorId#) pcs on  bb.purchaseCustomer_id = pcs.end_customer_id]]>
+				</isNotEmpty>
+			</dynamic>	
+			
+		<![CDATA[
+			
+
+		where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="states" prepend="and">
+				<![CDATA[ aa.state in $states$]]>
+			</isNotEmpty>
+			<isNotEmpty property="quote_id" prepend="and">
+				<![CDATA[ aa.quote_id like #quote_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+				<isNotEmpty property="debit_num" prepend="and">
+				<![CDATA[ upper(aa.debit_num) like #debit_num,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="project_name" prepend="and">
+				<![CDATA[ bb.project_name like #project_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="customer_id" prepend="and">
+				<![CDATA[ bb.customer_id like #customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ bb.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchaseCustomer_id" prepend="and">
+				<![CDATA[ bb.purchaseCustomer_id like #purchaseCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endCustomer_id" prepend="and">
+				<![CDATA[ bb.endCustomer_id like #endCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  	
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>  
+			<isNotEmpty property="cusGroup_id" prepend="and">
+				<![CDATA[ upper(bb.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="create_userId" prepend="and">
+				<![CDATA[ bb.create_userId = #create_userId#]]>
+			</isNotEmpty>
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 					 
+		</dynamic>	
+		<include refid="global.orderBy"/>
+	</select>
+	
+	
+<!-- 修改明细行状态 -->
+	<update id="auditQuoteDetail" parameterClass="quoteDetail">
+		update basis.basis_tb_quote_detail 
+		 set state=#state#,
+		     latest_time = sysdate,
+             latest_userId=#latest_userId#
+		 	<isEqual property="isAgree" compareValue="9" prepend=",">
+				forward_id = null
+			</isEqual>
+		where id =#id#
+	</update>
+	
+	
+<!-- Quote明细  （查看页） -->		
+	<select id="getQuoteDetailList" parameterClass="quoteDetail" resultClass="quoteDetail">
+	<![CDATA[
+		select 
+			  aa.id,aa.quote_id,aa.row_no,aa.material_id,aa.drNum,aa.qty,aa.res_qty,aa.state,aa.isAgree,aa.isRepresent,	
+			  nvl(aa.target_resale,0) target_resale , nvl(aa.target_cost,0) target_cost,aa.amount,aa.reason,aa.competitor,
+			  aa.product_date,to_char(aa.product_date,'YYYY-MM-DD') product_dateStr,
+			  aa.start_date,to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+			  aa.end_date,to_char(aa.end_date,'YYYY-MM-DD') end_dateStr,
+			  aa.cus_remark,nvl(aa.suggest_resale,0) suggest_resale, nvl(aa.suggest_cost,0) suggest_cost,aa.debit_start,aa.debit_end,		  
+			  aa.cus_profits_percent,aa.profits_percent,aa.remark,
+			   (SELECT DECODE (INSTR (mm.emp_email, '@'),0,mm.emp_email,SUBSTR (mm.emp_email,0,INSTR (mm.emp_email, '@') - 1))
+			  FROM basis.basis_tb_salesemp_info mm WHERE aa.latest_userId = mm.emp_id) latest_userId,
+			  aa.latest_time,aa.material_name,
+			  aa.cost,aa.moq,aa.debit_num,
+			  dd.isDRItem,
+			  decode(ll.sale_price,null,oo.sale_price/oo.perUnit,ll.sale_price/ll.perUnit) pbMpp
+		from basis.basis_tb_quote_detail aa
+			left outer join basis.basis_tb_quoteInfo bb on aa.quote_id=bb.quote_id
+			left outer join basis.basis_tb_productInfo dd on aa.material_id=dd.material_id and dd.factory='HK10'
+			left outer join basis.basis_tb_disti_branch ss  on trim(bb.disti_branch)=trim(ss.disti_branch)
+			left outer join basis.basis_tb_price_rule ll on ltrim(aa.material_id,'0')=ltrim(ll.material_id,'0') and ll.currency_code=bb.currency_code and ltrim(ss.payer_to,'0') = ltrim(ll.customer_code,'0')  and ll.price_type='ZMP1'  and ll.start_date<sysdate  and ll.end_date>sysdate
+			left outer join basis.basis_tb_price_rule oo on ltrim(aa.material_id,'0')=ltrim(oo.material_id,'0') and oo.office_id = ss.pricing_region and oo.currency_code=bb.currency_code and oo.price_type='ZPB1'  and oo.start_date<sysdate  and oo.end_date>sysdate
+	 	where aa.quote_id=#quote_id#  
+	 	order by  aa.row_no asc
+	]]>
+		<!--  left outer join basis.basis_tb_productInfo dd on aa.material_id=dd.material_id and dd.factory='HK10' -->	
+
+	</select>
+	
+<!-- 明细删除（未使用） -->	
+	<delete id="deleteQuoteDetail" parameterClass="quoteDetail">
+		delete from basis.basis_tb_quote_detail   
+		where id !=0 
+		<dynamic>
+			<isNotEmpty property="ids" prepend="and">
+				<![CDATA[ id in $ids$]]>
+			</isNotEmpty> 
+			<isNotEmpty property="main_id" prepend="and">
+				<![CDATA[ main_id= #main_id#]]>
+			</isNotEmpty> 
+		</dynamic>		
+	</delete>
+	
+<!-- 客户Agree  点击Agree同时更新返利有效期为agree时间到agree+6个月     ((暂不更新原开始时间：)比较更新开始时间为当前时间和原开始时间的最大值start_date=#start_date#),-->	
+	<update id="agreeQuoteDetail" parameterClass="quoteDetail">
+		update basis.basis_tb_quote_detail
+		   set isAgree = 1
+		     , latest_time = sysdate
+		     , debit_start = sysdate
+		     , debit_end = add_months(sysdate, 12)
+		     , end_date = add_months(start_date, 12)
+		     , debit_num = quote_id
+		 where id = #id#
+	</update>
+	
+<!-- 因PB价格变动更新debit失效时间 -->	
+	<update id="updateDebitDate" parameterClass="quoteDetail">
+		update basis.basis_tb_quote_detail  set debit_start=#debit_start#,debit_end=#debit_end# where id=#id#
+	</update>	
+	
+	<select id="getQuoteDetailById" parameterClass="quoteDetail" resultClass="quoteDetail">
+        <![CDATA[
+            select
+                id,
+                quote_id,
+                row_no,
+                material_id,
+                material_name,
+                qty,
+                target_resale,
+                target_cost,
+                suggest_resale,
+                suggest_cost,
+                remark,
+                cus_remark         
+            from basis.basis_tb_quote_detail
+            where id = #id#
+        ]]>
+    </select>
+<!-- 生成报价日志 -->		
+		<insert id="createQuoteLog" parameterClass="quoteDetail">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_quote_log.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_quote_log  
+			(
+			  id,quote_id,row_no,material_id,material_name,qty,
+			  target_resale,target_cost,suggest_resale,suggest_cost,
+			  state,type,latest_userId,latest_time,remark,cus_remark		 
+			)
+			values
+			(
+			  #id#,#quote_id#,#row_no#,#material_id#,#material_name#,#qty#,
+			  #target_resale#,#target_cost#,#suggest_resale#,#suggest_cost#,
+			  #state#,#type#,#latest_userId#,sysdate,#remark#,#cus_remark#  
+			)
+		
+		]]>
+	</insert>
+
+<!-- 报价日志查询 -->	
+	<select id="getQuoteLogList" parameterClass="quoteDetail" resultClass="quoteDetail">
+	<![CDATA[
+		select 
+			  aa.id,quote_id,row_no,material_id,material_name,qty,aa.state,type,
+			  target_resale,target_cost,suggest_resale,suggest_cost,aa.remark,aa.cus_remark,
+			  decode(instr(mm.emp_email,'@'),0,mm.emp_email,substr(mm.emp_email,0,instr(mm.emp_email,'@')-1)) latest_userId,aa.latest_time
+		from basis.basis_tb_quote_log aa
+			left outer join basis.basis_tb_salesemp_info mm on aa.latest_userId = mm.emp_id
+	 	where quote_id=#quote_id# and  material_id=#material_id#
+	 	order by  aa.latest_time asc
+	]]>
+
+	</select>
+
+
+	
+<!-- 查询导出报价物料列表(QuoteDetail,QuoteList) -->		
+	<select id="getOutPortQuoteList" parameterClass="quoteDetail" resultClass="quoteDetail">
+	<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+			  distinct(aa.id),aa.quote_id,aa.main_id,aa.row_no,
+			  aa.material_id,
+			  ltrim(aa.material_id, '0') as strMaterialId,
+			  aa.drNum,aa.qty,
+			  nvl(aa.target_resale,0) target_resale , nvl(aa.target_cost,0) target_cost,aa.amount,aa.reason,aa.competitor,nvl(aa.res_qty,0) req_qty,
+			  aa.product_date,to_char(aa.product_date,'YYYY-MM-DD') product_dateStr,
+			  aa.start_date,to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+			  aa.end_date,to_char(aa.end_date,'YYYY-MM-DD') end_dateStr,
+			  aa.cus_remark,nvl(aa.suggest_resale,0) suggest_resale,nvl(aa.suggest_cost ,0) suggest_cost,aa.state,aa.isAgree,aa.isRepresent,		  
+			  aa.cus_profits_percent,aa.profits_percent,aa.remark,aa.material_name,
+			   (SELECT DECODE (INSTR (mm.emp_email, '@'),0,mm.emp_email,SUBSTR (mm.emp_email,0,INSTR (mm.emp_email, '@') - 1))
+			   FROM basis.basis_tb_salesemp_info mm WHERE aa.latest_userId = mm.emp_id) latest_userId,
+			  aa.latest_time,to_char(aa.latest_time,'YYYY-MM-DD') latest_timeStr,bb.data_from,
+			  aa.debit_start,aa.debit_end,aa.debit_num,
+			  to_char(aa.debit_start,'YYYY-MM-DD') debit_startStr,
+			  to_char(aa.debit_end,'YYYY-MM-DD') debit_endStr,
+			  bb.currency_code,bb.project_name,bb.customer_id,bb.disti_branch,
+			  bb.endCustomer_id,bb.isDelivery,bb.cusGroup_id,bb.ecGroup_id,bb.pcGroup_id,
+				bb.create_time,to_char(bb.create_time,'YYYY-MM-DD') create_timeStr,
+			  ee.customer_name,
+			  gg.end_customer_name endCustomer_name,
+			   (select COUNTRY_NAME  from basis_tb_country where COUNTRY_CODE = gg.country) ec_country,
+			  gg.province ec_state,
+			    (SELECT ff.ecgroup_name FROM basis.basis_tb_ecgroup ff WHERE ff.ecgroup_id = bb.ecGroup_id) ecGroup_name,
+			    (SELECT uu.ecgroup_name FROM basis.basis_tb_ecgroup uu WHERE uu.ecgroup_id = bb.pcGroup_id) pcGroup_name,				  			  
+			  bb.purchaseCustomer_id,
+			  jj.end_customer_name purchaseCustomer_name,
+			   (select COUNTRY_NAME  from basis_tb_country where COUNTRY_CODE = jj.country)  pc_country,
+			  jj.province pc_state,
+			  bb.create_userId,
+			 (select EMP_CODE from basis.BASIS_TB_SALESEMP_INFO where EMP_ID = bb.create_userId and rownum =1) create_user,
+				decode(ll.sale_price,null,oo.sale_price/oo.perUnit,ll.sale_price/ll.perUnit) pbMpp,
+			  aa.cost,nvl(bb.rate,0) rate,aa.moq,
+			  ss.pricing_region price_region,ss.payer_to,
+			  ss.pricing_region disti_region, 
+			  (SELECT rr.org_name FROM basis.basis_tb_org rr WHERE qq.org_code = rr.sap_org_id) ec_region,
+			  (SELECT rr1.org_name FROM basis.basis_tb_org rr1 WHERE nn.org_code = rr1.sap_org_id) pc_region,
+			  gg.city ec_city,jj.city pc_city ,
+			  gg.zip ec_zip_code ,
+			  jj.zip pc_zip_code,
+			  dd.isDRItem,
+			  lds.name segmentnamepur,lda.name applicationnamepur,dict.item_name customertypenamepur,
+              lds1.name segmentname,lda1.name applicationname,dict1.item_name customertypename
+		from basis.basis_tb_quote_detail aa
+			left outer join basis.basis_tb_quoteInfo bb on aa.quote_id=bb.quote_id
+			left outer join basis.basis_tb_customerInfo ee  on bb.customer_id=ee.customer_code
+			left outer join basis.basis_tb_disti_branch ss  on trim(bb.disti_branch)=trim(ss.disti_branch)
+			left outer join basis.basis_tb_price_rule ll on ltrim(aa.material_id,'0')=ltrim(ll.material_id,'0') and ll.currency_code=bb.currency_code and ltrim(ss.payer_to,'0') = ltrim(ll.customer_code,'0')  and ll.price_type='ZMP1'  and ll.start_date<sysdate  and ll.end_date>sysdate
+			left outer join basis.basis_tb_price_rule oo on ltrim(aa.material_id,'0')=ltrim(oo.material_id,'0') and oo.office_id = ss.pricing_region and oo.currency_code=bb.currency_code and oo.price_type='ZPB1'  and oo.start_date<sysdate  and oo.end_date>sysdate
+			left outer join basis.basis_tb_productInfo dd on aa.material_id=dd.material_id and dd.factory='HK10'
+			left outer join basis.basis_tb_end_customeInfo gg on bb.endCustomer_id=gg.end_customer_id
+			left outer join basis.basis_tb_country qq on gg.country = qq.country_code 
+			left outer join basis.basis_tb_end_customeInfo jj on bb.purchaseCustomer_id=jj.end_customer_id	
+			left outer join basis.basis_tb_country nn on jj.country = nn.country_code 
+			
+			LEFT OUTER JOIN basis.basis_tb_level_dict lds on jj.segment = lds.id
+            LEFT OUTER JOIN basis.basis_tb_level_dict lda on jj.application = lda.id 
+            LEFT OUTER JOIN basis.basis_tb_dict dict on jj.customer_type = dict.item_id AND dict.dict_type_id=554
+                  
+            LEFT OUTER JOIN basis.basis_tb_level_dict lds1 on gg.segment = lds1.id
+            LEFT OUTER JOIN basis.basis_tb_level_dict lda1 on gg.application = lda1.id 
+            LEFT OUTER JOIN basis.basis_tb_dict dict1 on gg.customer_type = dict1.item_id AND dict1.dict_type_id=554
+		]]>
+			<dynamic>
+				<isNotEmpty property="auditorId" prepend="">
+				<![CDATA[ left join (select end_customer_id from basis_vm_salecountry_ec se  where se.userID = #auditorId#) pcs on  bb.purchaseCustomer_id = pcs.end_customer_id]]>
+				</isNotEmpty>
+			</dynamic>	
+			
+		<![CDATA[
+
+			left outer join basis.basis_tb_salesemp_info tt on bb.create_userId = tt.emp_id
+		where 1=1
+	]]>
+		<dynamic>
+		     <isNotEmpty property="pc_regions" prepend="and">
+                <![CDATA[ jj.country in $pc_regions$]]>
+            </isNotEmpty>
+			<isNotEmpty property="forward_id" prepend="and">
+				<![CDATA[ aa.forward_id = #forward_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="isAgrees" prepend="and">
+				<![CDATA[ aa.isAgree in $isAgrees$]]>
+			</isNotEmpty>
+			<isNotEmpty property="states" prepend="and">
+				<![CDATA[ aa.state in $states$]]>
+			</isNotEmpty>
+			<isNotEmpty property="quote_id" prepend="and">
+				<![CDATA[upper(aa.quote_id) like #quote_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+				<isNotEmpty property="debit_num" prepend="and">
+				<![CDATA[ upper(aa.debit_num) like #debit_num,handler=wildcard# escape '\']]>
+			</isNotEmpty>		
+			<isNotEmpty property="project_name" prepend="and">
+				<![CDATA[ upper(bb.project_name) like #project_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="customer_id" prepend="and">
+				<![CDATA[ bb.customer_id like #customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="purchaseCustomer_name" prepend="and">
+				<![CDATA[ upper(jj.end_customer_name) like #purchaseCustomer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endCustomer_name" prepend="and">
+				<![CDATA[ upper(gg.end_customer_name) like #endCustomer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>  	
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="start_date" prepend="and">
+				<![CDATA[ aa.start_date >= #start_date#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_date" prepend="and">
+				<![CDATA[ aa.end_date <= #end_date#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="cusGroup_id" prepend="and">
+			    (
+				<![CDATA[ upper(bb.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+				<isNotEmpty property="disti_alias" prepend="OR">
+                    UPPER(bb.cusGroup_id) = UPPER(#disti_alias#)
+                </isNotEmpty>
+				)
+			</isNotEmpty>  	
+            <isNotEmpty property="disti_branch" prepend="and">
+                (
+                <![CDATA[ bb.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+                <isNotEmpty property="disti_branch_alias" prepend="OR">
+                    UPPER(bb.disti_branch) = UPPER(#disti_branch_alias#)
+                </isNotEmpty>
+                )
+            </isNotEmpty>
+            <isNotEmpty property="create_userId" prepend="and">
+				<![CDATA[ bb.create_userId = #create_userId#]]>
+			</isNotEmpty>	
+			<isNotEmpty property="create_userName" prepend="and">
+				<![CDATA[ upper(tt.emp_email)  like #create_userName,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty>  
+		</dynamic>	
+		<![CDATA[ order by aa.id desc]]>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	<select id="getOutPortQuoteListCount" parameterClass="quoteDetail" resultClass="java.lang.Integer">
+    <![CDATA[
+        select count(quote.id) from(select 
+              distinct(aa.id),aa.quote_id,aa.main_id,aa.row_no,
+              aa.material_id,
+              ltrim(aa.material_id, '0') as strMaterialId,
+              aa.drNum,aa.qty,
+              nvl(aa.target_resale,0) target_resale , nvl(aa.target_cost,0) target_cost,aa.amount,aa.reason,aa.competitor,nvl(aa.res_qty,0) req_qty,
+              aa.product_date,to_char(aa.product_date,'YYYY-MM-DD') product_dateStr,
+              aa.start_date,to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+              aa.end_date,to_char(aa.end_date,'YYYY-MM-DD') end_dateStr,
+              aa.cus_remark,nvl(aa.suggest_resale,0) suggest_resale,nvl(aa.suggest_cost ,0) suggest_cost,aa.state,aa.isAgree,aa.isRepresent,          
+              aa.cus_profits_percent,aa.profits_percent,aa.remark,aa.material_name,
+               (SELECT DECODE (INSTR (mm.emp_email, '@'),0,mm.emp_email,SUBSTR (mm.emp_email,0,INSTR (mm.emp_email, '@') - 1))
+               FROM basis.basis_tb_salesemp_info mm WHERE aa.latest_userId = mm.emp_id) latest_userId,
+              aa.latest_time,to_char(aa.latest_time,'YYYY-MM-DD') latest_timeStr,bb.data_from,
+              aa.debit_start,aa.debit_end,aa.debit_num,
+              to_char(aa.debit_start,'YYYY-MM-DD') debit_startStr,
+              to_char(aa.debit_end,'YYYY-MM-DD') debit_endStr,
+              bb.currency_code,bb.project_name,bb.customer_id,bb.disti_branch,
+              bb.endCustomer_id,bb.isDelivery,bb.cusGroup_id,bb.ecGroup_id,bb.pcGroup_id,
+                bb.create_time,to_char(bb.create_time,'YYYY-MM-DD') create_timeStr,
+              ee.customer_name,
+              gg.end_customer_name endCustomer_name,
+               (select COUNTRY_NAME  from basis_tb_country where COUNTRY_CODE = gg.country) ec_country,
+              gg.province ec_state,
+                (SELECT ff.ecgroup_name FROM basis.basis_tb_ecgroup ff WHERE ff.ecgroup_id = bb.ecGroup_id) ecGroup_name,
+                (SELECT uu.ecgroup_name FROM basis.basis_tb_ecgroup uu WHERE uu.ecgroup_id = bb.pcGroup_id) pcGroup_name,                             
+              bb.purchaseCustomer_id,
+              jj.end_customer_name purchaseCustomer_name,
+               (select COUNTRY_NAME  from basis_tb_country where COUNTRY_CODE = jj.country)  pc_country,
+              jj.province pc_state,
+              bb.create_userId,
+             (select EMP_CODE from basis.BASIS_TB_SALESEMP_INFO where EMP_ID = bb.create_userId and rownum =1) create_user,
+                decode(ll.sale_price,null,oo.sale_price/oo.perUnit,ll.sale_price/ll.perUnit) pbMpp,
+              aa.cost,nvl(bb.rate,0) rate,aa.moq,
+              ss.pricing_region price_region,ss.payer_to,
+              ss.pricing_region disti_region, 
+              (SELECT rr.org_name FROM basis.basis_tb_org rr WHERE qq.org_code = rr.sap_org_id) ec_region,
+              (SELECT rr1.org_name FROM basis.basis_tb_org rr1 WHERE nn.org_code = rr1.sap_org_id) pc_region,
+              gg.city ec_city,jj.city pc_city ,
+              gg.zip ec_zip_code ,
+              jj.zip pc_zip_code,
+              dd.isDRItem
+        from basis.basis_tb_quote_detail aa
+            left outer join basis.basis_tb_quoteInfo bb on aa.quote_id=bb.quote_id
+            left outer join basis.basis_tb_customerInfo ee  on bb.customer_id=ee.customer_code
+            left outer join basis.basis_tb_disti_branch ss  on trim(bb.disti_branch)=trim(ss.disti_branch)
+            left outer join basis.basis_tb_price_rule ll on ltrim(aa.material_id,'0')=ltrim(ll.material_id,'0') and ll.currency_code=bb.currency_code and ltrim(ss.payer_to,'0') = ltrim(ll.customer_code,'0')  and ll.price_type='ZMP1'  and ll.start_date<sysdate  and ll.end_date>sysdate
+            left outer join basis.basis_tb_price_rule oo on ltrim(aa.material_id,'0')=ltrim(oo.material_id,'0') and oo.office_id = ss.pricing_region and oo.currency_code=bb.currency_code and oo.price_type='ZPB1'  and oo.start_date<sysdate  and oo.end_date>sysdate
+            left outer join basis.basis_tb_productInfo dd on aa.material_id=dd.material_id and dd.factory='HK10'
+            left outer join basis.basis_tb_end_customeInfo gg on bb.endCustomer_id=gg.end_customer_id
+            left outer join basis.basis_tb_country qq on gg.country = qq.country_code 
+            left outer join basis.basis_tb_end_customeInfo jj on bb.purchaseCustomer_id=jj.end_customer_id  
+            left outer join basis.basis_tb_country nn on jj.country = nn.country_code 
+        ]]>
+            <dynamic>
+                <isNotEmpty property="auditorId" prepend="">
+                <![CDATA[ left join (select end_customer_id from basis_vm_salecountry_ec se  where se.userID = #auditorId#) pcs on  bb.purchaseCustomer_id = pcs.end_customer_id]]>
+                </isNotEmpty>
+            </dynamic>  
+        <![CDATA[
+            left outer join basis.basis_tb_salesemp_info tt on bb.create_userId = tt.emp_id
+        where 1=1
+    ]]>
+        <dynamic>
+             <isNotEmpty property="pc_regions" prepend="and">
+                <![CDATA[ jj.country in $pc_regions$]]>
+            </isNotEmpty>
+            <isNotEmpty property="forward_id" prepend="and">
+                <![CDATA[ aa.forward_id = #forward_id#]]>
+            </isNotEmpty>
+            <isNotEmpty property="isAgrees" prepend="and">
+                <![CDATA[ aa.isAgree in $isAgrees$]]>
+            </isNotEmpty>
+            <isNotEmpty property="states" prepend="and">
+                <![CDATA[ aa.state in $states$]]>
+            </isNotEmpty>
+            <isNotEmpty property="quote_id" prepend="and">
+                <![CDATA[upper(aa.quote_id) like #quote_id,handler=wildcard# escape '\']]>
+            </isNotEmpty>
+                <isNotEmpty property="debit_num" prepend="and">
+                <![CDATA[ upper(aa.debit_num) like #debit_num,handler=wildcard# escape '\']]>
+            </isNotEmpty>       
+            <isNotEmpty property="project_name" prepend="and">
+                <![CDATA[ upper(bb.project_name) like #project_name,handler=wildcard# escape '\']]>
+            </isNotEmpty> 
+            <isNotEmpty property="customer_id" prepend="and">
+                <![CDATA[ bb.customer_id like #customer_id,handler=wildcard# escape '\']]>
+            </isNotEmpty> 
+            <isNotEmpty property="purchaseCustomer_name" prepend="and">
+                <![CDATA[ upper(jj.end_customer_name) like #purchaseCustomer_name,handler=wildcard# escape '\']]>
+            </isNotEmpty>
+            <isNotEmpty property="endCustomer_name" prepend="and">
+                <![CDATA[ upper(gg.end_customer_name) like #endCustomer_name,handler=wildcard# escape '\']]>
+            </isNotEmpty>   
+            <isNotEmpty property="material_id" prepend="and">
+                <![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+            </isNotEmpty>   
+            <isNotEmpty property="material_name" prepend="and">
+                <![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+            </isNotEmpty> 
+            <isNotEmpty property="start_date" prepend="and">
+                <![CDATA[ aa.start_date >= #start_date#]]>
+            </isNotEmpty> 
+            <isNotEmpty property="end_date" prepend="and">
+                <![CDATA[ aa.end_date <= #end_date#]]>
+            </isNotEmpty> 
+            <isNotEmpty property="cusGroup_id" prepend="and">
+                (
+                <![CDATA[ upper(bb.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+                <isNotEmpty property="disti_alias" prepend="OR">
+                    UPPER(bb.cusGroup_id) = UPPER(#disti_alias#)
+                </isNotEmpty>
+                )
+            </isNotEmpty>   
+            <isNotEmpty property="disti_branch" prepend="and">
+                (
+                <![CDATA[ bb.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+                <isNotEmpty property="disti_branch_alias" prepend="OR">
+                    UPPER(bb.disti_branch) = UPPER(#disti_branch_alias#)
+                </isNotEmpty>
+                )
+            </isNotEmpty>  
+            <isNotEmpty property="create_userId" prepend="and">
+                <![CDATA[ bb.create_userId = #create_userId#]]>
+            </isNotEmpty>   
+            <isNotEmpty property="create_userName" prepend="and">
+                <![CDATA[ upper(tt.emp_email)  like #create_userName,handler=wildcard# escape '\']]>
+            </isNotEmpty>   
+            <isNotEmpty property="start_dateStr" prepend="and">
+                <![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+            </isNotEmpty> 
+            <isNotEmpty property="end_dateStr" prepend="and">
+                <![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+            </isNotEmpty>  
+        </dynamic>
+        ) quote
+	</select>
+	
+
+<!-- 导出数据（不分页） -->
+	<select id="outPutQuote" parameterClass="quoteDetail" resultClass="quoteDetail">
+	<![CDATA[
+	select 
+			  distinct(aa.id),aa.quote_id,aa.main_id,aa.row_no,aa.material_id,aa.drNum,aa.qty,
+			   nvl(aa.target_resale,0) target_resale , nvl(aa.target_cost,0) target_cost,aa.amount,aa.reason,aa.competitor,nvl(aa.res_qty,0) res_qty ,
+			  aa.product_date,to_char(aa.product_date,'YYYY-MM-DD') product_dateStr,
+			  aa.start_date,to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+			  aa.end_date,to_char(aa.end_date,'YYYY-MM-DD') end_dateStr,
+			  aa.cus_remark,nvl(aa.suggest_resale,0) suggest_resale ,nvl(aa.suggest_cost,0) suggest_cost,aa.state,			  
+			  aa.cus_profits_percent,aa.profits_percent,aa.remark,aa.material_name,
+			   (SELECT DECODE (INSTR (mm.emp_email, '@'),0,mm.emp_email,SUBSTR (mm.emp_email,0,INSTR (mm.emp_email, '@') - 1))
+			   FROM basis.basis_tb_salesemp_info mm WHERE aa.latest_userId = mm.emp_id) latest_userId,
+			  aa.latest_time,aa.isAgree,aa.isRepresent,
+			  bb.data_from,aa.debit_start,aa.debit_end,aa.debit_num,
+			  bb.currency_code,bb.project_name,bb.customer_id,bb.disti_branch,
+			  bb.endCustomer_id,bb.isDelivery,bb.cusGroup_id,bb.ecGroup_id,bb.pcGroup_id,
+			  ee.customer_name,gg.end_customer_name endCustomer_name,
+			  (SELECT ff.ecgroup_name FROM basis.basis_tb_ecgroup ff WHERE ff.ecgroup_id = bb.ecGroup_id) ecGroup_name,	
+			  (SELECT uu.ecgroup_name FROM basis.basis_tb_ecgroup uu WHERE uu.ecgroup_id = bb.pcGroup_id) pcGroup_name,		  
+			  bb.purchaseCustomer_id,jj.end_customer_name purchaseCustomer_name,bb.create_time,bb.create_userId,
+        	  decode(ll.sale_price,null,oo.sale_price/oo.perUnit,ll.sale_price/ll.perUnit) pbMpp,
+			  
+			  aa.cost,nvl(bb.rate,0),aa.moq,
+			  
+			  ss.pricing_region price_region,ss.payer_to,
+			  ss.pricing_region disti_region, 
+			  (SELECT rr.org_name FROM basis.basis_tb_org rr WHERE qq.org_code = rr.sap_org_id) ec_region,
+			  (SELECT rr1.org_name FROM basis.basis_tb_org rr1 WHERE nn.org_code = rr1.sap_org_id) pc_region,
+			  
+			  gg.city ec_city,jj.city pc_city
+			  
+		from basis.basis_tb_quote_detail aa
+			left outer join basis.basis_tb_quoteInfo bb on aa.quote_id=bb.quote_id
+			left outer join basis.basis_tb_customerInfo ee  on bb.customer_id=ee.customer_code
+			left outer join basis.basis_tb_disti_branch ss  on trim(bb.disti_branch)=trim(ss.disti_branch)
+			left outer join basis.basis_tb_price_rule ll on ltrim(aa.material_id,'0')=ltrim(ll.material_id,'0') and ll.currency_code=bb.currency_code and ltrim(ss.payer_to,'0') = ltrim(ll.customer_code,'0')  and ll.price_type='ZMP1'  and ll.start_date<sysdate  and ll.end_date>sysdate
+			left outer join basis.basis_tb_price_rule oo on ltrim(aa.material_id,'0')=ltrim(oo.material_id,'0') and oo.office_id = ss.pricing_region and oo.currency_code=bb.currency_code and oo.price_type='ZPB1'  and oo.start_date<sysdate  and oo.end_date>sysdate
+			left outer join basis.basis_tb_productInfo dd on aa.material_id=dd.material_id and dd.factory='HK10'			
+			
+			left outer join basis.basis_tb_end_customeInfo gg  on bb.endCustomer_id=gg.end_customer_id
+			left outer join basis.basis_tb_country qq on gg.country = qq.country_code 
+			
+			left outer join basis.basis_tb_end_customeInfo jj  on bb.purchaseCustomer_id=jj.end_customer_id	
+			left outer join basis.basis_tb_country nn on jj.country = nn.country_code 
+		]]>
+			<dynamic>
+				<isNotEmpty property="auditorId" prepend="">
+				<![CDATA[left join (select end_customer_id from basis_vm_salecountry_ec se  where se.userID = #auditorId#) pcs on  bb.purchaseCustomer_id = pcs.end_customer_id]]>
+				</isNotEmpty>
+			</dynamic>	
+			
+		<![CDATA[
+			
+		where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="isAgrees" prepend="and">
+				<![CDATA[ aa.isAgree in $isAgrees$]]>
+			</isNotEmpty>
+			<isNotEmpty property="states" prepend="and">
+				<![CDATA[ aa.state in $states$]]>
+			</isNotEmpty>
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="customer_id" prepend="and">
+				<![CDATA[ bb.customer_id like #customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ bb.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="start_date" prepend="and">
+				<![CDATA[ aa.start_date >= #start_date#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_date" prepend="and">
+				<![CDATA[ aa.end_date <= #end_date#]]>
+			</isNotEmpty> 
+			<isNotEmpty property="project_name" prepend="and">
+				<![CDATA[ upper(bb.project_name) like #project_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="quote_id" prepend="and">
+				<![CDATA[ upper(aa.quote_id) like #quote_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+				<isNotEmpty property="debit_num" prepend="and">
+				<![CDATA[ upper(aa.debit_num) like #debit_num,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="purchaseCustomer_name" prepend="and">
+				<![CDATA[ upper(jj.end_customer_name) like #purchaseCustomer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endCustomer_name" prepend="and">
+				<![CDATA[ upper(gg.end_customer_name) like #endCustomer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="cusGroup_id" prepend="and">
+				<![CDATA[ upper(bb.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ bb.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="create_userId" prepend="and">
+				<![CDATA[ bb.create_userId = #create_userId#]]>
+			</isNotEmpty>	
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 	 
+		</dynamic>	
+		<![CDATA[ order by aa.id desc]]>
+	</select>
+
+
+<!-- 取价格（ReginalMin  即  Sale_price）   取最新上传的数据 -->	
+	<select id="getReginalMin" parameterClass="quoteDetail" resultClass="java.lang.Double">
+	<![CDATA[
+		select nvl(decode(rm.sale_price,null,0,rm.sale_price/rm.perUnit),0)   as sale_price from  basis.basis_tb_price_rule rm where rm.id =  (select max(id) from basis.basis_tb_price_rule cc where ltrim(cc.material_id,'0')=ltrim(#material_id#,'0')    and cc.office_id = #price_region# and cc.currency_code=#currency_code# and cc.price_type='RM'	and cc.start_date<=sysdate  and cc.end_date>=sysdate) 
+	]]>
+	</select>
+    <select id="getReginalMins" resultClass="quoteDetail">
+    <![CDATA[
+        select nvl(decode(rm.sale_price,null,0,rm.sale_price/rm.perUnit),0) as sale_price,
+               ltrim(rm.material_id,'0') as strMaterialId,
+               rm.office_id as price_region,
+               rm.currency_code as currency_code
+          from basis.basis_tb_price_rule rm where rm.id in 
+               (select max(id) from basis.basis_tb_price_rule cc 
+                 where cc.price_type ='RM'
+                   and cc.start_date<=sysdate
+                   and cc.end_date>=sysdate
+                 group by ltrim(cc.material_id,'0'), cc.office_id, cc.currency_code
+               ) 
+    ]]>
+    </select>
+<!-- 取价格（CMM  即  stop_price）   取最新上传的数据 -->	
+	<select id="getCMM" parameterClass="quoteDetail" resultClass="java.lang.Double">
+	<![CDATA[
+        	select nvl(decode(cm.sale_price,null,0,cm.sale_price/cm.perUnit),0)  as stop_price from basis.basis_tb_price_rule cm where cm.id =  (select max(id) from basis.basis_tb_price_rule hh where ltrim(hh.material_id,'0')=ltrim(#material_id#,'0') and hh.office_id = #price_region# and hh.currency_code=#currency_code# and hh.price_type='CM'  and hh.start_date<=sysdate  and hh.end_date>=sysdate) 
+	]]>
+	</select>
+	<select id="getCMMs" resultClass="quoteDetail">
+    <![CDATA[
+            select nvl(decode(cm.sale_price,null,0,cm.sale_price/cm.perUnit),0) as stop_price,
+                   ltrim(cm.material_id,'0') as strMaterialId,
+                   cm.office_id as price_region,
+                   cm.currency_code as currency_code
+              from basis.basis_tb_price_rule cm 
+             where cm.id in 
+                   (select max(id) 
+                      from basis.basis_tb_price_rule hh 
+                     where hh.price_type='CM'
+                       and hh.start_date<=sysdate 
+                       and hh.end_date>=sysdate
+                     group by ltrim(hh.material_id,'0'), hh.office_id, hh.currency_code
+                   ) 
+    ]]>
+    </select>
+
+<!-- Check   一年内  ：物料+（purchaseCustomer_name 或 endCustomer_name 或 pcGroup_id 或 ecGroup_id 任一相同）-->
+	<select id="checkQuote" parameterClass="quoteDetail" resultClass="quoteDetail">
+	<![CDATA[
+	select 
+			  distinct(aa.id),aa.quote_id,aa.material_id,aa.drNum,aa.qty,
+			  nvl(aa.target_resale,0) target_resale , nvl(aa.target_cost,0) target_cost,aa.amount,
+			  aa.product_date,to_char(aa.product_date,'YYYY-MM-DD') product_dateStr,
+			  aa.start_date,to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+			  aa.end_date,to_char(aa.end_date,'YYYY-MM-DD') end_dateStr,
+			  aa.cus_remark,nvl(aa.suggest_resale,0) suggest_resale, nvl(aa.suggest_cost,0) suggest_cost ,aa.state,			  
+			  aa.cus_profits_percent,aa.profits_percent,aa.remark,aa.material_name,
+			  decode(instr(mm.emp_email,'@'),0,mm.emp_email,substr(mm.emp_email,0,instr(mm.emp_email,'@')-1)) latest_userId,aa.latest_time,aa.isAgree,
+			  bb.data_from,
+			  bb.currency_code,bb.project_name,bb.customer_id,bb.disti_branch,
+			  bb.endCustomer_id,bb.cusGroup_id,bb.ecGroup_id,bb.pcGroup_id,
+			  ee.customer_name,ff.ecgroup_name ecGroup_name,uu.ecgroup_name pcGroup_name,gg.end_customer_name endCustomer_name,
+			  bb.purchaseCustomer_id,jj.end_customer_name purchaseCustomer_name,bb.create_userId
+			  
+			  
+		from basis.basis_tb_quote_detail aa
+			left outer join basis.basis_tb_quoteInfo bb on aa.quote_id=bb.quote_id
+			left outer join basis.basis_tb_customerInfo ee  on bb.customer_id=ee.customer_code
+			left outer join basis.basis_tb_disti_branch ss  on trim(bb.disti_branch)=trim(ss.disti_branch)
+			left outer join basis.basis_tb_ecgroup ff  on bb.ecGroup_id=ff.ecgroup_id
+			left outer join basis.basis_tb_ecgroup uu  on bb.pcGroup_id=uu.ecgroup_id
+			left outer join basis.basis_tb_end_customeInfo gg  on bb.endCustomer_id=gg.end_customer_id			
+			left outer join basis.basis_tb_end_customeInfo jj  on bb.purchaseCustomer_id=jj.end_customer_id	
+			left outer join basis.basis_tb_salesemp_info mm on aa.latest_userId = mm.emp_id
+		where aa.id !=#id#
+	]]>
+		<dynamic>
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+
+			<![CDATA[ and (]]>
+			<isNotEmpty property="purchaseCustomer_name" prepend="">
+				<![CDATA[ upper(jj.end_customer_name) like #purchaseCustomer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endCustomer_name" prepend="or">
+				<![CDATA[ upper(gg.end_customer_name) like #endCustomer_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="pcGroup_id" prepend="or">
+				<![CDATA[ upper(bb.pcGroup_id) like #pcGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="ecGroup_id" prepend="or">
+				<![CDATA[ upper(bb.ecGroup_id) like #ecGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<![CDATA[)]]>
+
+ 				<isNotEmpty property="create_time" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'YYYY-MM-DD'),'YYYY-MM-DD')<=to_date(to_char(#create_time#,'YYYY-MM-DD'),'YYYY-MM-DD')
+				and  to_date(to_char((bb.create_time+365),'YYYY-MM-DD'),'YYYY-MM-DD')>=to_date(to_char(#create_time#,'YYYY-MM-DD'),'YYYY-MM-DD')
+				]]>
+				</isNotEmpty>
+		</dynamic>	
+	<![CDATA[ order by aa.quote_id desc]]>
+	</select>
+
+<!-- 		
+			
+			</isNotEmpty> 	
+			<isNotEmpty property="customer_id" prepend="and">
+				<![CDATA[ bb.customer_id like #customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ bb.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="cusGroup_id" prepend="and">
+				<![CDATA[ upper(bb.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  
+-->
+
+
+
+
+	<!-- 存储过程参数声明列表 -->
+	<parameterMap id="parameterMap" class="java.util.HashMap">
+		<!-- 默认填 6 -->
+		<parameter property="incount" javaType="java.lang.String"
+			jdbcType="VARCHAR" mode="IN" />
+		<!-- 模块类型编码 -->
+		<parameter property="intype" javaType="java.lang.String"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="RESULTCODE" jdbcType="VARCHAR"
+			javaType="java.lang.String" mode="OUT" />
+	</parameterMap>
+
+	<procedure id="getSystemIdPrc" parameterMap="parameterMap"
+		resultClass="java.lang.String">
+	<![CDATA[
+		{ call basis.prc_getSysGenkey(?,?,?) }
+	]]>
+	</procedure>
+
+
+<!-- 根据角色和大区获取审批人（弃用） -->
+	<select id="getAuditors" parameterClass="cusUser"
+		resultClass="cusUser">
+	<![CDATA[
+		select distinct
+			a.emp_code userId,a.role_id roleIds,b.emp_code loginId,b.emp_name userName,
+			b.emp_email email,b.org_id orgId,c.sap_org_id sapOrgId
+		from basis_tb_user_role a
+		left outer join basis.basis_tb_salesemp_info b on a.emp_code=b.emp_id 
+ 		left outer join basis.basis_tb_org c on b.org_id=c.org_id 
+ 		where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="email" prepend="and">
+				<![CDATA[ b.emp_email =#email#]]>
+			</isNotEmpty>
+			<isNotEmpty property="loginId" prepend="and">
+				<![CDATA[ b.emp_code =#loginId#]]>
+			</isNotEmpty>
+			<isNotEmpty property="empUserId" prepend="and">
+				<![CDATA[ b.emp_id =#empUserId#]]>
+			</isNotEmpty>
+			
+			<isNotEmpty property="userName" prepend="and">
+				<![CDATA[ b.emp_name like #userName,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="roleIds" prepend="and">
+				<![CDATA[ a.role_id = #roleIds#]]>
+			</isNotEmpty>						
+			<isNotEmpty property="orgId" prepend="and">
+				<![CDATA[ (c.sap_org_id = #orgId# or c.org_name=#orgId# or c.org_id = #orgId#)]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+		
+	
+<!-- 获取PC国家对应的大区  （弃用）-->	
+	<select id="getQuotePCCountryOrg" parameterClass="quote" resultClass="java.lang.String">
+	<![CDATA[
+		select nn.org_code 	  
+		from basis.basis_tb_quoteInfo aa			
+			left outer join basis.basis_tb_end_customeInfo dd  on aa.purchaseCustomer_id=dd.end_customer_id
+			left outer join basis.basis_tb_country nn on dd.country = nn.country_code 
+		where aa.quote_id =#quote_id#
+	]]>
+	</select>
+	
+	
+<!-- 根据PC的国家和省份确定审批的需通知的销售邮箱 -->			
+	<select id="getQuoteAuditSale" parameterClass="quote" resultClass="cusUser">
+	<![CDATA[
+ 	select distinct emp.emp_name userName,emp.emp_email email from  basis_tb_quoteinfo q
+  			join basis_vm_salecountry_ec  se on q.purchaseCustomer_id=se.end_customer_id  
+  			join basis_tb_salesemp_info emp on  emp.emp_id = se.userid  
+  	where  q.quote_id=#quote_id#
+	]]>
+	</select>
+	
+<!-- 备注修改 -->
+	<update id="updateRemark" parameterClass="quoteDetail">
+		update
+			basis.basis_tb_quote_detail
+        <!-- ADD 2018/11/02 START-->
+        SET
+        <!-- ADD 2018/11/02 END -->
+		<dynamic>
+			<isNotEmpty property="remark" prepend=" ">
+				<![CDATA[ remark = remark||#remark#]]>
+			</isNotEmpty>
+			<isNotEmpty property="cus_remark" prepend=" ">
+				<![CDATA[ cus_remark = cus_remark||#cus_remark#]]>
+			</isNotEmpty>
+			, forward_id = null
+		</dynamic>
+		where id=#id#
+	</update>
+	
+	
+	
+<!-- 查询EDI过来的新PCEC（有name无PCECID）  -->
+	<select id="getEDIQuote" parameterClass="quote" resultClass="quote">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+			  aa.id,aa.quote_id,type_id,aa.currency_code,aa.purchaseCustomer_id,aa.purchaseCustomer_name,
+			  aa.project_name,aa.customer_id,bb.customer_name,aa.endCustomer_id,aa.endCustomer_name,
+			  aa.isDelivery,aa.start_date,to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+			  aa.latest_expire,to_char(aa.latest_expire,'YYYY-MM-DD') latest_expireStr,
+			  aa.state,aa.remark,aa.cusGroup_id,cc.ecgroup_name ecGroup_name,uu.ecgroup_name pcGroup_name,aa.ecGroup_id,aa.pcGroup_id,
+			  aa.create_time,decode(instr(mm.emp_email,'@'),0,mm.emp_email,
+			  substr(mm.emp_email,0,instr(mm.emp_email,'@')-1)) create_userId,aa.sync_state,aa.disti_branch,
+			  aa.latest_time,aa.latest_userId,aa.org_code,aa.total_amount,aa.total_type,
+			  aa.edi_ec_country,aa.edi_ec_province,aa.edi_ec_city,aa.edi_ec_zip,
+			  aa.edi_pc_country,aa.edi_pc_province,aa.edi_pc_city,aa.edi_pc_zip
+		from basis.basis_tb_quoteInfo aa			
+			left outer join basis.basis_tb_customerInfo bb  on aa.customer_id=bb.customer_code
+			left outer join basis.basis_tb_ecgroup cc  on aa.ecGroup_id=cc.ecgroup_id
+			left outer join basis.basis_tb_ecgroup uu  on aa.pcGroup_id=uu.ecgroup_id
+			left outer join basis.basis_tb_end_customeInfo dd  on aa.endCustomer_id=dd.end_customer_id
+			left outer join basis.basis_tb_end_customeInfo ee  on aa.purchaseCustomer_id=ee.end_customer_id
+			left outer join basis.basis_tb_salesemp_info mm on aa.create_userId = mm.emp_id
+	 	where  aa.data_from ='2'
+	]]>
+		<dynamic>
+			<isNotEmpty property="noPCEC" prepend="and">
+				<![CDATA[((aa.endCustomer_name is not null and aa.endCustomer_id is null)  or (aa.purchaseCustomer_name is not null and aa.purchaseCustomer_id is null))]]>
+			</isNotEmpty>
+			<isNotEmpty property="states" prepend="and">
+				<![CDATA[ aa.state in $state$]]>
+			</isNotEmpty>
+			<isNotEmpty property="quote_id" prepend="and">
+				<![CDATA[ upper(aa.quote_id) like #quote_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="project_name" prepend="and">
+				<![CDATA[ upper(aa.project_name) like #project_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="customer_id" prepend="and">
+				<![CDATA[ aa.customer_id like #customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ aa.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchaseCustomer_id" prepend="and">
+				<![CDATA[ aa.purchaseCustomer_id like #purchaseCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="endCustomer_id" prepend="and">
+				<![CDATA[ aa.endCustomer_id like #endCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ aa.quote_id in (select quote_id from basis_tb_quote_detail where upper(material_name) like #material_name,handler=wildcard# escape '\') ]]>
+			</isNotEmpty> 
+			<isNotEmpty property="cusGroup_id" prepend="and">
+				<![CDATA[ upper(aa.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="create_userId" prepend="and">
+				<![CDATA[ aa.create_userId = #create_userId#]]>
+			</isNotEmpty>
+			<isNotEmpty property="create_userName" prepend="and">
+				<![CDATA[ uppper(mm.emp_email)  like #create_userName,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	
+<!-- 查询EDI过来的新PCEC（有name无PCECID）  -->
+	<select id="getEDIQuoteCount" parameterClass="quote"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(distinct(aa.id))  from basis.basis_tb_quoteInfo  aa
+			left outer join basis.basis_tb_customerInfo bb  on aa.customer_id=bb.customer_code		
+			left outer join basis.basis_tb_salesemp_info mm on aa.create_userId = mm.emp_id
+			where aa.data_from ='2'
+		]]>
+		<dynamic>
+			<isNotEmpty property="noPCEC" prepend="and">
+				<![CDATA[((aa.endCustomer_name is not null and aa.endCustomer_id is null)  or (aa.purchaseCustomer_name is not null and aa.purchaseCustomer_id is null))]]>
+			</isNotEmpty>
+			<isNotEmpty property="states" prepend="and">
+				<![CDATA[ aa.state in $state$]]>
+			</isNotEmpty>
+			<isNotEmpty property="quote_id" prepend="and">
+				<![CDATA[ upper(aa.quote_id) like #quote_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="project_name" prepend="and">
+				<![CDATA[ upper(aa.project_name) like #project_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 	
+			<isNotEmpty property="customer_id" prepend="and">
+				<![CDATA[ aa.customer_id like #customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="endCustomer_id" prepend="and">
+				<![CDATA[ aa.endCustomer_id like #endCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ aa.quote_id in (select quote_id from basis_tb_quote_detail where  upper(material_name) like #material_name,handler=wildcard# escape '\') ]]>
+			</isNotEmpty> 
+			<isNotEmpty property="cusGroup_id" prepend="and">
+				<![CDATA[ upper(aa.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="create_userId" prepend="and">
+				<![CDATA[ aa.create_userId = #create_userId#]]>
+			</isNotEmpty>
+			<isNotEmpty property="create_userName" prepend="and">
+				<![CDATA[ upper(mm.emp_email)  like #create_userName,handler=wildcard# escape '\']]>
+			</isNotEmpty>		 
+		</dynamic>
+	</select>
+
+<!-- 创建PCEC时用于将生成的的PC/EC编码更新到quote中名称相同的未填写pc/ec id的 -->	
+	<update  id="updatePCid" parameterClass="quote">
+		update basis.basis_tb_quoteInfo   set 
+			  purchaseCustomer_id=#purchaseCustomer_id#,
+			  pcGroup_id=#pcGroup_id#
+		where data_from='2' and quote_id=#quote_id#  and upper(purchaseCustomer_name)=#purchaseCustomer_name#  
+	</update>
+	<update  id="updateECid" parameterClass="quote">
+		update basis.basis_tb_quoteInfo   set 
+			  endCustomer_id=#purchaseCustomer_id#,
+			  ecGroup_id=#pcGroup_id#
+		where data_from='2'  and quote_id=#quote_id# and endCustomer_id is null and upper(endCustomer_name)=#purchaseCustomer_name# 
+	</update>
+	
+	
+	
+	
+	
+<!-- （每天定时执行一次）查询即将失效的Quote；已Agree的失效日期（debit_End）前30天；未Agree的失效日期（latesttime后60天）前15天 ；-->
+	<select id="getEmailExpireQuote"  resultClass="quoteDetail">
+	<![CDATA[
+		select 
+			 aa.id,aa.material_id,aa.material_name,aa.isAgree,
+			  to_char(aa.latest_time+60,'YYYY-MM-DD') latest_timeStr,
+			 to_char(aa.debit_end,'YYYY-MM-DD') debit_endStr,
+			 aa.quote_id,aa.main_id,bb.create_userId,bb.disti_branch		
+		from basis.basis_tb_quote_detail aa
+			 left outer join basis.basis_tb_quoteInfo bb on aa.main_id=bb.id
+		where (aa.isAgree=1 and to_char(sysdate,'yyyy-mm-dd') = to_char(aa.debit_end-30,'YYYY-MM-DD'))
+		
+			or (aa.state in (3,4,5) and aa.isAgree=0 and to_char(sysdate,'YYYY-MM-DD') = to_char((aa.latest_time+45),'yyyy-mm-dd'))
+	]]>
+	</select>
+
+	
+	
+	
+	
+	
+<!-- 历史价格报表查询 -->
+	<select id="getOutQuotePrice" parameterClass="quoteDetail" resultClass="quoteDetail">
+	<include refid="global.paginationStart" />
+	<![CDATA[
+    select 
+		  distinct(aa.id),aa.quote_id,aa.main_id,aa.material_id,aa.material_name,
+		  aa.debit_start,aa.debit_end,to_char(aa.debit_end,'YYYY-MM-DD') debit_endStr,
+		  bb.currency_code,bb.disti_branch,aa.suggest_cost,
+		  bb.cusGroup_id,nvl(bb.rate,0) rate,ss.pricing_region price_region,
+		  ss.pricing_region disti_region  		  
+	from basis.basis_tb_quote_detail aa
+		 left outer join basis.basis_tb_quoteInfo bb on aa.quote_id=bb.quote_id
+		 left outer join basis.basis_tb_disti_branch ss  on trim(bb.disti_branch)=trim(ss.disti_branch)
+      	 join  
+      	 ( 
+    		select max(xx.id) id
+				from basis.basis_tb_quote_detail xx
+				left outer join basis.basis_tb_quoteInfo yy on xx.quote_id=yy.quote_id
+				left outer join basis.basis_tb_disti_branch zz  on trim(yy.disti_branch)=trim(zz.disti_branch)
+			where xx.isAgree =1 and xx.state in (3,4,5)
+			]]>
+			<dynamic>
+				<isNotEmpty property="price_region" prepend="and">
+					<![CDATA[zz.pricing_region=#price_region#]]>
+				</isNotEmpty>
+				<isNotEmpty property="currency_code" prepend="and">
+					<![CDATA[yy.currency_code=#currency_code#]]>
+				</isNotEmpty>		
+				<isNotEmpty property="disti_branch" prepend="and">
+					<![CDATA[ yy.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+				</isNotEmpty>	
+				<isNotEmpty property="material_id" prepend="and">
+					<![CDATA[ xx.material_id like #material_id,handler=wildcard# escape '\']]>
+				</isNotEmpty>  	
+				<isNotEmpty property="material_name" prepend="and">
+					<![CDATA[ upper(xx.material_name) like #material_name,handler=wildcard# escape '\']]>
+				</isNotEmpty> 
+				<isNotEmpty property="cusGroup_id" prepend="and">
+					<![CDATA[ upper(yy.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+				</isNotEmpty>  	
+			</dynamic>	
+			<![CDATA[
+      		group by yy.cusGroup_id,zz.pricing_region,yy.currency_code,xx.material_id      
+    	 ) cc on  aa.id = cc.id
+	]]>
+		
+		<![CDATA[ order by aa.id desc]]>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	<select id="getOutQuotePriceCount" parameterClass="quoteDetail" resultClass="java.lang.Integer">
+		<![CDATA[
+	    select count(*) from 
+	    ( 
+		    select max(aa.id) 
+				from basis.basis_tb_quote_detail aa
+				left outer join basis.basis_tb_quoteInfo bb on aa.quote_id=bb.quote_id
+				left outer join basis.basis_tb_disti_branch ss  on trim(bb.disti_branch)=trim(ss.disti_branch)
+			where aa.isAgree =1 and aa.state in (3,4,5)
+			]]>
+			<dynamic>
+				<isNotEmpty property="price_region" prepend="and">
+					<![CDATA[ss.pricing_region=#price_region#]]>
+				</isNotEmpty>
+				<isNotEmpty property="currency_code" prepend="and">
+					<![CDATA[bb.currency_code=#currency_code#]]>
+				</isNotEmpty>		
+				<isNotEmpty property="disti_branch" prepend="and">
+					<![CDATA[ bb.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+				</isNotEmpty>	
+				<isNotEmpty property="material_id" prepend="and">
+					<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+				</isNotEmpty>  	
+				<isNotEmpty property="material_name" prepend="and">
+					<![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+				</isNotEmpty> 
+				<isNotEmpty property="cusGroup_id" prepend="and">
+					<![CDATA[ upper(bb.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+				</isNotEmpty>  	
+			</dynamic>	
+		<![CDATA[	
+		    group by bb.cusGroup_id,ss.pricing_region,bb.currency_code,aa.material_id	     
+	    )
+		]]>
+		
+	</select>
+	
+	<update  id="updateQuoteForForward" parameterClass="quoteDetail">
+		update basis.BASIS_TB_QUOTE_DETAIL   
+		  set forward_id=#forward_id#,
+		      suggest_cost=#suggest_cost#,
+              suggest_resale=#suggest_resale#,
+              cus_profits_percent=#cus_profits_percent#,
+              profits_percent=#profits_percent#,
+              amount=#amount#,
+              latest_time = sysdate,
+              latest_userId=#latest_userId#
+        where id=#id#
+	</update>
+	
+	<select id="getAuditQuoteListForBL" parameterClass="quoteDetail" resultClass="quoteDetail">
+	<include refid="global.paginationStart" />
+	<![CDATA[
+		select 
+			  distinct(aa.id),aa.quote_id,aa.main_id,aa.row_no,aa.material_id,aa.drNum,aa.qty,
+			  nvl(aa.target_resale,0) target_resale ,nvl(aa.target_cost,0) target_cost,aa.amount,aa.reason,aa.competitor,aa.res_qty,
+			  aa.product_date,to_char(aa.product_date,'YYYY-MM-DD') product_dateStr,
+			  aa.start_date,to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+			  aa.end_date,to_char(aa.end_date,'YYYY-MM-DD') end_dateStr,
+			  aa.cus_remark,aa.suggest_resale,aa.suggest_cost,aa.state,aa.isAgree,aa.isRepresent,		  
+			  aa.cus_profits_percent,aa.profits_percent,aa.remark,aa.material_name,
+			  (SELECT DECODE (INSTR (mm.emp_email, '@'),0,mm.emp_email,SUBSTR (mm.emp_email,0,INSTR (mm.emp_email, '@') - 1))
+			  FROM basis.basis_tb_salesemp_info mm WHERE aa.latest_userId = mm.emp_id) latest_userId,
+			  aa.latest_time,aa.cost,nvl(bb.rate,0) rate,aa.moq,
+			  bb.data_from,aa.debit_start,aa.debit_end,aa.debit_num,			  
+			  bb.currency_code,bb.project_name,bb.customer_id,bb.disti_branch,
+			  bb.endCustomer_id,bb.isDelivery,bb.cusGroup_id,bb.ecGroup_id,bb.pcGroup_id,			  
+			  ee.customer_name,gg.end_customer_name endCustomer_name,
+			  (SELECT ff.ecgroup_name FROM basis.basis_tb_ecgroup ff WHERE ff.ecgroup_id = bb.ecGroup_id) ecGroup_name,	
+			  (SELECT tt.ecgroup_name FROM basis.basis_tb_ecgroup tt WHERE tt.ecgroup_id = bb.pcGroup_id) pcGroup_name,			  			  		  			  
+			  bb.purchaseCustomer_id,jj.end_customer_name purchaseCustomer_name,bb.create_userId,			 			 
+			  decode(ll.sale_price,null,oo.sale_price/oo.perUnit,ll.sale_price/ll.perUnit) pbMpp,
+			  nvl((select sale_price from basis.basis_tb_price_rule qm  where   qm.office_id = ss.pricing_region and ltrim(aa.material_id,'0')=ltrim(qm.material_id,'0') and  qm.currency_code=bb.currency_code and qm.price_type='QM'  and qm.start_date<sysdate  and qm.end_date>sysdate and rownum =1  ),0) qm_price,			  
+			  ss.pricing_region price_region,ss.payer_to,
+			  ss.pricing_region disti_region, 
+			  (SELECT rr.org_name FROM basis.basis_tb_org rr WHERE qq.org_code = rr.sap_org_id) ec_region,
+			  (SELECT rr1.org_name FROM basis.basis_tb_org rr1 WHERE nn.org_code = rr1.sap_org_id) pc_region,
+			  aa.forward_id,
+			  dd.isDRItem ,
+              (SELECT emp_name FROM basis.basis_tb_salesemp_info mm WHERE aa.forward_id = mm.emp_id) forwarder
+        from basis.basis_tb_quote_detail aa
+			left outer join basis.basis_tb_quoteInfo bb on aa.quote_id=bb.quote_id			
+			left outer join basis.basis_tb_customerInfo ee  on bb.customer_id=ee.customer_code			
+			left outer join basis.basis_tb_disti_branch ss  on trim(bb.disti_branch)=trim(ss.disti_branch)			
+			left outer join basis.basis_tb_org kk on (ee.sale_office = kk.sap_org_id)
+			left outer join basis.basis_tb_price_rule ll on ltrim(aa.material_id,'0')=ltrim(ll.material_id,'0') and ll.currency_code=bb.currency_code and ltrim(ss.payer_to,'0') = ltrim(ll.customer_code,'0') and ll.price_type='ZMP1'  and ll.start_date<sysdate  and ll.end_date>sysdate
+			left outer join basis.basis_tb_price_rule oo on ltrim(aa.material_id,'0')=ltrim(oo.material_id,'0') and oo.office_id = ss.pricing_region and oo.currency_code=bb.currency_code and oo.price_type='ZPB1'  and oo.start_date<sysdate  and oo.end_date>sysdate
+			left outer join basis.basis_tb_productInfo dd on aa.material_id=dd.material_id and dd.factory='HK10'			
+			left outer join basis.basis_tb_end_customeInfo gg  on bb.endCustomer_id=gg.end_customer_id
+			left outer join basis.basis_tb_country qq on gg.country = qq.country_code 			
+			left outer join basis.basis_tb_end_customeInfo jj  on bb.purchaseCustomer_id=jj.end_customer_id	
+			left outer join basis.basis_tb_country nn on jj.country = nn.country_code 
+		]]>
+			<dynamic>
+				<isNotEmpty property="auditorId" prepend="">
+				<![CDATA[left join (select end_customer_id from basis_vm_salecountry_ec se  where se.userID = #auditorId#) pcs on  bb.purchaseCustomer_id = pcs.end_customer_id]]>
+				</isNotEmpty>
+			</dynamic>	
+			
+		<![CDATA[			
+		where  (
+         ((bb.endCustomer_name is not null and bb.endCustomer_id is not null) or (bb.endCustomer_name is null and bb.endCustomer_id is null)) and (bb.purchaseCustomer_name is not null and bb.purchaseCustomer_id is not null)
+         )
+	]]>
+		<dynamic>
+			<isNotEmpty property="forward_id" prepend="and">
+				<![CDATA[  ((aa.forward_id = #forward_id#  and aa.state = '0') OR aa.state = '2')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="quote_id" prepend="and">
+				<![CDATA[ upper(aa.quote_id) like #quote_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="debit_num" prepend="and">
+				<![CDATA[ upper(aa.debit_num) like #debit_num,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="project_name" prepend="and">
+				<![CDATA[ upper(bb.project_name) like #project_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="customer_id" prepend="and">
+				<![CDATA[ bb.customer_id like #customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ bb.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchaseCustomer_id" prepend="and">
+				<![CDATA[ bb.purchaseCustomer_id like #purchaseCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endCustomer_id" prepend="and">
+				<![CDATA[ bb.endCustomer_id like #endCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  	
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>  	
+			<isNotEmpty property="cusGroup_id" prepend="and">
+				<![CDATA[ upper(bb.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 	
+			<isNotEmpty property="create_userId" prepend="and">
+				<![CDATA[ bb.create_userId = #create_userId#]]>
+			</isNotEmpty>	
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="pc_region" prepend="and">
+				<![CDATA[  (SELECT rr1.org_name FROM basis.basis_tb_org rr1 WHERE nn.org_code = rr1.sap_org_id)  = #pc_region#  ]]>
+			</isNotEmpty> 
+			
+			<isNotEmpty property="isDelivery" prepend="">
+				<isEqual property="states" compareValue="(0,1,2,3,4,5,6,7,8)" prepend="and">
+						<![CDATA[ ( aa.state IN (1,2,3,4,5,6,7,8) or (aa.forward_id IS NOT NULL and aa.state in (0)) )]]>
+				</isEqual>
+			</isNotEmpty> 
+			
+		</dynamic>	
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+	
+	<select id="getAuditQuoteListCountForBL" parameterClass="quoteDetail" resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(distinct(aa.id)) 
+			from basis.basis_tb_quote_detail aa
+				left outer join basis.basis_tb_quoteInfo bb on aa.quote_id=bb.quote_id
+				left outer join basis.basis_tb_end_customeInfo jj  on jj.end_customer_id = bb.purchaseCustomer_id	
+				left outer join basis.basis_tb_country nn on nn.country_code =jj.country 
+		]]>
+			<dynamic>
+				<isNotEmpty property="auditorId" prepend="">
+				<![CDATA[left join (select end_customer_id from basis_vm_salecountry_ec se  where se.userID = #auditorId#) pcs on  bb.purchaseCustomer_id = pcs.end_customer_id]]>
+				</isNotEmpty>
+			</dynamic>	
+			
+		<![CDATA[
+			where  (
+         ((endCustomer_name is not null and endCustomer_id is not null) or (endCustomer_name is null and endCustomer_id is null))
+         and (purchaseCustomer_name is not null and purchaseCustomer_id is not null)
+         )
+		]]>
+		<dynamic>
+			<isNotEmpty property="forward_id" prepend="and">
+				<![CDATA[  ((aa.forward_id = #forward_id#  and aa.state = '0') OR aa.state = '2')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="quote_id" prepend="and">
+				<![CDATA[ upper(aa.quote_id) like #quote_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+				<isNotEmpty property="debit_num" prepend="and">
+				<![CDATA[ upper(aa.debit_num) like #debit_num,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="project_name" prepend="and">
+				<![CDATA[ upper(bb.project_name) like #project_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="customer_id" prepend="and">
+				<![CDATA[ bb.customer_id like #customer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="disti_branch" prepend="and">
+				<![CDATA[ bb.disti_branch like #disti_branch,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="purchaseCustomer_id" prepend="and">
+				<![CDATA[ bb.purchaseCustomer_id like #purchaseCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="endCustomer_id" prepend="and">
+				<![CDATA[ bb.endCustomer_id like #endCustomer_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>   
+			<isNotEmpty property="material_id" prepend="and">
+				<![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>  	
+			<isNotEmpty property="material_name" prepend="and">
+				<![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+			</isNotEmpty> 
+			<isNotEmpty property="cusGroup_id" prepend="and">
+				<![CDATA[ upper(bb.cusGroup_id) like #cusGroup_id,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="create_userId" prepend="and">
+				<![CDATA[ bb.create_userId = #create_userId#]]>
+			</isNotEmpty> 	
+			<isNotEmpty property="start_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 
+			<isNotEmpty property="end_dateStr" prepend="and">
+				<![CDATA[ to_date(to_char(bb.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+			</isNotEmpty> 			
+			<isNotEmpty property="pc_region" prepend="and">
+				<![CDATA[  (SELECT rr1.org_name FROM basis.basis_tb_org rr1 WHERE nn.org_code = rr1.sap_org_id)  = #pc_region#  ]]>
+			</isNotEmpty> 		
+			<isNotEmpty property="forwarder" prepend="and">
+				<![CDATA[  (bb.forward_id is null or bb.forward_id = #forward_id# ) ]]>
+			</isNotEmpty> 	 
+			<isNotEmpty property="isDelivery" prepend="">
+				<isEqual property="states" compareValue="(0,1,2,3,4,5,6,7,8)" prepend="and">
+						<![CDATA[ ( aa.state IN (1,2,3,4,5,6,7,8) or (aa.forward_id IS NOT NULL and aa.state in (0)) )]]>
+				</isEqual>
+			</isNotEmpty> 
+		</dynamic>	
+	</select>
+
+    <select id="searchCountrysForSaler" parameterClass="saleCountry"
+        resultClass="saleCountry">
+        select 
+            aa.id,aa.country_code,aa.country_name,aa.org_code  
+          from basis.basis_tb_saleCountry aa
+         where aa.userId = #userId#
+         order by aa.country_code , aa.province_name
+    </select>
+</sqlMap>

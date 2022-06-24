@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post" enctype="multipart/form-data">
+			
+		<div  class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+			<table  border="0" cellpadding="1" cellspacing="1" >
+					<input  type="hidden"/>
+					<input type="hidden" id="id" name="q.id" value="$!{q.id}"/>
+					<input type="hidden" id="state" name="q.state" value="$!{q.state}"/>
+					<input type="hidden" id="loginRole"  value="$!{loginRole}"/>
+<!--	
+						<tr>                
+							<td class="head" noWrap><label for="name">Assembly<br>是否装配</label></td>
+                            <td noWrap class="context">
+								<input type="text" id="assembly_id" name="q.isDelivery" value='$!{q.isDelivery}'></input>
+							</td>
+                            <td class="head" noWrap width='160'><label for="name">Quote Type<br>报价类型</label></td>
+							<td noWrap class="context" width='220'>
+								 <input class="easyui-validatebox"  id="type_id" name="q.type_id" value='Quote' readonly></input>
+							</td>
+						</tr>
+-->						
+						<tr>
+                           
+							<td class="head" noWrap  width='160'><label for="name">Disti</label></td>
+                            <td noWrap class="context"  width='350' >
+								<label id="cusGroup_id" name="q.customer_name" >$!{q.cusGroup_id} </label> 
+								<input type="hidden" id="customer_id"  name="q.customer_id" value='$!{q.customer_id}'  />  
+							</td>	
+							<td class="head" noWrap  width='160'><label for="name">Quote Num</label></td>
+                            <td noWrap class="context"  width='220' colspan="3">
+								
+								<input class="easyui-validatebox" id="quote_id" name="quote_id" value="$!{q.quote_id}" readonly/>  
+							</td>	
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Disti Branch </label></td>
+                            <td noWrap class="context">
+							<label id="disti_branch" name="q.disti_branch" >$!{q.disti_branch} </label> 
+							</td>
+                            <td class="head" noWrap width='160'><label for="name">Project</label></td>
+							<td noWrap class="context" width='220'>
+								 <input class="easyui-validatebox"  id="project_name" name="q.project_name" value='$!{q.project_name}' readonly></input>
+							</td>							
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Purchasing Customer</label></td>
+                            <td noWrap class="context">
+								<label id="purchaseCustomer_name" name="q.purchaseCustomer_name" >$!{q.purchaseCustomer_name} </label> 
+								<!-- <input class="easyui-validatebox"  id="purchaseCustomer_name" name="q.purchaseCustomer_name" value="$!{q.purchaseCustomer_name}" readonly  ></input>	-->				
+                               
+							</td>  
+							
+							<td class="head" noWrap><label for="name">PC City</label></td>
+                            <td noWrap class="context">
+								<input class="easyui-validatebox" id="currency_code" name="q.currency_code" value="$!{q.pc_city}" readonly/>  
+							</td>
+						</tr>
+						<tr>
+							<td style="display:none" class="head" noWrap><label for="name">PC Group</label></td>
+                            <td style="display:none" noWrap class="context" width='220'>
+								<input class="easyui-validatebox" id="pcGroup_name" name="q.pcGroup_name"  value="$!{q.pcGroup_name}" readonly >
+								<input  type="hidden"id="pcGroup_id" name="q.pcGroup_id"  value="$!{q.pcGroup_id}" readonly >
+							</td>
+							<td class="head" noWrap><label for="name">Currency</label></td>
+                            <td noWrap class="context">
+								<input class="easyui-validatebox" id="currency_code" name="q.currency_code" value="$!{q.currency_code}" readonly/>  
+							</td>
+							<td class="head" noWrap><label for="name">Creator</label></td>
+                            <td noWrap class="context" width='220'>
+								<input class="easyui-validatebox" id="create_userId"  value="$!{q.create_userId}" readonly>
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">End Customer</label></td>
+                            <td noWrap class="context">
+								<label id="endCustomer_name" name="q.endCustomer_name" >$!{q.endCustomer_name} </label> 
+								<!-- <input class="easyui-validatebox"  id="endCustomer_name" name="q.endCustomer_name" value="$!{q.endCustomer_name}"   readonly></input>-->					
+                              
+							</td>  
+							<td class="head" noWrap><label for="name">EC City</label></td>
+                            <td noWrap class="context">
+								<input class="easyui-validatebox" id="endCustomer_city"  value="$!{q.ec_city}" readonly/>  
+							</td>
+
+						</tr>
+						<tr>
+							<td style="display:none" class="head" noWrap><label for="name">EC Group</label></td>
+                            <td style="display:none" noWrap class="context" width='220'>
+								<input class="easyui-validatebox" id="ecGroup_name" name="q.ecGroup_name"  value="$!{q.ecGroup_name}" readonly >
+								<input type="hidden" id="ecGroup_id" name="q.ecGroup_id"  value="$!{q.ecGroup_id}" readonly>
+							</td>
+							<td class="head" noWrap><label for="name">Created date</label></td>
+                            <td noWrap class="context">
+								<input class="easyui-validatebox" id="create_timeStr"  value="$!{q.create_timeStr}" readonly/>  
+							</td>
+
+							<td class="head" noWrap >File:</td>
+							<!-- 	<td  ><a id="file" target="_blank" href="http://portal.ween-semi.com:8000$!{q.file_path}" download="$!{q.file_name}">$!{q.file_name}</a></td>-->
+							<td  >
+								<label id="fileName">$!{q.file_name}</label>
+								 <img  id="downImg" style="cursor:add"  title=""  onclick=downLoadFile()  src="$!{env.imgUrl}/images/actions/down.png" align="absMiddle"></img> 
+								<input type='hidden' id="file_path" value="$!{q.file_path}">				
+							</td>
+							
+						</tr>
+						<tr>
+								 <input type="hidden"  id="total_type" name="q.total_type" value="$!{q.total_type}"  readonly ></input>
+						
+								<input type="hidden"  id="total_amount" name="q.total_amount"  value="$!{q.total_amount}" readonly/>  
+							
+						</tr>
+						<!--
+						<tr>
+ 							<td class="head" noWrap><label for="name">Start Date</label></td>
+                            <td noWrap class="context">
+								<input class="easyui-datebox" id="start_date" name="q.start_date"  value="$!{q.start_dateStr}" >
+							</td>  
+							<td class="head" noWrap><label for="name">Latest Expire</label></td>
+                            <td noWrap class="context">
+								<input class="easyui-datebox" id="latest_expire" name="q.latest_expire" value="$!{q.latest_expireStr}"  ></input>  
+							</td>
+						</tr>
+						-->
+					</table>
+					<div id='cusRemark'>
+					</div>
+					</p>				             
+			<br/>
+		</div>
+
+
+		
+		<div id="p_search" class="easyui-panel" title="" style="padding: 2px; background: #fafafa;" data-options="collapsible:true">
+			<table id="datagrid" border="0">
+			</table>			
+			<input class="easyui-validatebox" id="quoteDetailJson" name="quoteDetailJson" type="hidden">
+        </div>
+
+		</div>  
+		
+		<!--
+		<br/>
+			<div id="agreeBtn" region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:agree()">Agree</a>
+			</div>
+			-->
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/quote/viewQuote.js"></script>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		<style media="print">  
+			.noprint { display : none; }  
+        </style> 
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+		<object  id="LODOP" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0> 
+			<embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed>
+		</object>
+	</head>
+<body>
+<form action=""   method="post">
+	
+	<div class="noPrint">
+			<input type="button" value="打印预览" name="B3"  onclick="Preview()">
+			<input type="button" value="打印" name="B3"  onclick="Print()">
+		</div>
+		
+		#if($!{proEventTotal.status}=="0")
+			#set($status = "未处理")
+        #elseif($!{proEventTotal.status}=="1")
+			#set($status = "处理中")
+        #elseif($!{proEventTotal.status}=="2")
+			#set($status = "已完成")
+        #elseif($!{proEventTotal.status}=="3")
+			#set($status = "已拒绝")
+        #elseif($!{proEventTotal.status}=="4")
+			#set($status = "已取消")
+		#end
+		<div id="contentForm">
+			<div align="center">
+				<h2>事务标题:$!{proEventTotal.eventTitle}
+				</h2>
+			</div>
+		  <div style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:left;width:35%">
+				事务编号:$!{proEventTotal.eventId}&nbsp;&nbsp;&nbsp;&nbsp;事务状态:$status
+          </div>
+		   <br/>
+	
+	<table width="100%" cellpadding="0" cellspacing="0" style="border:#95b8e7 solid 1px;">
+				<tr height="25px">
+					<td style="padding-left:5px;font-size:13px;font-weight:bold;color:#0e2d5f;border-bottom:#95b8e7 1px solid;">
+						报销--总单信息
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table width="100%" border="0" cellpadding="0" cellspacing="1" style="word-wrap:break-word;word-break:break-all">
+			<tr>
+    				<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+    					 收款人
+    				</td>
+					<td style="font-size:12px;font-weight:bold;color:#000000;width:10%">
+							$!{travelTotal.payee}						
+					</td>
+					<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+						支付账号
+                    </td>
+					<td style="font-size:12px;font-weight:bold;color:#000000;width:20%">
+						<input name="singleTotal.pay_account" type='hidden' value='$!{travelTotal.account}' />
+						$!{travelTotal.payaccount}
+                    </td>
+					<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+    					支付类型
+    				</td>
+					<td style="font-size:12px;font-weight:bold;color:#000000;width:10%">
+						#if($!{travelTotal.payType}=="1")
+							现金
+						#elseif($!{travelTotal.payType}=="2")
+							银行
+						#elseif($!{travelTotal.payType}=="3")
+							其他
+						#end
+					</td>
+                </tr>
+				<tr>
+					<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+    					合计金额
+    				</td>
+					<td style="font-size:12px;font-weight:bold;color:#000000;">
+						$!{travelTotal.auditMoney}
+					</td>
+						<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+    					出差事由
+    				</td>
+					<td style="font-size:12px;font-weight:bold;color:#000000;" colspan="5">
+						$!{travelTotal.memo}
+					</td>
+				</tr>
+				</table>
+                    </td>	
+                </tr>			
+		</table>
+	
+	<br/>
+		   	   
+		   <table width="100%" cellpadding="0" cellspacing="0" style="border:#95b8e7 solid 1px;">
+			<tr height="25px">
+					<td style="padding-left:5px;font-size:13px;font-weight:bold;color:#0e2d5f;">
+						报销--明细信息&nbsp;&gt;&gt;
+					</td>
+			</tr>
+			<tr>
+				<td>
+					<table width="100%" cellpadding="0" border="1px" bordercolor="#cccccc" cellspacing="0px" style="border-collapse:collapse">
+						<tr style="height:25px" class="even2">
+        						<td style="text-align:center;font-size:12px;color:#000000;width:11%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						出差起始日期
+                            </td>
+        					<td style="text-align:center;font-size:12px;color:#000000;width:11%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						出差结束日期
+                            </td>
+        					<td style="text-align:center;font-size:12px;color:#000000;width:8%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						出差天数
+                            </td>
+							<td style="text-align:center;font-size:12px;color:#000000;width:8%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						同行人
+                            </td>
+        					<td style="text-align:center;font-size:12px;color:#000000;width:22%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						出差目的地
+                            </td>
+        					<td style="text-align:center;font-size:12px;color:#000000;width:8%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						报销金额
+                            </td>
+        					<td style="text-align:center;font-size:12px;color:#000000;width:30%;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+        						报销详细说明
+                            </td>
+			</tr>
+			#foreach($travelDetail in $travelTotal.travelDetailList)
+			<tr style="height:20px" class="even1">
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$dateUtil.datetime($!{travelDetail.travelStartDate},"yyyy-MM-dd")
+				</td>
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$dateUtil.datetime($!{travelDetail.travelEndDate},"yyyy-MM-dd")
+				</td>
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$!{travelDetail.travelNum}
+				</td>
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$!{travelDetail.peerPerson}
+				</td>
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$!{travelDetail.travelPlace}
+				</td>
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$!{travelDetail.invoiceAmount}
+				</td>
+				<td style="text-align:center;font-size:12px;color:#000000;border-left:#95b8e7 1px solid;border-top:#95b8e7 1px solid;">
+					$!{travelDetail.meno}
+				</td>
+			</tr>
+			#end
+		</table>
+		</td>
+	</tr>
+</table>
+<br/>
+<table width="100%" cellpadding="0" cellspacing="0" style="border:#95b8e7 solid 1px;">
+				<tr height="25px">
+					<td style="padding-left:5px;font-size:13px;font-weight:bold;color:#0e2d5f;border-bottom:#95b8e7 1px solid;">
+						审批列表&nbsp;&gt;&gt;
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;word-break:break-all;word-wrap:break-word;">
+						#if($eventDetailList.size()>0)
+						#set($detail=$eventDetailList.get(0))
+							<tr>
+								<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+									发起人:
+								</td>
+								<td style="font-size:12px;font-weight:bold;color:#000000;width:15%">
+									$!{detail.userName}
+								</td>
+								<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+									角色:
+								</td>
+								<td style="font-size:12px;font-weight:bold;color:#000000;width:15%">
+									$!{detail.roleName}
+								</td>
+								<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+									发起时间:
+								</td>
+								<td colspan="2" style="font-size:12px;font-weight:bold;color:#000000;width:40%">
+									$!dateUtil.datetime($!{detail.time},"yyyy-MM-dd HH:mm:ss")
+								</td>
+							</tr>
+						#end
+						#foreach($detail in $eventDetailList)
+							#if($velocityCount != 0)
+							<tr>
+								<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+									$velocityCount、处理人:
+								</td>
+								<td style="font-size:12px;font-weight:bold;color:#000000;width:15%">
+									$!{detail.userName}
+								</td>
+								<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+									角色:
+								</td>
+								<td style="font-size:12px;font-weight:bold;color:#000000;width:15%">
+									$!{detail.roleName}
+								</td>
+								<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+									处理时间:
+								</td>
+								<td style="font-size:12px;font-weight:bold;color:#000000;width:20%">
+									#if($!{detail.operation} != "9")
+    									#if(${detail.lastModify})
+    										$dateUtil.datetime($!{detail.lastModify},"yyyy-MM-dd HH:mm:ss")
+										#end
+									#end
+								</td>
+								<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+									操作状态:
+								</td>
+								<td style="font-size:12px;font-weight:bold;color:#000000;width:10%">
+									#if($!{detail.operation}=="0")
+        								拒绝
+        							#elseif($!{detail.operation}=="1")
+        								同意
+        							#elseif($!{detail.operation}=="9")
+        								未处理
+									#elseif($!{detail.operation}=="2")
+										已回退
+        							#end
+								</td>
+                            </tr>
+							#if(${detail.memo})
+							<tr>
+								<td style="padding:5px;color:#006b8a;font-size:12px;font-weight:bold;text-align:right;width:10%" noWrap>
+									审批意见:
+								</td>
+								<td colspan="7" style="font-size:12px;font-weight:bold;color:#000000;">
+									$!{detail.memo}
+								</td>
+							</tr>
+							#end
+							#end
+						#end
+                        </table>
+                    </td>
+                </tr>
+           </table>
+	</div>
+</form>
+</body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/account/printAcitvityCheckView1.js"></script>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/print/LodopFuncs.js"></script>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+    #CSSM(["easyui","style"])
+    #JSM(["jquery", "easyui"])
+    #JS_ENV_VAL()
+  </head>
+  <body>
+    <form action="" method="post">
+      <div class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+        <table align="left" border="0" cellpadding="0" cellspacing="5">
+		  <input type="hidden" name="order_id" id="order_id" value="$!{so.order_id}"/>
+          <input type="hidden" id="id" name="so.id" value="$!{so.id}"/>
+          <input type="hidden" id="create_userId" name="so.create_userId" value="$!{so.create_userId}"/>
+          <input type="hidden" id="state" name="so.state" value="$!{so.state}"/>
+          <input type="hidden" id="forWho" value="$!{forWho}" />
+          <input data-options="required:true" id="orderDetailJson" name="orderDetailJson" type="hidden" />
+		  <tr>
+            <td class="head" noWrap width='130'><label for="name">Ship-To Company</label></td>
+            <td class="context" width='300'>
+			  <label >$!{so.company}</label>
+			</td>
+			<td class="head" noWrap><label for="name">Ship-To Country</label></td>
+            <td class="context" width='300'>							
+			  <label >$!{so.country}</label>
+		    </td>
+          </tr>
+		  <tr>
+			<td class="head" noWrap><label for="name">Ship-To Consignee</label></td>
+            <td class="context">
+			  <label>$!{so.contact_name}</label>
+			</td>
+			<td class="head" noWrap><label for="name">Ship-To City</label></td>
+            <td class="context">							
+			  <label >$!{so.city}</label>
+			</td>
+		  </tr>
+		  <tr>
+			<td class="head" noWrap><label for="name">Ship-To Phone No</label></td>
+            <td class="context">
+			  <label >$!{so.contact_tel}</label>
+			</td>
+			<td class="head" noWrap><label for="name">Ship-To ZIP Code</label></td>
+            <td class="context">
+			  <label>$!{so.zip}</label>
+			</td>			
+		  </tr>
+		  <tr>
+			<td class="head" noWrap><label for="name">Ship-To Street</label></td>
+            <td class="context" colspan="3">							
+			  <label >$!{so.street}</label>
+			</td>
+  		  </tr>
+          <tr>
+            <td class="head ec" noWrap><label for="name">End Customer</label></td>
+            <td class="context ec">
+		      <label>$!{so.end_customer}</label>                   
+		    </td>   
+			<td class="head" noWrap><label for="name">Application Desc</label></td>
+            <td class="context">							
+			  <label>$!{so.application_desc}</label>
+			</td>
+		  </tr>
+		  <tr>
+			<td class="head" noWrap><label for="name">Customer Project</label></td>
+            <td class="context">
+			  <label>$!{so.project_name}</label>
+			</td>
+			<td class="head" noWrap><label for="name">Shipment Remark</label></td>
+            <td class="context">
+			  <label>$!{so.remark}</label>
+			</td>
+		  </tr>
+          <tr>
+            <td class="head" noWrap><label for="name">Ship-To Region</label></td>
+            <td class="context">
+              <label>$!{so.ship_to_region}</label>
+            </td>
+            <td class="head" noWrap><label for="name">Account Manager</label></td>
+            <td class="context">
+              <label>$!{so.account_manager}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="head" noWrap><label for="name">Applicant Company</label></td>
+            <td class="context">
+              <label>$!{so.applicant_company}</label>
+            </td>
+            <td class="head" noWrap><label for="name">Applicant Name</label></td>
+            <td class="context">
+              <label>$!{so.applicant_name}</label>
+            </td>
+          </tr>
+        </table>
+		<br/>
+      </div>
+  	  <div id="p_search" class="easyui-panel" title="" style="padding: 2px; background: #fafafa;" data-options="collapsible:true">
+        <table id="datagrid" border="0">
+		
+		</table>			
+		<input class="easyui-validatebox" data-options="required:true" id="poDetailJson" name="poDetailJson" type="hidden">
+      </div>
+      <div id="backBtn" region="south" border="false" style="text-align:center;height:20px;line-height:20px;padding:10px;">
+        <a class="easyui-linkbutton" icon="icon-left" href="javascript:back()">Back</a>
+      </div>
+    </form>
+    <iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+    <div id="hiddenWin"/> 
+  </body>
+  <script type="text/javascript" src="$!{env.imgUrl}/js/platform/sampleOrder/auditSampleOrder.js?time=New Date()"></script>
+</html>

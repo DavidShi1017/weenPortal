@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+ 				<table width="100%" border="0" cellpadding="0" cellspacing="5">
+					<input type="hidden" id="id" name="p.id" value="$!{p.id}"/>
+						<input type="hidden" id="oldProvince_code" name="p.oldProvince_code" value="$!{p.province_code}">
+						<tr>
+							<td class="head" noWrap><label for="name">Country Code:</label></td>
+                            <td>
+								<input type="validatebox" id="country" name="p.country_code" value='$!{p.country_code}' ></input>
+							<div id="toolbarCountry" class="datagrid-toolbar">
+									<input class="easyui-searchbox" searcher="searcherCountry" prompt="请输入国家关键字查询" style="width:300px"></input>		
+								</div>	
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Province Code:</label></td>
+                            <td>
+								<input type="text" id="org_code" name="p.province_code" value='$!{p.province_code}' ></input>
+							</td>
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Province Name:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="province_name" name="p.province_name" value='$!{p.province_name}'></input>
+							</td>							
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>
+<br><br>
+			<div region="south" border="false" style="text-align:center;height:20px;line-height:20px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/province/createProvince.js"></script>
+</html>

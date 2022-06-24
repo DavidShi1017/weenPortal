@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    #CSSM(["easyui","style"])
+    #JSM(["jquery", "easyui"])
+    #JS_ENV_VAL()
+  </head>
+  <body>
+    <form action="" method="post">
+      <div class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+        <table align="left" border="0" cellpadding="2" cellspacing="2">
+          <input type="hidden" id="ween" value="$!{office_id}"/>
+          <input type="hidden" id="id" name="so.id" value="$!{so.id}"/>
+          <input type="hidden" id="loginId" name="so.loginId" value="$!{so.loginId}"/>
+          <input type="hidden" id="customer_code" value='$!{so.branch_id}' />
+          <input type="hidden" id="forWho" value="$!{forWho}" />
+          <tr>
+            <input id="type_id" name="so.type_id" value="ZFD1" type="hidden" />
+            <input type="hidden" id="branch_id" name="so.branch_id" value='$!{so.branch_id}' />
+            <td class="head" noWrap><label for="name">Ship-To Company<font color="red">*</font></label></td>
+            <td class="context">
+              <input class="easyui-validatebox" id="company" name="so.company" value="$!{so.company}" style="width:350px" />
+            </td>
+            <td class="head" noWrap><label for="name">Ship-To Country<font color="red">*</font></label></td>
+            <td class="context">                            
+              <input class="easyui-validatebox" id="country" name="so.country" value="$!{so.country}" style="width:350px" />
+            </td>
+          </tr>
+          <tr>
+            <td class="head" noWrap><label for="name">Ship-To Consignee<font color="red">*</font></label></td>
+            <td class="context">
+              <input class="easyui-validatebox" id="contact_name" name="so.contact_name" value="$!{so.contact_name}" style="width:350px" />
+            </td>
+            <td class="head" noWrap><label for="name">Ship-To City<font color="red">*</font></label></td>
+            <td class="context">
+              <input class="easyui-validatebox" id="city" name="so.city" value="$!{so.city}" style="width:350px"/>
+            </td>
+          </tr>
+          <tr>
+            <td class="head" noWrap><label for="name">Ship-To Phone No<font color="red">*</font></label></td>
+            <td class="context">
+              <input class="easyui-validatebox" id="contact_tel" name="so.contact_tel" value="$!{so.contact_tel}" style="width:350px" />
+            </td>
+            <td class="head" noWrap><label for="name">Ship-To ZIP Code<font color="red">*</font></label></td>
+            <td class="context">
+              <input class="easyui-validatebox" id="zip" name="so.zip" value="$!{so.zip}" style="width:350px" />
+            </td>
+          </tr>
+          <tr>
+            <td class="head" noWrap><label for="name">Ship-To Street<font color="red">*</font></label></td>
+            <td class="context" colspan="3">                            
+              <input class="easyui-validatebox" id="street" name="so.street" value="$!{so.street}" style="width:830px" />
+            </td>
+          </tr>
+          <tr>
+            <td class="head ec" noWrap><label for="name">End Customer<font color="red">*</font></label></td>
+            <td class="context ec">
+              <input class="easyui-validatebox" id="end_customer" value="$!{so.end_customer}" style="width:350px" />
+              <input type="hidden" id="end_customer1" name="so.end_customer" value="$!{so.end_customer}" />
+            </td>
+            <td class="head" noWrap><label for="name">Application Desc<font color="red">*</font></label></td>
+            <td class="context">                            
+              <input class="easyui-validatebox" id="application_desc" name="so.application_desc" value="$!{so.application_desc}" style="width:350px" />
+            </td>
+          </tr>
+          <tr>
+            <td class="head" noWrap><label for="name">Customer Project<font color="red">*</font></label></td>
+            <td class="context">
+              <input class="easyui-validatebox" id="project_name" name="so.project_name" value="$!{so.project_name}" style="width:350px" />
+            </td>
+            <td class="head" noWrap><label for="name">Shipment Remark</label></td>
+            <td class="context">
+              <input class="easyui-validatebox" id="remark" name="so.remark" value="$!{so.remark}" style="width:350px" />
+            </td>
+          </tr>
+          <tr>
+            <td class="head" noWrap><label for="name">Ship-To Region<font color="red">*</font></label></td>
+            <td class="context">
+              <input class="easyui-validatebox" id="shipToRegion" name="so.ship_to_region" value='$!{so.ship_to_region}' />
+            </td>
+            #if($!forWho == 'Disti')  
+              <td class="head" noWrap><label for="name">Account Manager<font color="red">*</font></label></td>
+            #else
+              <td class="head" noWrap><label for="name">Account Manager</label></td>
+            #end
+            <td class="context">
+              <input class="easyui-validatebox" id="account_manager" name="so.account_manager" value='$!{so.account_manager}' />
+            </td>   
+          </tr>
+          <tr>
+            <td class="head" noWrap><label for="name">Applicant Name<font color="red">*</font></label></td>
+            <td class="context">
+              <input class="easyui-validatebox" id="applicant_name" name="so.applicant_name" value='$!{so.applicant_name}' />
+            </td>   
+            <td class="head" noWrap><label for="name">Company Name of Applicant<font color="red">*</font></label></td>
+            <td class="context">
+              <input class="easyui-validatebox" id="applicant_company" name="so.applicant_company" value='$!{so.applicant_company}' />
+            </td>   
+          </tr>
+          <tr>
+            <td class="head" noWrap colspan="3"><label for="name"><font color="red">
+              Note: If there is company logo on the device surface and assembled before Nov.2018, the logo may be &quot;NXP&quot;.</font></label>
+            </td>
+          </tr>
+          <tr>
+            <td class="note" noWrap colspan="3">
+              <label for="name"><font color="red">
+                Please input in Chinese when ship-to address is China. 如送中国大陆请以中文输入地址及收件人信息
+              </font></label>
+            </td>
+          </tr>
+        </table>
+        <br/>
+      </div>
+      <div id="p_search" class="easyui-panel" title="" style="padding: 2px; background: #fafafa;" data-options="collapsible:true">
+        <table id="datagrid" border="0" >
+         
+        </table>
+        <input data-options="required:true" id="orderDetailJson" name="orderDetailJson" type="hidden" />
+        <input data-options="required:true" id="delOrder" name="delOrderDetail" type="hidden" />
+      </div>
+      <br/>
+      <div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+        <a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+        <a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+      </div>
+    </form>
+    <iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+    <div id="hiddenWin"/> 
+  </body>
+  <script type="text/javascript" src="$!{env.imgUrl}/js/platform/sampleOrder/createSampleOrder.js?time=New Date()"></script>
+</html>

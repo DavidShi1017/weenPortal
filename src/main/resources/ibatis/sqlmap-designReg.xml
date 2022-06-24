@@ -1,0 +1,1420 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="designReg">
+    <typeAlias alias="designReg" type="com.jingtong.platform.designReg.pojo.DesignReg"/>
+    <typeAlias alias="designRegDetail" type="com.jingtong.platform.designReg.pojo.DesignRegDetail"/>
+    <typeAlias alias="designRegDetailLog" type="com.jingtong.platform.designReg.pojo.DesignRegDetailLog" />
+    <typeAlias alias="designWinAudit" type="com.jingtong.platform.designReg.pojo.DesignWinAudit"/>        
+    <typeAlias alias="dict" type="com.jingtong.platform.designReg.pojo.Dict"/>
+        <typeAlias alias="cusUser" type="com.jingtong.platform.customer.pojo.CustomerUser" />    
+    <!-- 经销商客户信息主数据 -->
+    <select id="getDesignRegById" parameterClass="designReg" resultClass="designReg">
+        <![CDATA[
+        SELECT 
+            aa.id,
+            aa.drNum,
+            aa.cus_groupId,
+            aa.mp_schedule,
+            TO_CHAR(aa.mp_schedule,'YYYY-MM-DD') mp_scheduleStr,
+            aa.customer_id,
+            bb.customer_name,
+            aa.endCus_groupId,
+            cc.ecgroup_name endCus_groupName,
+            aa.disti_branch,
+            aa.endCus_id,
+            dd.end_customer_name endCus_name,
+            aa.ec_contact,
+            dd.city ec_city,
+            dd.state ec_state,
+            aa.start_date,
+            TO_CHAR(aa.start_date,'YYYY-MM-DD') start_dateStr,
+            aa.end_date,
+            TO_CHAR(aa.end_date,'YYYY-MM-DD') end_dateStr,
+            aa.state,
+            aa.remark,
+            aa.project_name,
+            aa.usage_amount,
+            aa.tel,
+            aa.equip_type equip_name,
+            ee.item_name equip_type,
+            aa.total_amount,
+            aa.total_type,
+            aa.create_time,
+            aa.create_userId,
+            aa.latest_time,
+            aa.latest_userId,
+            aa.latest_deptId,
+            mm.emp_email create_userName,
+            aa.file_name,
+            aa.file_path,
+            aa.estimated_share,
+            dd.customer_type customerTypeId,
+            dd.segment segmentId,
+            dd.application applicationId,
+            lds.name segmentName,
+            lda.name applicationName,
+            dict.item_name customerTypeName
+        FROM basis.basis_tb_design_reg aa
+            LEFT OUTER JOIN basis.basis_tb_customerInfo bb ON aa.customer_id = bb.customer_code
+            LEFT OUTER JOIN basis.basis_tb_ecgroup cc ON aa.endCus_groupId = cc.ecgroup_id
+            LEFT OUTER JOIN basis.basis_tb_end_customeInfo dd ON aa.endCus_id = dd.end_customer_id
+            LEFT OUTER JOIN basis.basis_tb_dict ee ON aa.equip_type = TO_CHAR(ee.item_id) AND ee.dict_type_id=555
+            LEFT OUTER JOIN basis.basis_tb_salesemp_info mm ON aa.create_userId = mm.emp_id
+            LEFT OUTER JOIN basis.basis_tb_level_dict lds on dd.segment = lds.id
+            LEFT OUTER JOIN basis.basis_tb_level_dict lda on dd.application = lda.id 
+            LEFT OUTER JOIN basis.basis_tb_dict dict on dd.customer_type = dict.item_id AND dict.dict_type_id=554
+       WHERE aa.id=#id#
+        ]]>    
+    </select>
+
+<!-- 表头列表(Design Registration) 自己建的单子自己可以看到-->    
+    <select id="getDesignRegList" parameterClass="designReg" resultClass="designReg">
+        <include refid="global.paginationStart" />
+    <![CDATA[
+        SELECT 
+              aa.id,
+              aa.drNum,
+              aa.cus_groupId,
+              aa.mp_schedule,
+              TO_CHAR(aa.mp_schedule,'YYYY-MM-DD') mp_scheduleStr,
+              aa.customer_id,
+              bb.customer_name,
+              endCus_groupId,
+              cc.ecgroup_name endCus_groupName,
+              aa.endCus_id,
+              dd.end_customer_name endCus_name,
+              aa.ec_contact,
+              dd.state ec_state,
+              aa.disti_branch,
+              aa.start_date,
+              TO_CHAR(aa.start_date,'YYYY-MM-DD') start_dateStr,
+              aa.project_state,
+              aa.end_date,
+              TO_CHAR(aa.end_date,'YYYY-MM-DD') end_dateStr,
+              aa.state,
+              aa.remark,
+              aa.project_name,
+              aa.usage_amount,
+              aa.tel,
+              ee.item_name equip_type,
+              aa.total_amount,
+              aa.total_type,
+              aa.create_time,
+              aa.create_userId,
+              aa.latest_time,
+              aa.latest_userId,
+              aa.latest_deptId,
+              aa.file_name,
+              aa.file_path, 
+              aa.estimated_share,
+              mm.emp_email create_userName,
+              (SELECT PRICING_REGION FROM BASIS.BASIS_TB_DISTI_BRANCH br WHERE br.PAYER_TO = aa.customer_id AND rownum = 1) sale_office
+        FROM basis.basis_tb_design_reg aa
+            LEFT OUTER JOIN basis.basis_tb_customerInfo bb ON aa.customer_id = bb.customer_code
+            LEFT OUTER JOIN basis.basis_tb_ecgroup cc ON aa.endCus_groupId = cc.ecgroup_id
+            LEFT OUTER JOIN basis.basis_tb_end_customeInfo dd ON aa.endCus_id = dd.end_customer_id
+        ]]>
+        <dynamic>
+            <isNotEmpty property="auditorId" prepend="">
+                    <![CDATA[ JOIN (SELECT end_customer_id FROM basis_vm_salecountry_ec se WHERE se.userID = #auditorId#  
+                                  UNION SELECT endCus_id FROM basis_tb_design_reg head WHERE head.create_userId = #auditorId#  ) pcs ON  aa.endCus_id = pcs.end_customer_id
+                    ]]>
+            </isNotEmpty>
+        </dynamic>    
+        <![CDATA[
+            LEFT OUTER JOIN basis.basis_tb_dict ee ON aa.equip_type = TO_CHAR(ee.item_id) AND ee.dict_type_id = 555
+            LEFT OUTER JOIN basis.basis_tb_salesemp_info mm ON aa.create_userId = mm.emp_id
+         WHERE 1=1  
+    ]]>
+        <dynamic>
+            <isNotEmpty property="drNum" prepend="and">
+                <![CDATA[ UPPER(drNum)  LIKE #drNum,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>    
+            <isNotEmpty property="customer_id" prepend="and">
+                <![CDATA[ aa.customer_id = #customer_id#]]>
+            </isNotEmpty>    
+            <isNotEmpty property="endCus_name" prepend="and">
+                <![CDATA[ UPPER(dd.end_customer_name) LIKE #endCus_name,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>    
+            <isNotEmpty property="endCus_id" prepend="and">
+                <![CDATA[ endCus_id = #endCus_id#]]>
+            </isNotEmpty>    
+            <isNotEmpty property="start_date" prepend="and">
+                <![CDATA[ aa.start_date >= #start_date#]]>
+            </isNotEmpty>    
+            <isNotEmpty property="end_date" prepend="and">
+                <![CDATA[ aa.end_date <= #end_date#]]>
+            </isNotEmpty>    
+            <isNotEmpty property="project_name" prepend="and">
+                <![CDATA[ UPPER(project_name) LIKE #project_name,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty> 
+            <isNotEmpty property="cus_groupId" prepend="and">
+                (
+                <![CDATA[ UPPER(aa.cus_groupId) = #cus_groupId#]]>
+                <isNotEmpty property="disti_alias" prepend="OR">
+                    UPPER(aa.cus_groupId) = UPPER(#disti_alias#)
+                </isNotEmpty>
+                )
+            </isNotEmpty> 
+            <isNotEmpty property="disti_branch" prepend="and">
+                (
+                <![CDATA[ UPPER(aa.disti_branch) LIKE #disti_branch,handler=wildcard# ESCAPE '\']]>
+                <isNotEmpty property="disti_branch_alias" prepend="OR">
+                    UPPER(aa.disti_branch) = UPPER(#disti_branch_alias#)
+                </isNotEmpty>
+                )
+            </isNotEmpty>
+            <isNotEmpty property="create_userId" prepend="and">
+                <![CDATA[ aa.create_userId = #create_userId#]]>
+            </isNotEmpty> 
+            <isNotEmpty property="create_userName" prepend="and">
+                <![CDATA[ UPPER(mm.emp_email)  LIKE #create_userName,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>
+        </dynamic>
+        <include refid="global.orderBy"/>
+        <include refid="global.paginationEnd" /> 
+    </select>
+    
+    <select id="getDesignRegListCount" parameterClass="designReg"
+        resultClass="java.lang.Integer">
+        <![CDATA[
+            SELECT COUNT(DISTINCT(aa.id))  
+            FROM basis.basis_tb_design_reg  aa
+                LEFT OUTER JOIN basis.basis_tb_customerInfo bb ON aa.customer_id=bb.customer_code
+                LEFT OUTER JOIN basis.basis_tb_ecgroup cc ON aa.endCus_groupId=cc.ecgroup_id
+                LEFT OUTER JOIN basis.basis_tb_end_customeInfo dd ON aa.endCus_id=dd.end_customer_id
+            ]]>
+            <dynamic>
+                <isNotEmpty property="auditorId" prepend="">
+                <![CDATA[ join (SELECT end_customer_id FROM basis_vm_salecountry_ec se WHERE se.userID = #auditorId#     
+                            UNION SELECT endCus_id FROM basis_tb_design_reg head WHERE head.create_userId = #auditorId# ) pcs on  aa.endCus_id = pcs.end_customer_id]]>
+                </isNotEmpty>
+            </dynamic>    
+            
+        <![CDATA[        
+                LEFT OUTER JOIN basis.basis_tb_dict ee ON aa.equip_type=TO_CHAR(ee.item_id) and ee.dict_type_id=555
+                LEFT OUTER JOIN basis.basis_tb_salesemp_info mm ON aa.create_userId = mm.emp_id
+            where 1=1
+        ]]>
+        <dynamic>
+            <isNotEmpty property="drNum" prepend="and">
+                <![CDATA[ UPPER(aa.drNum)  LIKE #drNum,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>    
+            <isNotEmpty property="endCus_name" prepend="and">
+                <![CDATA[ UPPER(dd.end_customer_name) LIKE #endCus_name,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>
+            <isNotEmpty property="customer_id" prepend="and">
+                <![CDATA[ aa.customer_id = #customer_id#]]>
+            </isNotEmpty>    
+            <isNotEmpty property="endCus_id" prepend="and">
+                <![CDATA[ aa.endCus_id = #endCus_id#]]>
+            </isNotEmpty>    
+            <isNotEmpty property="start_date" prepend="and">
+                <![CDATA[ aa.start_date >= #start_date#]]>
+            </isNotEmpty>    
+            <isNotEmpty property="end_date" prepend="and">
+                <![CDATA[ aa.end_date <= #end_date#]]>
+            </isNotEmpty>    
+            <isNotEmpty property="project_name" prepend="and">
+                <![CDATA[ UPPER(aa.project_name) LIKE #project_name,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>     
+            <isNotEmpty property="cus_groupId" prepend="and">
+                (
+                <![CDATA[ UPPER(aa.cus_groupId) = #cus_groupId#]]>
+                <isNotEmpty property="disti_alias" prepend="OR">
+                    UPPER(aa.cus_groupId) = UPPER(#disti_alias#)
+                </isNotEmpty>
+                )
+            </isNotEmpty>
+            <isNotEmpty property="create_userId" prepend="and">
+                <![CDATA[ aa.create_userId =#create_userId#]]>
+            </isNotEmpty> 
+            <isNotEmpty property="disti_branch" prepend="and">
+                (
+                <![CDATA[ UPPER(aa.disti_branch) LIKE #disti_branch,handler=wildcard# ESCAPE '\']]>
+                <isNotEmpty property="disti_branch_alias" prepend="OR">
+                    UPPER(aa.disti_branch) = UPPER(#disti_branch_alias#)
+                </isNotEmpty>
+                )
+            </isNotEmpty>     
+            <isNotEmpty property="create_userName" prepend="and">
+                <![CDATA[ UPPER(mm.emp_email) LIKE #create_userName,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>
+        </dynamic>
+    </select>
+    
+<!-- 创建表头 -->    
+    <insert id="createDesignReg" parameterClass="designReg">
+        <selectKey resultClass="java.lang.Long" keyProperty="id">
+              SELECT basis.basis_seq_end_customeInfo.nextval AS id FROM DUAL    
+        </selectKey>
+        <![CDATA[
+            INSERT INTO basis.basis_tb_design_reg   
+            (
+                id,
+                drNum,
+                cus_groupId,
+                mp_schedule,
+                disti_branch,
+                customer_id,
+                endCus_groupId,
+                endCus_id,
+                ec_contact,
+                start_date,
+                end_date,
+                state,
+                remark,
+                total_amount,
+                total_type,
+                project_name,
+                usage_amount,
+                tel,
+                equip_type,
+                create_time,
+                create_userId,
+                latest_time,
+                latest_userId,
+                latest_deptId,
+                estimated_share
+            )
+            VALUES
+            (
+                #id#,
+                #drNum#,
+                #cus_groupId#,
+                #mp_schedule#,
+                #disti_branch#,
+                #customer_id#,
+                #endCus_groupId#,
+                #endCus_id#,
+                #ec_contact#,
+                #start_date#,
+                #end_date#,
+                0,
+                #remark#,
+                #total_amount#,
+                #total_type#,
+                #project_name#,
+                #usage_amount#,
+                #tel#,
+                #equip_type#,
+                sysdate,
+                #create_userId#,
+                #latest_time#,
+                #latest_userId#,
+                #latest_deptId#,
+                #estimated_share#
+            )
+        
+        ]]>
+    </insert>
+    
+<!-- 创建明细 -->    
+    <insert id="createDesignRegDetail" parameterClass="designRegDetail">
+        <selectKey resultClass="java.lang.Long" keyProperty="id">
+              SELECT basis.basis_seq_end_customeInfo.nextval AS id FROM DUAL    
+        </selectKey>
+        <![CDATA[
+            insert into basis.basis_tb_design_reg_detail   
+            (
+              id,row_no,drNum,material_id,material_name,price,equip_usage,project_state,start_date,end_date,
+              project_name,cus_remark,remark,state,main_id,create_userId,value,product_date,
+              create_time,latest_userId,latest_time,latest_deptId,equip_type,cost,moq,pbMpp, usage_amount,
+              dr_type,
+              drtype_def,
+              dw_cal
+            )
+            values
+            (
+              #id#,#row_no#,#drNum#,#material_id#,#material_name#,#price#,#equip_usage#,#project_state#,#start_date#,#end_date#,
+              #project_name#,#cus_remark#,#remark#,0,#main_id#,#create_userId#,#value#,#product_date#,
+              sysdate,#latest_userId#,#latest_time#,#latest_deptId#,#equip_type#,#cost#,#moq#,#pbMpp#, #usage_amount#,
+              #dr_type#,
+              #drtype_def#,
+              #dw_cal# 
+            )
+        
+        ]]>
+    </insert>
+    
+    
+<!-- 修改表头 -->    
+    <update  id="updateDesignReg" parameterClass="designReg">
+        update basis.basis_tb_design_reg   
+            set usage_amount=#usage_amount#,
+                end_date=#end_date#,
+                latest_time=SYSDATE,
+                latest_userId=#latest_userId#,
+                remark=#remark#,
+                estimated_share=#estimated_share#
+                <isNotEmpty property="mp_schedule" prepend=",">
+                    mp_schedule=#mp_schedule#
+                </isNotEmpty>
+                <isNotEmpty property="file_name" prepend=",">
+                    file_name=#file_name#
+                </isNotEmpty>
+                <isNotEmpty property="file_path" prepend=",">
+                    file_path=#file_path#
+                </isNotEmpty>
+        where id=#id#
+    </update>
+    
+    <update  id="updateDesignRegEndDate" parameterClass="designReg">
+        update basis.basis_tb_design_reg   
+            set end_date=#end_date#, latest_time=sysdate, latest_userId=#latest_userId#
+        where id=#id#
+    </update>
+
+<!-- 修改明细 -->        
+    <update  id="updateDesignRegDetail" parameterClass="designRegDetail">
+        update basis.basis_tb_design_reg_detail  
+             set 
+              state=#state#,price=#price#,equip_usage=#equip_usage#,
+              project_state=#project_state#,start_date=#start_date#,end_date=#end_date#,value=#value#,
+              cus_remark=#cus_remark#,
+              remark=#remark#,
+              weencomments=#weencomments#,
+              equip_type=#equip_type#,
+              usage_amount = #usage_amount#,
+              latest_time=SYSDATE
+            <isNotEmpty property="dr_type" prepend=",">
+                 dr_type=#dr_type#
+            </isNotEmpty>
+            <isNotEmpty property="dr_type" prepend=",">
+                 drtype_def = #drtype_def#
+            </isNotEmpty>
+            <isNotEmpty property="dr_type" prepend=",">
+                 dw_cal = #dw_cal#
+            </isNotEmpty>
+            <isNotEmpty property="saler_design_status" prepend=",">
+                <![CDATA[ saler_design_status=#saler_design_status# ]]>
+            </isNotEmpty>
+             <isNotEmpty property="latest_userId" prepend=",">
+                <![CDATA[ latest_userId=#latest_userId# ]]>
+            </isNotEmpty>
+            <isEqual property="project_state" compareValue="2" prepend=",">
+                DESIGN_WIN=sysdate
+            </isEqual>
+        where id=#id#
+    </update>
+    
+    <update  id="updateDesignRegDetailDesignStatus" parameterClass="designRegDetail">
+        update basis.basis_tb_design_reg_detail  
+             set saler_design_status=#saler_design_status#,
+                 latest_userId = #create_userId#,
+                 remark = #remark#,
+                 weencomments=#weencomments#,
+                 latest_time = SYSDATE
+             <isNotEmpty property="project_state" prepend=",">
+                <![CDATA[ project_state=#project_state# ]]>
+            </isNotEmpty>
+            <isNotEmpty property="dr_type" prepend=",">
+                 dr_type=#dr_type#
+            </isNotEmpty>
+            <isNotEmpty property="dr_type" prepend=",">
+                 drtype_def = #drtype_def#
+            </isNotEmpty>
+            <isNotEmpty property="dr_type" prepend=",">
+                 dw_cal = #dw_cal#
+            </isNotEmpty>
+             <isNotEmpty property="end_date" prepend=",">
+                end_date=#end_date#
+            </isNotEmpty>
+            <isNotEqual property="project_state" compareValue="2" prepend=",">
+                DESIGN_WIN = null
+            </isNotEqual>
+        where id=#id#
+    </update>
+    <!--   row_no=#row_no#,drNum=#drNum#,material_id=#material_id#,material_name=#material_name#,
+     project_name=#project_name#,,product_date=#product_date# -->
+    
+    
+    <delete id="deleteDesignReg" parameterClass="designReg">
+        delete from basis.basis_tb_design_reg 
+        where id=#id#
+    </delete>
+    
+    <update id="setDRNum" parameterClass="designReg">
+        update basis.basis_tb_design_reg set drNum=#drNum#
+        where id=#id#
+    </update>
+    
+<!-- DR明细 (本次修改关联取pbMpp)-->    
+    <select id="getDesignRegDetailList" parameterClass="designRegDetail" resultClass="designRegDetail">
+    <![CDATA[ 
+        select 
+              aa.id,
+              aa.row_no,
+              aa.drNum,
+              aa.material_id,
+              aa.material_name,
+              aa.price,
+              aa.equip_usage,
+              aa.equip_type,
+              aa.project_state,
+              aa.start_date,
+              to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+              aa.state,
+              aa.project_state primaryProState,
+              aa.end_date,
+              to_char(aa.end_date,'YYYY-MM-DD') end_dateStr,
+              cost,
+              moq,
+              aa.product_date,
+              to_char(aa.product_date,'YYYY-MM-DD') product_dateStr,
+              decode(aa.value,null,0,aa.value) value,
+              hh.sumResale shipPrice,
+              aa.project_name,
+              aa.cus_remark,
+              aa.remark,
+              aa.main_id,
+              aa.create_userId,
+              aa.create_time,
+              aa.latest_userId,
+              aa.latest_time,
+              aa.latest_deptId,
+              aa.dr_type,
+              aa.drtype_def,
+              aa.dw_cal,
+              k.item_name dr_typeStr,
+              decode(ll.sale_price,null,oo.sale_price/oo.perUnit,ll.sale_price/ll.perUnit) pbMpp,
+              bb.CUS_GROUPID disti_branch,
+              aa.usage_amount
+              ,aa.weencomments
+        from basis.basis_tb_design_reg_detail aa
+            left outer join basis.basis_tb_design_reg bb on aa.main_id=bb.id
+            left outer join basis.basis_tb_disti_branch ss  on trim(bb.disti_branch)=trim(ss.disti_branch)
+            left outer join basis.basis_tb_price_rule ll on ltrim(aa.material_id,'0')=ltrim(ll.material_id,'0') and ll.currency_code= ss.currency and ltrim(ss.payer_to,'0') = ltrim(ll.customer_code,'0') and ll.price_type='ZMP1'  and ll.start_date<sysdate  and ll.end_date>sysdate
+            left outer join basis.basis_tb_price_rule oo on ltrim(aa.material_id,'0')=ltrim(oo.material_id,'0') and oo.office_id = ss.pricing_region and oo.currency_code=ss.currency  and oo.price_type='ZPB1'  and oo.start_date<sysdate  and oo.end_date>sysdate
+            left outer join basis.basis_vw_pos_dr2 hh on hh.drNum = aa.drNum and hh.material_name = aa.material_name
+            left outer join basis.basis_tb_dict k on k.dict_type_id = '567' and k.item_value = aa.dr_type and k.item_state = 'U'
+         where 1=1
+             ]]>
+         <dynamic>
+             <isNotEmpty property="main_id" prepend="">
+                <isNotEqual property="main_id" compareValue="-1" prepend="and">
+                        <![CDATA[ main_id =#main_id# ]]>
+                </isNotEqual>
+            </isNotEmpty>
+            <isNotEmpty property="id" prepend="">
+                    <isNotEqual property="id" compareValue="0" prepend="and">
+                        <![CDATA[ aa.id =#id#  ]]>
+                </isNotEqual>
+            </isNotEmpty>
+        </dynamic>        
+         order by  row_no asc
+    </select>
+    
+    
+<!-- 待审批列表(DR Approved + DR List) decode(instr(mm.emp_email,'@'),0,mm.emp_email,substr(mm.emp_email,0,instr(mm.emp_email,'@')-1)) -->    
+    <select id="checkDesignRegDetailList" parameterClass="designRegDetail" resultClass="designRegDetail">
+            <include refid="global.paginationStart" /> 
+    <![CDATA[
+        select 
+            aa.id,
+            aa.row_no,
+            aa.drNum,
+            aa.material_id,
+            aa.material_name,
+            aa.price,
+            aa.equip_usage,
+            aa.project_state,
+            aa.start_date,
+            aa.end_date,
+            aa.state,
+            TO_CHAR(aa.start_date,'YYYY-MM-DD') start_dateStr,
+            TO_CHAR(aa.end_date,'YYYY-MM-DD') end_dateStr,
+            aa.product_date,
+            TO_CHAR(aa.product_date,'YYYY-MM-DD') product_dateStr,
+            aa.design_win,
+            TO_CHAR(aa.design_win,'YYYY-MM-DD') design_winStr,              
+            aa.cus_remark,
+            aa.main_id,
+            aa.create_userId,
+            aa.create_time,
+            aa.latest_userId,
+            aa.latest_time,
+            aa.latest_deptId,
+            DECODE(aa.value,null,0,aa.value) value,
+            hh.sumResale shipPrice,
+            bb.file_name,
+            bb.file_path,              
+            bb.cus_groupId,
+            bb.customer_id,
+            cc.customer_name,
+            bb.endCus_groupId,
+            ee.state ec_state,
+            dd.ecgroup_name endCus_groupName,
+            bb.endCus_id,
+            ee.end_customer_name endCus_name,
+            bb.ec_contact,
+            aa.remark,
+            aa.usage_amount,
+            aa.dr_type,
+            aa.drtype_def,
+            aa.dw_cal,
+            k.item_name dr_typeStr,
+            bb.tel,
+            ff.item_name equip_type,
+            bb.project_name,
+            bb.disti_branch,
+            bb.estimated_share,
+            TO_CHAR(bb.mp_schedule,'YYYY-MM-DD') mp_scheduleStr,
+            mm.emp_email create_userName,
+            aa.saler_design_status,
+            aa.weencomments,
+            (SELECT USER_ACCOUNT FROM basis_tb_design_win_audit audit1 WHERE audit1.detail_id = aa.id AND audit_node IN ('1') AND rownum =1) audit_person,
+            (SELECT TO_CHAR(audit1.create_date,'YYYY-MM-DD') FROM basis_tb_design_win_audit audit1 WHERE audit1.detail_id = aa.id AND audit_node IN ('1') AND rownum =1) audit_time,
+            (SELECT USER_ACCOUNT FROM basis_tb_design_win_audit audit1 where  audit1.detail_id = aa.id AND audit_node IN ('2') AND rownum =1) audit_person2,
+            (SELECT TO_CHAR(audit1.create_date,'YYYY-MM-DD') FROM basis_tb_design_win_audit audit1 where audit1.detail_id = aa.id AND audit_node IN ('2') AND rownum =1) audit_time2,
+            (SELECT USER_ACCOUNT FROM basis_tb_design_win_audit audit1 where  audit1.detail_id = aa.id AND audit_node IN ('4') AND rownum =1) audit_person3,
+            (SELECT TO_CHAR(audit1.create_date,'YYYY-MM-DD') FROM basis_tb_design_win_audit audit1 WHERE audit1.detail_id = aa.id AND audit_node IN ('4') AND rownum =1) audit_time3,
+            (SELECT USER_ACCOUNT FROM basis_tb_design_win_audit audit1 where  audit1.detail_id = aa.id AND audit_node IN ('6') AND rownum =1) audit_person4,
+            (SELECT TO_CHAR(audit1.create_date,'YYYY-MM-DD') FROM basis_tb_design_win_audit audit1 WHERE audit1.detail_id = aa.id AND audit_node IN ('6') AND rownum =1) audit_time4,
+            (SELECT PRICING_REGION FROM BASIS.BASIS_TB_DISTI_BRANCH br WHERE br.PAYER_TO = bb.customer_id AND rownum =1) sale_office,
+            lds.name segmentName,
+            lda.name applicationName,
+            dict.item_name customerTypeName
+        FROM basis.basis_tb_design_reg_detail aa
+            INNER JOIN basis.basis_tb_design_reg bb ON aa.main_id=bb.id
+            LEFT OUTER JOIN basis.basis_tb_customerInfo cc ON bb.customer_id=cc.customer_code
+            LEFT OUTER JOIN basis.basis_tb_ecgroup dd ON bb.endCus_groupId=dd.ecgroup_id
+            LEFT OUTER JOIN basis.basis_tb_end_customeInfo ee ON bb.endCus_id=ee.end_customer_id
+            LEFT OUTER JOIN basis.basis_tb_dict k on k.dict_type_id = '567' and k.item_value = aa.dr_type and k.item_state = 'U'
+            ]]>
+            <dynamic>
+                <isNotEmpty property="auditorId" prepend="">
+                <![CDATA[ JOIN (SELECT end_customer_id FROM basis_vm_salecountry_ec se WHERE se.userID = #auditorId#
+                         UNION SELECT endCus_id FROM basis_tb_design_reg head WHERE head.create_userId = #auditorId# ) pcs on  bb.endCus_id = pcs.end_customer_id]]>
+                </isNotEmpty>
+            </dynamic>    
+            
+        <![CDATA[
+            LEFT OUTER JOIN basis.basis_tb_dict ff ON bb.equip_type=TO_CHAR(ff.item_id) AND ff.dict_type_id=555
+            LEFT OUTER JOIN basis.basis_tb_org jj ON cc.district = jj.sap_org_id    
+            LEFT OUTER JOIN basis.basis_vw_pos_dr hh ON hh.drNum = aa.drNum AND hh.material_name = aa.material_name
+            LEFT OUTER JOIN basis.basis_tb_salesemp_info mm ON bb.create_userId = mm.emp_id
+             
+            LEFT OUTER JOIN basis.basis_tb_level_dict lds on ee.segment = lds.id
+            LEFT OUTER JOIN basis.basis_tb_level_dict lda on ee.application = lda.id 
+            LEFT OUTER JOIN basis.basis_tb_dict dict on ee.customer_type = dict.item_id AND dict.dict_type_id=554
+            
+         WHERE 1=1
+    ]]>
+        <dynamic>
+            <isNotEmpty property="drNum" prepend="and">
+                <![CDATA[ UPPER(aa.drNum) LIKE #drNum,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>    
+            <isNotEmpty property="customer_id" prepend="and">
+                <![CDATA[ bb.customer_id = #customer_id#]]>
+            </isNotEmpty>    
+            <isNotEmpty property="endCus_id" prepend="and">
+                <![CDATA[ bb.endCus_id = #endCus_id#]]>
+            </isNotEmpty>
+            <isNotEmpty property="endCus_name" prepend="and">
+                <![CDATA[ upper(ee.end_customer_name) LIKE #endCus_name,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>        
+            <isNotEmpty property="start_dateStr" prepend="and">
+                <![CDATA[ TO_DATE(TO_CHAR(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= TO_DATE(#start_dateStr#,'yyyy-mm-dd')]]>
+            </isNotEmpty> 
+            <isNotEmpty property="end_dateStr" prepend="and">
+                <![CDATA[ TO_DATE(TO_CHAR(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= TO_DATE(#end_dateStr#,'yyyy-mm-dd')]]>
+            </isNotEmpty> 
+            <isNotEmpty property="material_id" prepend="and">
+                <![CDATA[ aa.material_id LIKE #material_id,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty> 
+            <isNotEmpty property="material_name" prepend="and">
+                <![CDATA[ UPPER(aa.material_name) LIKE #material_name,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>  
+            <isNotEmpty property="equip_type" prepend="and">
+                <![CDATA[ UPPER(ff.item_name) LIKE #equip_type,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>             
+            <isNotEmpty property="project_name" prepend="and">
+                <![CDATA[ UPPER(bb.project_name) LIKE #project_name,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty> 
+            <isNotEmpty property="project_state" prepend="and">
+                <isNotEqual property="project_state" compareValue="0" prepend="">
+                    <![CDATA[ aa.project_state = #project_state#]]>
+                    <isEqual property="project_state" compareValue="2" prepend=" and ">
+                        <![CDATA[ aa.DESIGN_WIN >  TO_DATE('2018-06-20','yyyy-MM-dd')]]>
+                    </isEqual>
+                </isNotEqual>
+            </isNotEmpty> 
+            <isNotEmpty property="saler_design_status" prepend="and">
+                <![CDATA[ aa.saler_design_status = #saler_design_status#]]>
+            </isNotEmpty> 
+            <isNotEmpty property="saler_design_statusStr" prepend="and">
+                <![CDATA[ aa.saler_design_status IN $saler_design_statusStr$]]>
+            </isNotEmpty>
+            <isNotEmpty property="cus_groupId" prepend="and">
+                (
+                <![CDATA[ UPPER(bb.cus_groupId) LIKE #cus_groupId,handler=wildcard# ESCAPE '\']]>
+                <isNotEmpty property="disti_alias" prepend="OR">
+                    UPPER(bb.cus_groupId) = UPPER(#disti_alias#)
+                </isNotEmpty>
+                )
+            </isNotEmpty>
+            <isNotEmpty property="disti_branch" prepend="and">
+                (
+                <![CDATA[ UPPER(bb.disti_branch) LIKE #disti_branch,handler=wildcard# ESCAPE '\']]>
+                <isNotEmpty property="disti_branch_alias" prepend="OR">
+                    UPPER(bb.disti_branch) = UPPER(#disti_branch_alias#)
+                </isNotEmpty>
+                )
+            </isNotEmpty>
+            <isNotEmpty property="create_userId" prepend="and">
+                <![CDATA[ bb.create_userId =#create_userId#]]>
+            </isNotEmpty> 
+            <isNotEmpty property="states" prepend="and">
+                <![CDATA[ aa.state in $states$]]>
+            </isNotEmpty>
+            <isNotEmpty property="create_userName" prepend="and">
+                <![CDATA[ UPPER(mm.emp_email) LIKE #create_userName,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>
+        </dynamic>
+        <include refid="global.orderBy"/>
+        <include refid="global.paginationEnd" /> 
+    </select>
+    <select id="checkDesignRegDetailListCount" parameterClass="designRegDetail"
+        resultClass="java.lang.Integer">
+        <![CDATA[
+        SELECT COUNT(DISTINCT(aa.id))  
+        FROM basis.basis_tb_design_reg_detail aa
+            INNER JOIN basis.basis_tb_design_reg bb ON aa.main_id=bb.id
+            LEFT OUTER JOIN basis.basis_tb_customerInfo cc ON bb.customer_id=cc.customer_code
+            LEFT OUTER JOIN basis.basis_tb_ecgroup dd ON bb.endCus_groupId=dd.ecgroup_id
+            LEFT OUTER JOIN basis.basis_tb_end_customeInfo ee ON bb.endCus_id=ee.end_customer_id
+            ]]>
+            <dynamic>
+                <isNotEmpty property="auditorId" prepend="">
+                <![CDATA[ JOIN (SELECT end_customer_id FROM basis_vm_salecountry_ec se WHERE se.userID = #auditorId#
+                         UNION SELECT endCus_id FROM basis_tb_design_reg head WHERE head.create_userId = #auditorId# ) pcs on  bb.endCus_id = pcs.end_customer_id]]>
+                </isNotEmpty>
+            </dynamic>    
+        <![CDATA[
+             LEFT OUTER JOIN basis.basis_tb_dict ff ON bb.equip_type=TO_CHAR(ff.item_id) AND ff.dict_type_id=555
+             LEFT OUTER JOIN basis.basis_tb_org jj ON cc.district = jj.sap_org_id    
+             LEFT OUTER JOIN basis.basis_vw_pos_dr hh ON hh.drNum = aa.drNum AND hh.material_name = aa.material_name
+             LEFT OUTER JOIN basis.basis_tb_salesemp_info mm ON bb.create_userId = mm.emp_id
+         where  1=1
+    ]]>
+        <dynamic>
+            <isNotEmpty property="drNum" prepend="and">
+                <![CDATA[ UPPER(aa.drNum) LIKE #drNum,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>    
+            <isNotEmpty property="customer_id" prepend="and">
+                <![CDATA[ bb.customer_id = #customer_id#]]>
+            </isNotEmpty>    
+            <isNotEmpty property="endCus_id" prepend="and">
+                <![CDATA[ bb.endCus_id = #endCus_id#]]>
+            </isNotEmpty>
+            <isNotEmpty property="endCus_name" prepend="and">
+                <![CDATA[ upper(ee.end_customer_name) LIKE #endCus_name,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>        
+            <isNotEmpty property="start_dateStr" prepend="and">
+                <![CDATA[ TO_DATE(TO_CHAR(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= TO_DATE(#start_dateStr#,'yyyy-mm-dd')]]>
+            </isNotEmpty> 
+            <isNotEmpty property="end_dateStr" prepend="and">
+                <![CDATA[ TO_DATE(TO_CHAR(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= TO_DATE(#end_dateStr#,'yyyy-mm-dd')]]>
+            </isNotEmpty> 
+            <isNotEmpty property="material_id" prepend="and">
+                <![CDATA[ aa.material_id LIKE #material_id,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty> 
+            <isNotEmpty property="material_name" prepend="and">
+                <![CDATA[ UPPER(aa.material_name) LIKE #material_name,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>  
+            <isNotEmpty property="equip_type" prepend="and">
+                <![CDATA[ UPPER(ff.item_name) LIKE #equip_type,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>             
+            <isNotEmpty property="project_name" prepend="and">
+                <![CDATA[ UPPER(bb.project_name) LIKE #project_name,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty> 
+            <isNotEmpty property="project_state" prepend="and">
+                <isNotEqual property="project_state" compareValue="0" prepend="">
+                    <![CDATA[ aa.project_state = #project_state#]]>
+                    <isEqual property="project_state" compareValue="2" prepend=" and ">
+                        <![CDATA[ aa.DESIGN_WIN >  TO_DATE('2018-06-20','yyyy-MM-dd')]]>
+                    </isEqual>
+                </isNotEqual>
+            </isNotEmpty> 
+            <isNotEmpty property="saler_design_status" prepend="and">
+                <![CDATA[ aa.saler_design_status = #saler_design_status#]]>
+            </isNotEmpty> 
+            <isNotEmpty property="saler_design_statusStr" prepend="and">
+                <![CDATA[ aa.saler_design_status IN $saler_design_statusStr$]]>
+            </isNotEmpty>
+            <isNotEmpty property="cus_groupId" prepend="and">
+                (
+                <![CDATA[ UPPER(bb.cus_groupId) LIKE #cus_groupId,handler=wildcard# ESCAPE '\']]>
+                <isNotEmpty property="disti_alias" prepend="OR">
+                    UPPER(bb.cus_groupId) = UPPER(#disti_alias#)
+                </isNotEmpty>
+                )
+            </isNotEmpty>
+            <isNotEmpty property="disti_branch" prepend="and">
+                (
+                <![CDATA[ UPPER(bb.disti_branch) LIKE #disti_branch,handler=wildcard# ESCAPE '\']]>
+                <isNotEmpty property="disti_branch_alias" prepend="OR">
+                    UPPER(bb.disti_branch) = UPPER(#disti_branch_alias#)
+                </isNotEmpty>
+                )
+            </isNotEmpty>
+            <isNotEmpty property="create_userId" prepend="and">
+                <![CDATA[ bb.create_userId =#create_userId#]]>
+            </isNotEmpty> 
+            <isNotEmpty property="states" prepend="and">
+                <![CDATA[ aa.state in $states$]]>
+            </isNotEmpty>
+            <isNotEmpty property="create_userName" prepend="and">
+                <![CDATA[ UPPER(mm.emp_email) LIKE #create_userName,handler=wildcard# ESCAPE '\']]>
+            </isNotEmpty>
+        </dynamic>
+    </select>
+    
+    
+<!-- Check功能，检查重复性 ,当EC Group不为空时，将物料号和EC group进行比较；当EC Group为空时，将物料号和ECname进行比较-->
+    <select id="checkDesignReg" parameterClass="designRegDetail" resultClass="designRegDetail">
+    <![CDATA[
+        select 
+              aa.id
+            , aa.row_no
+            , aa.drNum
+            , aa.material_id
+            , aa.material_name
+            , aa.price,aa.equip_usage
+            , aa.project_state
+            , aa.start_date
+            , aa.end_date
+            , aa.state
+            , to_char(aa.start_date,'YYYY-MM-DD') start_dateStr
+            , to_char(aa.end_date,'YYYY-MM-DD') end_dateStr
+            , aa.product_date
+            , to_char(aa.product_date,'YYYY-MM-DD') product_dateStr
+            , aa.cus_remark
+            , aa.main_id
+            , aa.create_userId
+            , aa.create_time
+            , aa.latest_userId
+            , aa.latest_time
+            , aa.latest_deptId
+            , aa.dr_type
+            , aa.drtype_def
+            , aa.dw_cal
+            , bb.file_name
+            , bb.file_path
+            , bb.cus_groupId
+            , bb.customer_id
+            , cc.customer_name
+            , bb.endCus_groupId
+            , dd.ecgroup_name endCus_groupName
+            , bb.endCus_id
+            , ee.end_customer_name endCus_name
+            , bb.ec_contact
+            , bb.remark
+            , bb.disti_branch
+            , bb.estimated_share
+            , bb.usage_amount
+            , bb.tel
+            , ff.item_name equip_type
+            , bb.project_name              
+        from basis.basis_tb_design_reg_detail aa
+            left outer join basis.basis_tb_design_reg bb on aa.main_id=bb.id
+            left outer join basis.basis_tb_customerInfo cc  on bb.customer_id=cc.customer_code
+            left outer join basis.basis_tb_ecgroup dd  on bb.endCus_groupId=dd.ecgroup_id
+            left outer join basis.basis_tb_end_customeInfo ee  on bb.endCus_id=ee.end_customer_id        
+             left outer join  basis.basis_tb_dict ff on bb.equip_type=to_char(ff.item_id) and ff.dict_type_id=555
+         where  aa.id!=#id#
+    ]]>
+        <dynamic>
+            <isNotEmpty property="endCus_groupId" prepend="and">
+                <![CDATA[ bb.endCus_groupId = #endCus_groupId#]]>
+            </isNotEmpty>
+            <isEmpty property="endCus_groupId">
+                <isNotEmpty property="endCus_id" prepend="and">
+                    <![CDATA[ upper(bb.endCus_id) = #endCus_id#]]>
+                </isNotEmpty>
+            </isEmpty>        
+            <isNotEmpty property="material_id" prepend="and">
+                <![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+            </isNotEmpty> 
+        </dynamic>
+        <![CDATA[order by  aa.create_time desc]]>
+    </select>
+        
+    <delete id="deleteDesignRegDetail" parameterClass="designRegDetail">
+        delete from basis.basis_tb_design_reg_detail   
+        where id in $ids$
+    </delete>
+    
+    <update id="auditDRD" parameterClass="designRegDetail">
+        update  basis.basis_tb_design_reg_detail  
+         set state=#state#,
+             remark=#remark#,
+             weencomments=#weencomments#,
+             latest_time = SYSDATE,
+             latest_userId=#latest_userId#
+        where id in $ids$
+    </update>
+    
+    <update id="setCheck" parameterClass="designRegDetail">
+        update  basis.basis_tb_design_reg_detail   set isCheck=1
+        where id =#id#
+    </update>
+    
+    <!-- 存储过程参数声明列表 -->
+    <parameterMap id="parameterMap" class="java.util.HashMap">
+        <!-- 默认填 6 -->
+        <parameter property="incount" javaType="java.lang.String"
+            jdbcType="VARCHAR" mode="IN" />
+        <!-- 模块类型编码 -->
+        <parameter property="intype" javaType="java.lang.String"
+            jdbcType="VARCHAR" mode="IN" />
+        <parameter property="RESULTCODE" jdbcType="VARCHAR"
+            javaType="java.lang.String" mode="OUT" />
+    </parameterMap>
+
+    <procedure id="getSystemIdPrc" parameterMap="parameterMap"
+        resultClass="java.lang.String">
+    <![CDATA[
+        { call basis.prc_getSysGenkey(?,?,?) }
+    ]]>
+    </procedure>
+
+    <procedure id="updateDRState">
+        <![CDATA[
+            { call basis.prc_updatedrstate() }
+        ]]>
+    </procedure>
+
+<!-- 查询所有字段（导出Excel） -->
+<select id="getDRDListNoPage" parameterClass="designRegDetail" resultClass="designRegDetail">
+    <![CDATA[
+        SELECT 
+            aa.id,
+            aa.row_no,
+            aa.drNum,
+            aa.material_id,
+            aa.material_name,
+            aa.price,
+            aa.equip_usage,
+            aa.project_state,
+            aa.start_date,
+            aa.end_date,
+            aa.state,
+            TO_CHAR(aa.start_date,'YYYY-MM-DD') start_dateStr,
+            TO_CHAR(aa.end_date,'YYYY-MM-DD') end_dateStr,
+            aa.product_date,
+            TO_CHAR(aa.product_date,'YYYY-MM-DD') product_dateStr,
+            aa.cus_remark,
+            aa.main_id,
+            aa.create_userId,
+            aa.create_time,
+            aa.latest_userId,
+            (SELECT u.emp_code FROM basis.BASIS_TB_SALESEMP_INFO u WHERE aa.latest_userId = u.emp_id and rownum =1) auditorId,
+            aa.latest_time,
+            aa.latest_deptId,
+            DECODE(aa.value,null,0,aa.value) value,
+            hh.sumResale shipPrice,              
+            bb.cus_groupId,
+            bb.customer_id,
+            cc.customer_name,
+            bb.endCus_groupId,
+            ee.state ec_state,
+            dd.ecgroup_name endCus_groupName,
+            bb.endCus_id,
+            ee.end_customer_name endCus_name,
+            bb.ec_contact,
+            bb.remark,
+            bb.estimated_share,
+            TO_CHAR(bb.mp_schedule,'YYYY-MM-DD') mp_scheduleStr,
+            aa.usage_amount,
+            bb.tel,
+            ff.item_name equip_type,
+            bb.project_name,
+            bb.disti_branch,
+            (SELECT u.emp_code FROM basis.BASIS_TB_SALESEMP_INFO u WHERE u.emp_id = bb.create_userid) create_userName,
+            aa.design_win,
+            TO_CHAR(aa.design_win,'YYYY-MM-DD') design_winStr,
+            mm.emp_email create_user_email,
+            aa.saler_design_status,
+            aa.dr_type,
+            aa.drtype_def,
+            k.item_name dr_typeStr,            
+            aa.dw_cal,
+            aa.weencomments,
+            
+            (SELECT u.emp_code FROM basis_tb_design_win_audit audit1, basis.BASIS_TB_SALESEMP_INFO u WHERE audit1.user_id = u.emp_id AND audit1.detail_id = aa.id AND audit_node IN ('1') AND rownum =1) audit_person,
+            (SELECT TO_CHAR(audit1.create_date,'YYYY-MM-DD') FROM basis_tb_design_win_audit audit1 WHERE audit1.detail_id = aa.id AND audit_node IN ('1') AND rownum =1) audit_time,
+            (SELECT u.emp_code FROM basis_tb_design_win_audit audit1 , basis.BASIS_TB_SALESEMP_INFO u WHERE audit1.user_id = u.emp_id AND audit1.detail_id = aa.id AND audit_node IN ('2','3') AND rownum =1) audit_person2,
+            (SELECT TO_CHAR(audit1.create_date,'YYYY-MM-DD') FROM basis_tb_design_win_audit audit1 WHERE audit1.detail_id = aa.id AND audit_node IN ('2') AND rownum =1) audit_time2,
+            (SELECT u.emp_code FROM basis_tb_design_win_audit audit1 , basis.BASIS_TB_SALESEMP_INFO u WHERE audit1.user_id = u.emp_id AND audit1.detail_id = aa.id AND audit_node IN ('4','5') AND rownum =1) audit_person3,
+            (SELECT TO_CHAR(audit1.create_date,'YYYY-MM-DD') FROM basis_tb_design_win_audit audit1 WHERE audit1.detail_id = aa.id AND audit_node IN ('4') AND rownum =1) audit_time3,
+            (SELECT u.emp_code FROM basis_tb_design_win_audit audit1 , basis.BASIS_TB_SALESEMP_INFO u WHERE audit1.user_id = u.emp_id AND audit1.detail_id = aa.id AND audit_node IN ('6','7') AND rownum =1) audit_person4,
+            (SELECT TO_CHAR(audit1.create_date,'YYYY-MM-DD') FROM basis_tb_design_win_audit audit1 WHERE audit1.detail_id = aa.id AND audit_node IN ('6') AND rownum =1) audit_time4,
+            (SELECT PRICING_REGION FROM BASIS.BASIS_TB_DISTI_BRANCH br WHERE br.PAYER_TO = bb.customer_id AND rownum =1) sale_office,
+            
+            lds.name segmentName,
+            lda.name applicationName,
+            dict.item_name customerTypeName
+            
+        FROM basis.basis_tb_design_reg_detail aa
+            INNER JOIN basis.basis_tb_design_reg bb ON aa.main_id=bb.id
+            LEFT OUTER JOIN basis.basis_tb_customerInfo cc ON '0000'||bb.customer_id=cc.customer_code
+            LEFT OUTER JOIN basis.basis_tb_ecgroup dd ON bb.endCus_groupId=dd.ecgroup_id
+            LEFT OUTER JOIN basis.basis_tb_end_customeInfo ee ON bb.endCus_id=ee.end_customer_id
+            LEFT OUTER JOIN basis.basis_tb_dict k ON k.dict_type_id = '567' and k.item_value = aa.dr_type and k.item_state = 'U'
+            ]]>
+            <dynamic>
+                <isNotEmpty property="auditorId" prepend="">
+                <![CDATA[ join (select end_customer_id from basis_vm_salecountry_ec se  where se.userID = #auditorId#) pcs on  bb.endCus_id = pcs.end_customer_id]]>
+                </isNotEmpty>
+            </dynamic>    
+        <![CDATA[    
+            left outer join  basis.basis_tb_dict ff on bb.equip_type=to_char(ff.item_id) and ff.dict_type_id=555
+            left outer join basis.basis_tb_org jj on cc.district = jj.sap_org_id    
+            left outer join basis.basis_vw_pos_dr hh on hh.drNum = aa.drNum and hh.material_name = aa.material_name
+            left outer join basis.basis_tb_salesemp_info mm on bb.create_userId = mm.emp_id
+             
+            LEFT OUTER JOIN basis.basis_tb_level_dict lds on ee.segment = lds.id
+            LEFT OUTER JOIN basis.basis_tb_level_dict lda on ee.application = lda.id 
+            LEFT OUTER JOIN basis.basis_tb_dict dict on ee.customer_type = dict.item_id AND dict.dict_type_id=554
+             
+         WHERE 1=1
+    ]]>
+        <dynamic>
+            <isNotEmpty property="states" prepend="and">
+                <![CDATA[ aa.state in $states$]]>
+            </isNotEmpty>
+            <isNotEmpty property="drNum" prepend="and">
+                <![CDATA[ upper(aa.drNum) like #drNum,handler=wildcard# escape '\']]>
+            </isNotEmpty>    
+            <isNotEmpty property="customer_id" prepend="and">
+                <![CDATA[ bb.customer_id = #customer_id#]]>
+            </isNotEmpty>    
+            <isNotEmpty property="endCus_id" prepend="and">
+                <![CDATA[ bb.endCus_id = #endCus_id#]]>
+            </isNotEmpty>
+            <isNotEmpty property="project_state" prepend="and">
+                <isNotEqual property="project_state" compareValue="0" prepend="">
+                    <![CDATA[ aa.project_state = #project_state#]]>
+                    <isEqual property="project_state" compareValue="2" prepend=" and ">
+                        <![CDATA[ aa.DESIGN_WIN >  to_date('2018-06-20','yyyy-MM-dd')]]>
+                    </isEqual>
+                </isNotEqual>
+            </isNotEmpty> 
+            <isNotEmpty property="customer_name" prepend="and">
+                <![CDATA[ cc.customer_name like #customer_name,handler=wildcard# escape '\']]>
+            </isNotEmpty> 
+            <isNotEmpty property="endCus_name" prepend="and">
+                <![CDATA[ upper(ee.end_customer_name) like #endCus_name,handler=wildcard# escape '\']]>
+            </isNotEmpty>    
+            <isNotEmpty property="start_dateStr" prepend="and">
+                <![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#start_dateStr#,'yyyy-mm-dd')]]>
+            </isNotEmpty> 
+            <isNotEmpty property="end_dateStr" prepend="and">
+                <![CDATA[ to_date(to_char(aa.create_time,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date(#end_dateStr#,'yyyy-mm-dd')]]>
+            </isNotEmpty>     
+            <isNotEmpty property="material_id" prepend="and">
+                <![CDATA[ aa.material_id like #material_id,handler=wildcard# escape '\']]>
+            </isNotEmpty> 
+            <isNotEmpty property="material_name" prepend="and">
+                <![CDATA[ upper(aa.material_name) like #material_name,handler=wildcard# escape '\']]>
+            </isNotEmpty>  
+            <isNotEmpty property="equip_type" prepend="and">
+                <![CDATA[ upper(ff.item_name) like #equip_type,handler=wildcard# escape '\']]>
+            </isNotEmpty> 
+            <isNotEmpty property="project_name" prepend="and">
+                <![CDATA[ upper(bb.project_name) like #project_name,handler=wildcard# escape '\']]>
+            </isNotEmpty> 
+            <isNotEmpty property="cus_groupId" prepend="and">
+                <![CDATA[ upper(bb.cus_groupId) like #cus_groupId,handler=wildcard# escape '\']]>
+            </isNotEmpty>
+            <isNotEmpty property="disti_branch" prepend="and">
+                <![CDATA[ upper(bb.disti_branch) like #disti_branch,handler=wildcard# escape '\']]>
+            </isNotEmpty>
+            <isNotEmpty property="create_userId" prepend="and">
+                <![CDATA[ bb.create_userId =#create_userId#]]>
+            </isNotEmpty> 
+            <isNotEmpty property="create_userName" prepend="and">
+                <![CDATA[ upper(mm.emp_email)  like #create_userName,handler=wildcard# escape '\']]>
+            </isNotEmpty>
+        </dynamic>
+        <include refid="global.orderBy"/>
+    </select>
+    
+    <select id="getDictOfWeen" parameterClass="dict"
+        resultClass="dict">
+    <![CDATA[
+        select  e.item_id as itemId ,
+                e.dict_type_id as dictTypeId,
+                e.parent_item_id as parentItemId,
+                e.item_name as itemName,
+                e.item_description as itemDescription,
+                e.item_value as itemValue, 
+                e.remark as  remark,
+                e.item_state as itemState,
+                e.last_modify as lastModify,
+                e.charge_id as chargeId,
+                e.appobject_level as appobjectLevel,
+                e.modify_date as modifyDate
+          from  basis.basis_tb_dict e
+              where e.item_state='U'
+    ]]>
+        <dynamic>
+            <isNotEmpty property="dictTypeId" prepend="and">
+            <![CDATA[  e.dict_type_id = #dictTypeId# ]]>
+            </isNotEmpty>
+            <isGreaterThan property="itemId"  compareValue = "0" prepend="and"  >
+            <![CDATA[  e.item_id = #itemId# ]]>
+            </isGreaterThan>
+        </dynamic>
+            <include refid="global.orderBy" />
+    </select>
+    
+    <select id="getDRECCountryOrg" parameterClass="designReg" resultClass="java.lang.String">
+    <![CDATA[
+        select nn.org_code       
+        from basis.basis_tb_design_reg aa            
+            left outer join basis.basis_tb_end_customeInfo dd  on aa.endCus_id=dd.end_customer_id
+            left outer join basis.basis_tb_country nn on dd.country = nn.country_code 
+        where aa.drNum =#drNum#
+    ]]>
+    </select>
+<!-- 根据EC的国家和省份确定审批的需通知的销售邮箱 -->    
+    <select id="getDRAuditSale" parameterClass="designReg" resultClass="cusUser">
+        <![CDATA[
+        select distinct emp.emp_name userName,emp.emp_email email  from  basis_tb_design_reg dr
+              join basis_vm_salecountry_ec  se on dr.endCus_id=se.end_customer_id  
+              join basis_tb_salesemp_info emp on  emp.emp_id = se.userid  
+        where dr.drNum =#drNum#
+            ]]>
+               <dynamic>
+            <isNotEmpty property="auditorId" prepend="and">
+                  emp.emp_id in (select EMP_CODE from BASIS_TB_USER_ROLE where ROLE_ID in ('HK10_H_Sale_Mgmt'))
+            </isNotEmpty>
+            </dynamic>
+            
+    
+    </select>
+    
+    <select id="getDRDbyIds" parameterClass="designRegDetail" resultClass="designRegDetail">
+    <![CDATA[
+        select aa.id
+             , aa.material_id
+             , aa.material_name
+             , aa.drNum
+             , aa.main_id
+             , aa.project_state
+             , aa.saler_design_status
+             , aa.row_no
+             , aa.price
+             , aa.equip_usage
+             , aa.equip_type
+             , aa.start_date
+             , aa.state
+             , aa.project_state
+             , aa.end_date
+             , aa.product_date
+             , aa.value
+             , aa.usage_amount
+             , aa.project_name
+             , aa.cus_remark
+             , aa.remark
+             , aa.dr_type
+             , aa.drtype_def
+             , aa.dw_cal
+             , bb.create_userId
+             , bb.disti_branch
+        from basis.basis_tb_design_reg_detail aa
+            left outer join basis.basis_tb_design_reg bb on aa.main_id=bb.id
+         where aa.id in $ids$
+    ]]>
+    </select>
+
+    <select id="getRoleUserByMenuId" parameterClass="designRegDetail" resultClass="designRegDetail">
+            <![CDATA[
+                select  emp_code  ec_contact ,     
+                        emp_code  project_name       
+                  from BASIS.BASIS_TB_SALESEMP_INFO
+                 where 1=1
+             ]]>   
+             <dynamic>
+                 <!--DR 变成DW 通知下级regional sales head  -->
+                <isEqual property="isCheck" compareValue="0" prepend="and">
+                        <![CDATA[ emp_id in (select aa.EMP_CODE from BASIS_TB_USER_ROLE aa ,BASIS.BASIS_TB_SALESEMP_INFO bb , 
+                                    BASIS.BASIS_TB_SALECOUNTRY ct , BASIS.basis_tb_design_reg re , BASIS_TB_END_CUSTOMEINFO cu 
+                                    where AA.ROLE_ID = 'HK10_H_DW_Submission' and    AA.EMP_CODE = BB.emp_id  and 
+                                         ct.userid = BB.emp_id and ct.COUNTRY_CODE =  cu.COUNTRY  and  re.drnum = #drNum#  and
+                                          re.ENDCUS_ID = cu.END_CUSTOMER_ID) ]]>
+                </isEqual>
+                
+                 <!--regional sales head approved 通知下级 sales head -->
+                <isEqual property="isCheck" compareValue="1" prepend="and">
+                        <![CDATA[  emp_id in (select EMP_CODE from BASIS_TB_USER_ROLE where ROLE_ID in ('HK10_H_DW_SalesAppr')) ]]>
+                </isEqual>
+                <!--sales head approved 通知下级 Marketing  -->
+                <isEqual property="isCheck" compareValue="2" prepend="and">
+                        <![CDATA[  emp_id in (select EMP_CODE from BASIS_TB_USER_ROLE where ROLE_ID in ('HK10_H_DW_MktAppr')) ]]>
+                </isEqual>
+                <!--final  approved 通知上级 sales head,Regional sales reject 和Var/bd -->
+                <isEqual property="isCheck" compareValue="4" prepend="and">
+                    <![CDATA[( emp_id in (select EMP_CODE from BASIS_TB_USER_ROLE where ROLE_ID in ('HK10_H_DW_SalesAppr'))  or 
+                               emp_id in (select aa.EMP_CODE from BASIS_TB_USER_ROLE aa ,BASIS.BASIS_TB_SALESEMP_INFO bb , 
+                                    BASIS.BASIS_TB_SALECOUNTRY ct , BASIS.basis_tb_design_reg re , BASIS_TB_END_CUSTOMEINFO cu 
+                                    where AA.ROLE_ID = 'HK10_H_DW_Submission' and    AA.EMP_CODE = BB.emp_id  and 
+                                         ct.userid = BB.emp_id and ct.COUNTRY_CODE =  cu.COUNTRY  and  re.drnum = #drNum#  and
+                                          re.ENDCUS_ID = cu.END_CUSTOMER_ID) or                      
+                               emp_id in (select create_userid from BASIS_TB_DESIGN_REG where drnum= #drNum# ))
+                     ]]>
+                </isEqual>
+                <!-- Sales head reject 通知上级 Regional sales reject 和Var-->
+                <isEqual property="isCheck" compareValue="3" prepend="and">
+                        <![CDATA[ (emp_id in (select create_userid from BASIS_TB_DESIGN_REG where drnum= #drNum#) or 
+                               emp_id in (select aa.EMP_CODE from BASIS_TB_USER_ROLE aa ,BASIS.BASIS_TB_SALESEMP_INFO bb , 
+                                    BASIS.BASIS_TB_SALECOUNTRY ct , BASIS.basis_tb_design_reg re , BASIS_TB_END_CUSTOMEINFO cu 
+                                    where AA.ROLE_ID = 'HK10_H_DW_Submission' and    AA.EMP_CODE = BB.emp_id  and 
+                                         ct.userid = BB.emp_id and ct.COUNTRY_CODE =  cu.COUNTRY  and  re.drnum = #drNum#  and
+                                          re.ENDCUS_ID = cu.END_CUSTOMER_ID))
+                         ]]>
+                </isEqual>
+                <!-- Final reject 通知上级 sales head 和 Regional sales reject 和var/BD -->
+                <isEqual property="isCheck" compareValue="5" prepend="and">
+                        <![CDATA[  ( emp_id in (select EMP_CODE from BASIS_TB_USER_ROLE where ROLE_ID in ('HK10_H_DW_SalesAppr'))  or 
+                                     emp_id in (select aa.EMP_CODE from BASIS_TB_USER_ROLE aa ,BASIS.BASIS_TB_SALESEMP_INFO bb , 
+                                        BASIS.BASIS_TB_SALECOUNTRY ct , BASIS.basis_tb_design_reg re , BASIS_TB_END_CUSTOMEINFO cu 
+                                        where AA.ROLE_ID = 'HK10_H_DW_Submission' and    AA.EMP_CODE = BB.emp_id  and 
+                                             ct.userid = BB.emp_id and ct.COUNTRY_CODE =  cu.COUNTRY  and  re.drnum = #drNum#  and
+                                              re.ENDCUS_ID = cu.END_CUSTOMER_ID) or                      
+                                     emp_id in (select create_userid from BASIS_TB_DESIGN_REG where drnum= #drNum#))
+                         ]]>
+                </isEqual>
+                <!-- Regional sales reject 通知 var/bd -->
+                <isEqual property="isCheck" compareValue="9" prepend="and">
+                    <![CDATA[   emp_id in (select create_userid from BASIS_TB_DESIGN_REG where drnum= #drNum#)           ]]>
+                </isEqual>
+            </dynamic>
+    </select>
+    
+    <insert id="createDesignWinAudit" parameterClass="designWinAudit">
+        <selectKey resultClass="java.lang.Long" keyProperty="id">
+              SELECT basis.basis_seq_end_customeInfo.nextval AS id FROM DUAL    
+        </selectKey>
+        <![CDATA[
+            insert into basis.basis_tb_design_win_audit   
+            (
+              id,detail_id,user_id,user_account,audit_info,create_date,AUDIT_NODE
+            )
+            values
+            (
+              #id#,#detail_id#,#user_id#,#user_account#,#audit_info#, sysdate,#audit_node#
+            )
+        ]]>
+    </insert>
+    
+    <update id="deleteDesignWinAudit" parameterClass="designWinAudit">
+        <![CDATA[
+            UPDATE basis.basis_tb_design_win_audit
+               SET audit_node = '1' || LTRIM(audit_node)
+             WHERE detail_id = #detail_id#
+               AND audit_node IN ('1', '2', '4', '6')
+        ]]>
+    </update>
+    
+    <!-- 查询所有字段（导出） -->
+    <select id="getEmailExpireDR"  resultClass="designRegDetail">
+    <![CDATA[
+        select 
+              aa.id,
+              aa.material_id,
+              aa.material_name,
+              to_char(aa.end_date,'YYYY-MM-DD') end_dateStr,
+              aa.drNum,
+              aa.main_id,
+              bb.create_userId,
+              bb.disti_branch        
+        from basis.basis_tb_design_reg_detail aa
+        left outer join basis.basis_tb_design_reg bb on aa.main_id=bb.id
+        where aa.state=1 and to_char(aa.end_date,'YYYY-MM-DD') = to_char(sysdate+30,'yyyy-mm-dd')
+    ]]>
+    </select>
+    
+    <select id="getDRDbyId" parameterClass="designRegDetail" resultClass="designRegDetail">
+    <![CDATA[
+        select aa.id
+             , aa.material_id
+             , aa.material_name
+             , aa.drNum
+             , aa.main_id
+             , aa.project_state
+             , aa.saler_design_status
+             , aa.row_no
+             , aa.price
+             , aa.equip_usage
+             , aa.equip_type
+             , aa.start_date
+             , aa.state
+             , aa.project_state
+             , aa.end_date
+             , aa.product_date
+             , aa.value
+             , aa.usage_amount
+             , aa.project_name
+             , aa.cus_remark
+             , aa.remark
+             , aa.dr_type
+             , aa.drtype_def
+             , aa.dw_cal
+        from basis.basis_tb_design_reg_detail aa
+         where aa.id = #id#
+    ]]>
+    </select>
+
+    <select id="checkDRExpireByDrNum" parameterClass="designRegDetail" resultClass="java.lang.Integer">
+    <![CDATA[
+        select count(aa.id)
+        from basis.basis_tb_design_reg_detail aa
+         where aa.drNum = #drNum#
+           and aa.state != 3
+    ]]>
+    </select>
+    
+    <insert id="createDesignRegDetailLog" parameterClass="DesignRegDetailLog">
+        <selectKey resultClass="java.lang.Long" keyProperty="logId">
+              SELECT basis.basis_seq_dr_log.nextval AS logId FROM DUAL    
+        </selectKey>
+        <![CDATA[
+            insert into basis.basis_tb_design_reg_detail_log   
+            (
+              logId, type, usage_amount, mp_schedule, dr_detail_id, row_no, drNum,material_id,material_name,price,equip_usage,project_state,start_date,end_date,
+              project_name,cus_remark,remark,state,main_id,create_userId,value,product_date, saler_design_status,
+              create_time,latest_userId,latest_time,latest_deptId,equip_type,cost,moq,pbMpp,dr_type, drtype_def, dw_cal, weencomments
+            )
+            values
+            (
+              #logId#,#type#,#usage_amount#, #mp_schedule#, #dr_detail_id#, #row_no#,#drNum#,#material_id#,#material_name#,#price#,#equip_usage#,#project_state#,#start_date#,#end_date#,
+              #project_name#,#cus_remark#,#remark#,#state#,#main_id#,#create_userId#,#value#,#product_date#,#saler_design_status#,
+              sysdate,#create_userId#,sysdate,#latest_deptId#,#equip_type#,#cost#,#moq#,#pbMpp#,#dr_type#, #drtype_def#, #dw_cal#, #weencomments#      
+            )
+        ]]>
+    </insert>
+    
+    <select id="getDesignRegDetailLogList" parameterClass="designRegDetail" resultClass="designRegDetailLog">
+        SELECT 
+              aa.logId as id,
+              aa.type,
+              aa.dr_detail_id,
+              aa.row_no,
+              aa.drNum,
+              aa.material_id,
+              aa.material_name,
+              aa.price,
+              aa.usage_amount,
+              aa.mp_schedule,
+              aa.equip_usage,
+              aa.equip_type,
+              aa.project_state,
+              aa.start_date,
+              to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+              aa.state,
+              aa.project_state primaryProState,
+              aa.end_date,
+              to_char(aa.end_date,'YYYY-MM-DD') end_dateStr,
+              aa.product_date,
+              to_char(aa.product_date,'YYYY-MM-DD') product_dateStr,
+              decode(aa.value,null,0,aa.value) value,
+              aa.project_name,
+              aa.cus_remark,
+              aa.remark,
+              aa.main_id,
+              decode(mm.emp_email, null, decode(aa.create_userId, '-1', 'PRC_POSDR', aa.create_userId), mm.emp_email) create_userName,
+              aa.create_time,
+              to_char(aa.create_time,'yyyy-MM-dd hh24:mi:ss') createTime,
+              aa.dr_type,
+              aa.drtype_def,
+              aa.dw_cal,
+              k.item_name dr_typeStr
+              ,aa.weencomments
+          FROM basis.basis_tb_design_reg_detail_log aa
+               LEFT OUTER JOIN basis.basis_tb_salesemp_info mm ON aa.create_userId = mm.emp_id
+               LEFT OUTER JOIN basis.basis_tb_dict k on k.dict_type_id = '567' and k.item_value = aa.dr_type and k.item_state = 'U'
+         WHERE DR_DETAIL_ID=#id#
+         ORDER BY id
+    </select>
+
+    <select id="getDesignRegDetailLogListCount" parameterClass="designRegDetail" resultClass="java.lang.Integer">
+        select count(aa.logId)                     
+        from basis.basis_tb_design_reg_detail_log aa
+             LEFT OUTER JOIN basis.basis_tb_salesemp_info mm ON aa.create_userId = mm.emp_id
+         where DR_DETAIL_ID=#id#
+    </select>
+    
+    <select id="getDRTypeByItmeValue" parameterClass="designRegDetail" resultClass="designRegDetail">
+    <![CDATA[
+        select v.item_value dw_cal
+             , k.ITEM_DESCRIPTION drtype_def
+          from basis.basis_tb_dict k, basis.basis_tb_dict v
+         where k.dict_type_id = '567'
+           and k.item_state = 'U'
+           and v.dict_type_id = '570'
+           and v.item_state = 'U'
+           and k.item_name = v.item_name
+           and k.item_value = #dr_type#
+    ]]>
+    </select>
+    
+    <update  id="updateDesignRegDetailDrType" parameterClass="designRegDetail">
+        update basis.basis_tb_design_reg_detail  
+             set dr_type=#dr_type#,
+                 drtype_def = #drtype_def#,
+                 dw_cal = #dw_cal#,
+                 latest_userId = #latest_userId#,
+                 latest_time = sysdate
+        where id=#id#
+    </update>
+    
+    <select id="getDesignRegByDesignRegDetail" parameterClass="designRegDetail" resultClass="designReg">
+        <![CDATA[
+        SELECT 
+            aa.id,
+            aa.drNum,
+            aa.cus_groupId,
+            aa.mp_schedule,
+            aa.customer_id,
+            aa.endCus_groupId,
+            aa.disti_branch,
+            aa.endCus_id,
+            aa.ec_contact,
+            aa.start_date,
+            aa.end_date,
+            aa.state,
+            aa.remark,
+            aa.project_name,
+            aa.usage_amount,
+            aa.tel,
+            aa.equip_type equip_name,
+            aa.total_amount,
+            aa.total_type,
+            aa.create_time,
+            aa.create_userId,
+            aa.latest_time,
+            aa.latest_userId,
+            aa.latest_deptId,
+            aa.file_name,
+            aa.file_path,
+            aa.estimated_share
+        FROM basis.basis_tb_design_reg aa, basis.basis_tb_design_reg_detail bb
+       WHERE bb.id = #id#
+         AND bb.drNum = aa.drNum
+        ]]>    
+    </select>    
+    
+    <update  id="updateDesignRegDetailRemark" parameterClass="designRegDetail">
+        update basis.basis_tb_design_reg_detail  
+             set remark=remark||#remark#,
+                 latest_userId = #latest_userId#,
+                 latest_time = sysdate
+        where id=#id#
+    </update>
+</sqlMap>

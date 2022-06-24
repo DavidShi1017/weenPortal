@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()	
+	</head>
+	<body class="easyui-layout">
+		<form method="post" target="hideFrame">
+			<div region="center" class="easyui-panel" title="" data-options="iconCls:'icon-edit'">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+			<tr>
+				<td class="head" noWrap>Previous Menu:</td>
+				<td>
+                     <select id="pname" name="pname" class="easyui-combobox" style="width:146px;" data-options="required:true"/>  
+					<input type="hidden" id="pid" name="menu.pid"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="head" noWrap>Menu Name:</td>
+				<td><input class="easyui-validatebox" id="name" name="menu.name" data-options="required:true"/></td>
+			</tr>
+			<tr>
+				<td class="head" noWrap>Type:</td>
+				<td><select class="easyui-combobox" id="target" name="menu.target" data-options="required:true">
+						<option value="mainRight">Table Display</option>
+						<option value="_blank">New Window</option>
+						<option value="NA">Menu Folder</option>
+                </select>
+				</td>
+			</tr>
+			<tr>
+				<td class="head" noWrap>Menu Address:</td>
+				<td>
+					<input class="easyui-validatebox" id="url" name="menu.url" style="width:200px;" />
+                    <input type="checkbox" name="isRedirect" value="y" >Whether to belong to the subsystem jump address</input>
+			</td>
+			</tr>
+			<tr>
+				<td class="head" noWrap>Sequence:</td>
+				<td><input class="easyui-numberspinner" data-options="min:1,max:20,required:true" missingMessage="请输入1~20的数字！" id="orderBy" name="menu.orderBy"/></td>
+			</tr>
+			<tr>
+				<td class="head" noWrap>KuunrMenu:</td>
+				<td>
+					<input type="radio" name="menu.isKuunrMenu" value="1" />Yes
+					<input type="radio" name="menu.isKuunrMenu" value="0" checked />No
+				</td>
+			</tr>
+			<tr>
+				<td class="head" noWrap>CustMenu:</td>
+				<td>
+					<input type="radio" name="menu.isCustMenu" value="1" />Yes
+					<input type="radio" name="menu.isCustMenu" value="0" checked />No	
+				</td>
+			</tr>
+			<tr>
+				<td class="head" noWrap>Active:</td>
+				<td>
+					<input type="radio" name="menu.isUse" value="1" />Yes
+					<input type="radio" name="menu.isUse" value="0" checked />No
+				</td>
+			</tr>
+			
+		    </table>
+			</div>
+			<div region="south" border="false" style="text-align:right;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">确定</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:close()">取消</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/menu/createMenu.js"></script>
+</html>

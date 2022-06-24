@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+        #CSSM(["easyui","style"])
+        #JSM(["jquery", "easyui"])
+        #JS_ENV_VAL()
+    </head>
+    <body>
+        <form action="" method="post">
+            <input type="hidden" id="id" name="ec.id" value="$!{ec.id}">    
+            <input type="hidden" id="editGroupMark" name="ec.editGroupMark" value="$!{ec.editGroupMark}">    
+            <input type="hidden" id="org_code" name="ec.org_code" value="$!{ec.org_code}">    
+            <div border="0"class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+                <table width="100%" border="0" cellpadding="5" cellspacing="1">
+                    <tr>
+                        <td class="head" noWrap width='120'><label for="name">Disti :</label></td>
+                        <td noWrap class="context" width='260'>
+                            <label id="disti_groupId"> $!{ec.disti_groupId}</label>
+                            <input type="hidden"name='ec.disti_groupId' value="$!{ec.disti_groupId}"> </input>                                
+                            <input type="hidden" id="disti_customer_name" name='ec.disti_customer_name' value="$!{ec.disti_customer_name}"> </input>
+                            <input   type="hidden"class="easyui-validatebox"  id="disti_customer_id" name='ec.disti_customer_id' value='$!{ec.disti_customer_id}'></input>
+                        </td>
+                        <td class="head" noWrap width='120'><label for="name">Country :</label></td>
+                        <td noWrap class="context" width='260'>
+                            <input class="easyui-validatebox"  id="country" name="ec.country" value='$!{ec.country}' readonly></input>    
+                            <div id="toolbarCountry" class="datagrid-toolbar">
+                                <input class="easyui-searchbox" searcher="searcherCountry" prompt="Key word search" style="width:300px"></input>        
+                            </div>    
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">Customer Name:</label></td>
+                        <td class="context" width='260'>
+                            <input class="easyui-validatebox" id="end_customer_name" name="ec.end_customer_name" style="width:240px" value="$!{ec.end_customer_name}" >
+                            <input type="hidden" id="org_code"  value="$!{ec.org_code}" />
+                            <input type="hidden" id="end_customer_id" name="ec.end_customer_id"  value="$!{ec.end_customer_id}" />
+                        </td>
+                        <td class="head" noWrap ><label for="name">State/Province :</label></td>
+                        <td class="context" width='260'>
+                            <input type="text" id="province" name="ec.province" value='$!{ec.province}' readonly ></input>
+                            <div id="toolbarProvince" class="datagrid-toolbar">
+                                <input class="easyui-searchbox" searcher="searcherProvince" prompt="Key word search" style="width:300px"></input>        
+                            </div>    
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap ><label for="name">City:</label></td>
+                        <td class="context" width='220'>
+                            <input class="easyui-validatebox" id="city"  name="ec.city" value='$!{ec.city}' />  
+                            <input type="hidden" id="oldCity" name="ec.oldCity" value='$!{ec.city}'/>
+                        </td>
+                        <td class="head" noWrap><label id="grouplabel" style="display:none" for="name">Customer Group :</label></td>
+                        <td class="context" width='220' noWrap>
+                            <div id="groupdisplay" style="display:none" >
+                                <input class="easyui-validatebox" id="end_customer_groupId" name="ec.end_customer_groupId" value="$!{ec.end_customer_groupId}" readonly/>
+                                <div id="toolbarECGroup" class="datagrid-toolbar">
+                                    <input class="easyui-searchbox" searcher="searcherECGroup" prompt="EC Group KeyWord" style="width:300px"></input>        
+                                </div>
+                                <img style="cursor:del"  title="" onclick=delECGroup()  src="$!{env.imgUrl}/images/actions/clear.png" align="absMiddle"></img> 
+                                <img style="cursor:add"  title="" onclick=applyECGroup()  src="$!{env.imgUrl}/images/actions/action_add.png" align="absMiddle"></img> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap ><label for="name">Customer Type:</label></td>
+                        <td class="context" width='220'>
+                            <input class="easyui-validatebox" id="customer_type" name="ec.customer_type"  value="$!{ec.customer_type}" >
+                        </td>
+                        <td class="head" noWrap ><label for="name">Address:</label></td>
+                        <td class="context" width='220'>
+                            <input class="easyui-validatebox" id="address"  name="ec.address" style="width:240px"  value='$!{ec.address}' />  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap ><label for="segment">Segment:</label></td>
+                        <td class="context" width='220'>
+                            <input class="easyui-combobox" id="segment" name="ec.segment" value="$!{ec.segment}" />
+                        </td>
+                        <td class="head" noWrap ><label for="application">Application:</label></td>
+                        <td class="context" width='220'>
+                            <input class="easyui-combobox" id="application"  name="ec.application" style="width:240px"  value="$!{ec.application}"  />  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap ><label for="name">Contact:</label></td>
+                        <td class="context" width='220'>
+                            <input class="easyui-validatebox" id="contact_name" name="ec.contact_name"  value="$!{ec.contact_name}" precision="2">
+                        </td>
+                        <td class="head" noWrap ><label for="name">Tel Number:</label></td>
+                        <td class="context" width='220'>
+                            <input class="easyui-validatebox" id="tel" name="ec.tel" value="$!{ec.tel}" ></input>  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap ><label for="name">Zip:</label></td>
+                        <td class="context" width='220'>
+                            <input class="easyui-validatebox" id="zip" name="ec.zip" value="$!{ec.zip}" ></input>  
+                            <input type="hidden" id="currency_code" name="ec.currency_code" value="USD" class="easyui-validatebox" readonly></input>  
+                        </td>
+                        <td noWrap class="head">File:</td>
+                        <td class="context"><input  id="old_file_name" style="border:1" name="ec.file_name" value='$!{ec.file_name}' readonly/><a href="javascript:upload()" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-save'">Upload</a></td>    
+                        <input id="file_path" name="ec.file_path" value='$!{ec.file_path}' type="hidden"/>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap ><label id="chlabel" style="display:none" for="name">Customer Hierarchy:</label></td>
+                        <td class="context" width='260'>
+                            <div id="chDisplay" style="display:none" >
+                                <input class="easyui-validatebox" id="new_hierarchy" name="ec.new_hierarchy" value='$!{ec.new_hierarchy}' readonly></input>    
+                                <div id="toolbarNewHierarchy" class="datagrid-toolbar">
+                                    <input class="easyui-searchbox" searcher="searcherNewHierarchy" prompt="Key word search" style="width:300px"></input>        
+                                </div>  
+                            </div>  
+                        </td>
+                        <td class="head" noWrap ><label id="tierlabel" style="display:none" for="name">Tier:</label></td>
+                        <td class="context" width='220'>
+                            <div id="tierDisplay" style="display:none" >
+                                <input class="easyui-validatebox" id="tier"  name="ec.tier" value='$!{ec.tier}' />  
+                            </div>  
+                        </td>
+                    </tr>                        
+                </table>
+                <br/>
+            </div>  
+            <br/>
+            <div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+                <a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+                <a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+            </div>
+        </form>
+        <iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+        <div id="maintWindow"/> 
+    </body>
+    <script type="text/javascript" src="$!{env.imgUrl}/js/platform/endCustomer/createEndCustomer.js?time=New Date()"></script>
+    <script type="text/javascript">
+    (function(){
+    	var id = $('#id').val();
+    	if (id != '0' && id != '') {
+    		var segvalue = $('#segment').val();
+    		if (segvalue) {
+    			bindApplicationData(segvalue);	
+    		}
+    	}
+    })();
+    function bindApplicationData(value){
+//     	if(value == '001'){
+// 			result = [
+// 				{value:'001',label:'Telecom'},{value:'002',label:'Server and Network'},{value:'003',label:'Data Storage / Data Center'},{value:'004',label:'Lighting & Control'},{value:'005',label:'Power Supply'},
+// 				{value:'006',label:'UPS / Inverter'},{value:'007',label:'Surveillance'},{value:'008',label:'Welding'},{value:'009',label:'Power Tool'},{value:'010',label:'Pump'},
+// 				{value:'011',label:'Motor Control / Driver'},{value:'012',label:'E-Meter / Smart Meter'},{value:'013',label:'Detection & Safety Device'},{value:'014',label:'Medical & Healthcare Device'},{value:'015',label:'Aerospace'},
+// 				{value:'016',label:'IoT & Automation'},{value:'017',label:'Other'}
+// 			]
+// 		}
+// 		if(value == '002'){
+// 			result = [
+// 				{value:'001',label:'OBC and EV-Charging'},{value:'002',label:'Body / Traction Control'},{value:'003',label:'Ignitions and Regulator / Rectifier'},{value:'004',label:'Battery Management System'},{value:'005',label:'Infotaiment & Dashboard'},
+// 				{value:'006',label:'E-Bikes / E-Scooter'},{value:'007',label:'Other'}
+// 			]
+// 		}
+// 		if(value == '003'){
+// 			result = [
+// 				{value:'001',label:'PC / Notebook'},{value:'002',label:'Tablet / E-Reader'},{value:'003',label:'Printer / Copier / Fax Machine'},{value:'004',label:'TV and Audio'},{value:'005',label:'Gaming'},
+// 				{value:'006',label:'Aircon'},{value:'007',label:'Fan'},{value:'008',label:'Refrigerator'},{value:'009',label:'Washing Machine / Dryer'},{value:'010',label:'Dish Washer'},
+// 				{value:'011',label:'Vaccum Cleaner'},{value:'012',label:'Bidet'},{value:'013',label:'Hairdryer'},{value:'014',label:'Shower Heater'},{value:'015',label:'Coffee Machine'},
+// 				{value:'016',label:'Boiler / Kettler'},{value:'017',label:'Induction / Ceramic Cooker'},{value:'018',label:'PD Chager / Power Adaptor'},{value:'019',label:'Wearable/ Wireless Device'},{value:'020',label:'Other'}
+// 			]
+// 		}
+// 		if(value == '004'){
+// 			result = [
+// 				{value:'001',label:'Solar Inverter'},{value:'002',label:'Wind Turbine'}
+// 			]
+// 		}
+		if(!isNaN(value)){
+			$('#application').combobox({
+				url:appUrl+'/levelDictAction!QueryLevelDict.jspa?groupid=1&parentid='+value,
+				valueField: 'id',
+				textField: 'name',
+				multiple : false,
+		    	editable : false,
+		    	panelHeight : 120,
+		    	width : 173
+			})
+		}else{
+			$('#application').combobox('clear')
+			$('#application').combobox({data:[]})
+		}
+    }
+ // segment
+    $('#segment').combobox({
+    	url:appUrl+'/levelDictAction!QueryLevelDict.jspa?groupid=1&parentid=0',
+    	valueField:'id',
+    	textField:'name',
+    	onSelect:function(a){
+    		console.log(a);
+    		var result = null
+   			var value = a.id;
+   			bindApplicationData(value); 
+    	},
+    	multiple : false,
+    	editable : false,
+    	panelHeight : 120,
+    	width : 173
+    });
+    </script>
+</html>

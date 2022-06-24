@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		<!-- 查询 -->
+		<div class="easyui-layout" data-options="fit:true,border:false"> 
+			<input type="hidden" id="ids"/>
+	        <form method="post" target="hideFrame">
+			<div id="p_search" title="" style="height:158px;padding: 2px; background: #fafafa;" data-options="region:'north',iconCls:'icon-search'">
+				<br>
+				<table  border="0" cellpadding="0" cellspacing="1">
+					<input type="hidden" id="roleId" value="$!{q.roleId}"/>
+					<tr>				
+					 <td class="head" noWrap width='100'>Disti</td>
+                    <td class="context"  width='180'>
+						<input id="cusGroup_id" class="easyui-validatebox" name="cusGroup_id" value='$!{q.cusGroup_id}'/>
+						<input type="hidden" id="forWho" value="$!{forWho}">	
+						<!--
+						<input class="easyui-validatebox" id="customer_id" name="customer_id">
+						<div id="toolbarCustomer" class="datagrid-toolbar">
+							<input class="easyui-searchbox" searcher="searcherCustomer" prompt=Key word search" style="width:300px"></input>		
+						</div>		
+						-->
+					</td>
+					<td class="head" noWrap width='100'>Disti Branch</td>
+                    <td class="context"  width='180'>
+						<input  class="easyui-validatebox" id="disti_branch" name="disti_branch" />
+				
+					</td>
+ 					 <td class="head" noWrap width='100'>Purchasing Customer</td>
+                    <td class="context"  width='180'>
+						<input class="easyui-validatebox" id="purchaseCustomer_name" name="purchaseCustomer_name">
+					</td>
+					<td class="head" noWrap width='100'>EndCustomer</td>
+                    <td class="context"  width='180'>
+						<input class="easyui-validatebox" id="endCustomer_name" name="endCustomer_name">					
+					</td>					
+				</tr>
+				<tr>
+                     <td class="head" noWrap width='100'>Quote Num</td>
+                    <td noWrap class="context" width='180'><input class="easyui-validatebox" id="quote_id" name="quote_id"></td>
+ 					 <td class="head" noWrap width='100'>Project</td>
+                    <td noWrap class="context" width='180'><input class="easyui-validatebox" id="project_name" name="project_name"></td>
+					<td class="head" noWrap>Quote Status</td>
+                    <td>
+					<select id="state" name="states" value="(0,1,2,3,4,5,6,7,8)" style="width:155px;" data-options="editable:false">
+						<option value="(0,1,2,3,4,5,6,7,8)">All</option> 
+						<option value="(0,1,2)">Pending</option>  
+						<option value="(3,4,5)">Approved</option>  
+						<option value="(6,7,8)">Reject</option>  
+                    </select>
+					</td>
+					<td class="head myself" noWrap>Creator</td>
+                    <td class="context myself">
+						<input class="easyui-validatebox" id="create_userName" name="create_userName">	
+					</td>
+
+	
+					
+                </tr>
+				<tr>
+					<td class="head" noWrap width='80'>12NC</td>
+                    <td class="context"  width='180'>
+						<input class="easyui-validatebox" id="material_id" name="material_id">					
+					</td>	
+					<td class="head" noWrap width='80'>BookPart</td>
+                    <td class="context"  width='180'>
+						<input class="easyui-validatebox" id="material_name" name="material_name">					
+					</td>	
+					 <td class="head" noWrap>Agreement</td>
+                    <td>
+					<select id="isAgree" name="isAgrees" value="(0,1,2)" style="width:155px;" data-options="editable:false">
+						<option value="(0,1,2)">All</option>  
+						<option value="(0)">Pending</option>  
+						<option value="(1)">Agree</option>  
+						<option value="(2)">Expired</option>  
+                    </select>
+					</td>
+					<td colspan="2">
+						<a id="search" href="javascript:search()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">Search</a>                    	
+						
+                    	<a id="clearV" href="javascript:clearValue()" class="easyui-linkbutton" iconCls="icon-clear">Reset</a> 	
+					</td>
+				</tr>
+				<tr>
+					<td class="head" noWrap width='100'>Created from</td>
+                    <td  width='200'><input class="easyui-datebox" id="start_dateStr" name="start_dateStr"></td>
+
+					 <td class="head" noWrap width='100'>Created till</td>
+                    <td   width='200'><input class="easyui-datebox" id="end_dateStr" name="end_dateStr"></td>
+					<td class="head" noWrap width='120'>Debit Num</td>
+                    <td noWrap class="context" width='220'><input class="easyui-validatebox" id="debit_num" name="debit_num"></td>
+				</tr>
+                </table>
+				 </div>
+			    <div data-options="region:'center'" border="0" >
+					<input class="easyui-validatebox" data-options="required:true" id="quoteDetailJson" name="quoteDetailJson" type="hidden">
+					<table id="datagrid" border="0" ></table>
+				</div>
+	</form>
+	</div>
+	<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+	<div id="hiddenWin"/> 
+	</div>
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/quote/quotePcCountry.js"></script>
+</html>

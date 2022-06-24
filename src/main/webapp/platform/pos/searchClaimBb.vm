@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		
+		
+		<!-- 查询 -->
+		<div class="easyui-layout" data-options="fit:true,border:false"> 
+
+	        <form method="post" target="hideFrame">
+			<div id="p_search" title="" style="height:140px;padding: 1px; background: #fafafa;" data-options="region:'north',iconCls:'icon-search'">
+                
+				
+				<table width="100%" border="0" cellpadding="0" cellspacing="5">
+				 <tr>
+                     <td class="head" noWrap>DISTI NAME</td>
+                    <td><input class="easyui-validatebox" id="disti_name" name="disti_name"></td>
+						<td class="head" noWrap>PAYER TO</td>
+                    <td><input class="easyui-validatebox" id="disti_branch" name="disti_branch"></td>
+					</td>
+					<td class="head" noWrap>DEBIT NUMBER</td>
+                    <td><input class="easyui-validatebox" id="debit_number" name="debit_number"></td>
+				<tr>
+					<td class="head" noWrap>BOOK PART</td>
+                    <td><input class="easyui-validatebox" id="book_part" name="book_part"></td>
+					<td class="head" noWrap>DEBIT CUSTOMER</td>
+                    <td><input class="easyui-validatebox" id="purchasing_customer_name" name="purchasing_customer_name"></td>
+						<td class="head" noWrap>END CUST NAME </td>
+                    <td><input class="easyui-validatebox" id="endcust_name" name="endcust_name"></td>
+				</tr>
+				<tr>
+					<td class="head" noWrap>SAP CLAIM NBR</td>
+                    <td><input class="easyui-validatebox" id="sapClaimNbr" name="sapClaimNbr"></td>
+					<td class="head" noWrap>SHIP FROM</td>
+                    <td><input class="easyui-datebox" id="start_time" name="start_time1"></td>
+					<td class="head" noWrap>SHIP TO</td>
+                    <td><input class="easyui-datebox" id="end_time" name="end_time1"></td>
+				</tr>
+				<tr>
+				<td class="head" noWrap>STATUS</td>
+					<td>
+ 					<select id="status" name="status" value="(0)"style="width:155px;" data-options="editable:false">
+						<option value="(0,1,2,3,4)">ALL</option>  
+						<option value="(0)">REJECT</option>  
+						<option value="(1)">PENDING</option>  
+						<option value="(3)">APPROVED</option>  
+						<option value="(4)">REBATED</option> 
+                    </select>
+					</td>
+					<td class="head" noWrap>INVOICE NBR</td>
+					<td>
+						<input class="easyui-validatebox" id="disti_invoice_nbr" name="disti_invoice_nbr">
+					</td>
+					<td class="head" noWrap>DATA FROM</td>
+					<td>
+ 					<select id="data_from" name="data_from" value="0" style="width:155px;" data-options="editable:false">
+						<option value="0">ALL</option>  
+						<option value="1">PORTAL</option>  
+						<option value="2">EDI</option> 
+                    </select>
+					</td>
+				</tr>
+				
+
+				 <tr>
+				 	<td class="head" noWrap>ORDER DATE FROM</td>
+                    <td><input class="easyui-datebox" id="order_start_time" name="order_start_time1"></td>
+					<td class="head" noWrap>ORDER DATE TO</td>
+                    <td><input class="easyui-datebox" id="order_end_time" name="order_end_time1"></td>
+ 					<td colspan="2">
+ 					
+						<a id="search" href="javascript:search()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">Search</a>
+                    	<a href="javascript:clearValue()" class="easyui-linkbutton" iconCls="icon-clear" id="clearV">Cancel</a> 	
+					</td>		
+                 </tr>
+				 
+                </table>
+				 </div>
+			    <div data-options="region:'center'">
+					<table id="datagrid"></table>
+				</div>
+	</form>
+	
+	<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+	<div id="hiddenWin"/> 
+	</div>
+		
+		
+		 
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/pos/searchClaimBb.js?time=New Date()"></script>
+</html>

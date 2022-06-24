@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+        #JSM(["jquery", "easyui"])
+        #JS_ENV_VAL()
+        <title>瑞能报价及订单管理系统</title>
+        <link rel = "Shortcut Icon" href="statics/images/login/favicon.ico">
+        <!--[if (gt IE 8)|!(IE)]><!-->
+            <link href="statics/css/weenLogin_new1366.css?time=New Date()" rel="stylesheet" type="text/css" media ="screen and (max-width: 1380px)" />
+            <link href="statics/css/weenLogin_new1440.css?time=New Date()" rel="stylesheet" type="text/css" media ="screen and (min-width: 1381px) and (max-width: 1460px)" />
+            <link href="statics/css/weenLogin_new1600.css?time=New Date()" rel="stylesheet" type="text/css" media ="screen and (min-width: 1461px) and (max-width: 1610px)" />
+            <link href="statics/css/weenLogin_new1920.css?time=New Date()" rel="stylesheet" type="text/css" media ="screen and (min-width: 1611px) and (max-width: 1960px)" />
+            <link href="statics/css/weenLogin_new2048.css?time=New Date()" rel="stylesheet" type="text/css" media ="screen and (min-width: 1961px) and (max-width: 2080px)" />
+            <link href="statics/css/weenLogin_new2440.css?time=New Date()" rel="stylesheet" type="text/css" media ="screen and (min-width: 2081px) and (max-width: 2480px)" />
+            <link href="statics/css/weenLogin_new2560.css?time=New Date()" rel="stylesheet" type="text/css" media ="screen and (min-width: 2481px)" />
+        <!--<![endif]-->
+        <!--[if lt IE 9]>
+            <link href="statics/css/weenLogin_newIE.css?time=New Date()" rel="stylesheet" type="text/css" />
+        <![endif]-->
+</head>
+<body style="background-color:#167496;" >
+    <div id="all">
+        <form action="loginAction!login.jspa" method="post">        
+            <table align="center">
+                <td align="center">
+                    <div id="bg">
+                    <div id="main">
+                        <div id="name">
+                            <div id="name_input">
+                                <input type="text" maxLength='50' id='passport' name='passport' autocomplete="on" onblur="if(this.value == '')this.value='user name';" onclick="if(this.value == 'user name')this.value='';" value="user name"
+                                    style="border: 0px;height: 32px;width: 195px;padding-top: 4px;padding-left: 10px;">
+                                <br/>
+                            </div>
+                        </div>
+                        <br/>
+                        <div id="password">
+                            <div id="pwd_input">
+                                <input type="password" id="pwd"  maxLength='50' name='password' autocomplete="off" onblur="if(this.value == '')this.value='请输入密码';" onclick="if(this.value == '请输入密码')this.value='';" value="请输入密码"
+                                  style="border: 0px;height: 32px;width: 195px;padding-top: 4px;padding-left: 10px;"/>
+                            </div>
+                        </div>
+                        <div id="message">
+                            <span id="logfail" style="color:#e81331;font-size:12px;">$!{failMessage}</span>
+                        </div>
+                        <div id="form_buttons">
+                            <div id="submitButton" onclick="submit()" />
+                            <div id="cancelButton" onclick="cancel()" />
+                        </div>
+                    </div>
+                    </div>
+                </td>
+            </table>
+        </form>
+      </div>
+    </div>
+</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/login/login.js?time=New Date()"></script>
+</html>

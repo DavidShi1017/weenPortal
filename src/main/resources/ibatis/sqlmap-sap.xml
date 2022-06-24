@@ -1,0 +1,1041 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sapReport">
+<typeAlias alias="starderOrder" type="com.jingtong.platform.order.pojo.StarderOrder"/>
+<typeAlias alias="sampleOrder" type="com.jingtong.platform.sampleOrder.pojo.SampleOrder"/>
+<typeAlias alias="quote" type="com.jingtong.platform.quote.pojo.Quote"/>
+<typeAlias alias="endCustomer" type="com.jingtong.platform.endCustomer.pojo.EndCustomer"/>
+<typeAlias alias="pos" type="com.jingtong.platform.pos.pojo.Pos" />
+	<typeAlias alias="report" type="com.jingtong.platform.sap.pojo.SAPReport" />
+ 	<typeAlias alias="whouse" type="com.jingtong.platform.sap.pojo.Warehouses" />
+ 	<typeAlias alias="pStock" type="com.jingtong.platform.sap.pojo.ProductStock" />
+ 	<typeAlias alias="ncm" type="com.jingtong.platform.sap.pojo.NoClearMoney" />
+ 	<typeAlias alias="receivePay" type="com.jingtong.platform.sap.pojo.ReceivePay"/>
+ 	<typeAlias alias="endCus" type="com.jingtong.platform.sap.pojo.EndCustomerToSap" />
+ 	<typeAlias alias="kunnr" type="com.jingtong.platform.sap.pojo.Kunnr" />
+ 	<typeAlias alias="kunnrCompany" type="com.jingtong.platform.sap.pojo.KunnrCompany" />
+ 	<typeAlias alias="materials" type="com.jingtong.platform.sap.pojo.Material" />
+ 	<typeAlias alias="quoteSap" type="com.jingtong.platform.sap.pojo.QuoteToSap" />
+ 	<typeAlias alias="quoteDetailSap" type="com.jingtong.platform.sap.pojo.QuoteDetail" />
+ 	<typeAlias alias="sampleOrderSap" type="com.jingtong.platform.sap.pojo.SampleOrderToSap" />
+ 	<typeAlias alias="sampleOrderDetailSap" type="com.jingtong.platform.sap.pojo.SampleOrderDetail" />
+ 	<typeAlias alias="orderSap" type="com.jingtong.platform.sap.pojo.OrderToSap" />
+ 	<typeAlias alias="orderDetailSap" type="com.jingtong.platform.sap.pojo.OrderDetail" />
+ 	<typeAlias alias="price" type="com.jingtong.platform.sap.pojo.Price" />
+ 	<typeAlias alias="posSap" type="com.jingtong.platform.sap.pojo.PosToSap" />
+ 	<typeAlias alias="posDetail" type="com.jingtong.platform.sap.pojo.PosDetail" />
+	<parameterMap class="java.util.HashMap" id="parameterMap">
+	    <parameter property="pbukrs"/>
+	    <parameter property="pgjahr"/>
+	</parameterMap>
+	
+	<select id="getPgroupRules" parameterClass="java.lang.String" resultClass="report">
+		<![CDATA[
+		 select 
+		        distinct r.materialnumber as materialNumber,
+				r.productgroup_rule_id as productGroupRuleId,
+				r.productgroup_id as productGroupId,
+				r.out_price as outPrice,
+				r.channelprice as channelPrice,
+				r.freecost as freeCost
+		 from crm.crm_tb_promotion_detail d 
+				left join crm.crm_tb_productgroup_rule r on d.productgroup_id=r.productgroup_id
+		 where d.promotion_id=#promoId#
+		 order by r.productgroup_rule_id asc
+		]]>
+	</select>
+	 
+	 <select id="getMvgs" parameterClass="java.lang.String" resultClass="report">
+		<![CDATA[
+		 select vv.item_value itemValue,vv.item_name itemName 
+		 from basis.basis_tb_dict vv 
+		 where vv.item_state='U' and vv.dict_type_id in (493,494)
+		]]>
+	</select>
+	
+	
+	<select id="getPromoDetails" parameterClass="java.lang.String" resultClass="report">
+		<![CDATA[
+		 select d.promotiondetail_id  as promotiondetailId
+		 from crm.crm_tb_promotion_detail d 
+		 where d.promotion_id=#promoId#
+		]]>
+	</select>
+	
+	<select id="getPromotion" parameterClass="java.lang.String" resultClass="report">
+		<![CDATA[
+		select p.promotion_id,p.promotion_name, p.pend_date,p.pbegin_date,p.purchasebegindate,p.purchaseenddate
+		from crm.crm_tb_promotion p where p.promotion_id=#promoId#
+		]]>
+	</select>
+	
+	
+	
+	<select id="getDisplayCost" parameterClass="java.lang.String" resultClass="report">
+		<![CDATA[
+		 select decode(sum(decode(f.fee_amounttotal,'','0',f.fee_amounttotal)),'','0',sum(decode(f.fee_amounttotal,null,'0',f.fee_amounttotal))) as displayCost 
+		 from crm.crm_tb_fee f where  f.promotion_id=#promoId#
+		]]>
+	</select>
+	
+	<select id="getWarehouses" resultClass="whouse">
+	<![CDATA[
+		select l.warehousenumber as warehouseCode,l.locationnumber as locationCode 
+		from CRM.CRM_TB_WAREHOUSE_LOCATION l 
+		where l.status='1'
+		]]>
+	</select>
+ 
+	<insert id="insertProductStock" parameterClass="pStock">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				select crm.crm_sq_productstock.NEXTVAL as id from dual
+			]]>
+		</selectKey>
+	<![CDATA[
+		  insert into crm.crm_tb_productstock 
+		  (   id,
+			  werks,
+			  lgort,
+			  matnr,
+			  unit,
+			  stocknum,
+			  createuser,
+			  createdate,
+			  modifyuser,
+			  modifydate,
+			  stockkcjy,
+			  bigmg,
+			  bigme 
+			  )
+		  values 
+		  (#id#,#werks#,#lgort#,#matnr#,#unit#,#stocknum#,#createuser#,sysdate,#modifyuser#,sysdate,#stocknum#,#bigmg#,#bigme#)
+		]]>
+	</insert>   
+	
+	
+	<insert id="createKunnrs" parameterClass="kunnr">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				SELECT basis.basis_seq_customer.nextval AS id FROM DUAL
+			]]>
+			</selectKey>
+		<![CDATA[
+			insert into basis_tb_customerInfo
+			  (ID, customer_name,customer_code,country,district,sale_office,sales_org,global_account,address,state,currency_code,contact_name,tel,nielsenRemark,CUSTOMER_TYPE)
+			values
+			  (#id#, #customer_name#,#customer_code#,#country#,#district#,#sale_office#,#sales_org#,#nielsen#,#address#,#state#,#currency_code#,#name1#,#tele1#,#nielsenRemark#,#customer_type#)
+		]]>
+	</insert>
+	
+	<update id="updateKunnr" parameterClass="kunnr">
+		<![CDATA[
+			update basis_tb_customerInfo a
+			   set a.customer_name=#customer_name#,a.customer_code=#customer_code#,a.country=#country#,a.district=#district#,a.sale_office=#sale_office#,a.sales_org=#sales_org#,a.address=#address#,a.state=#state#,a.currency_code=#currency_code#,
+			   		a.global_account=#nielsen#,a.contact_name=#name1#,a.tel=#tele1#,a.nielsenRemark=#nielsenRemark#,customer_type=#customer_type#
+			where customer_code=#customer_code#
+		]]>
+	</update>
+	
+	<select id="getKunnrCount" parameterClass="kunnr" resultClass="java.lang.Integer">
+		<![CDATA[
+			   select 
+			   count( t.id)
+			   from basis_tb_customerInfo t 
+			   where customer_code=#customer_code#
+		]]>
+			
+	</select>
+	
+	
+	
+	
+	<insert id="createKunnrCompany" parameterClass="kunnrCompany">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				SELECT basis.BASIS_SEQ_CUS_RELATIONSHIP.nextval AS id FROM DUAL
+			]]>
+			</selectKey>
+		<![CDATA[
+			insert into BASIS_TB_CUS_RELATIONSHIP
+			  (id, customer_code,sales_org,distri_channel,product_group,partnerType,partner_num,partnerId,partnerName,salesId,nameFoemat,address)
+			values
+			  (#id#, #customer_code#,#sales_org#,#distri_channel#,#product_group#,#partnerType#,#partner_num#,#partnerId#,#partnerName#,#salesId#,#nameFoemat#,#address#)
+		]]>
+	</insert>
+	
+	<update id="updateKunnrCompany" parameterClass="kunnrCompany">
+		<![CDATA[
+			update BASIS_TB_CUS_RELATIONSHIP a
+			   set a.customer_code=#customer_code#,a.sales_org=#sales_org#,a.distri_channel=#distri_channel#,a.product_group=#product_group#,a.partnerType=#partnerType#,a.partner_num=#partner_num#,a.partnerId=#partnerId#,a.partnerName=#partnerName#,a.salesId=#salesId#,a.nameFoemat=#nameFoemat#,address=#address#
+			where 1=1
+		]]>
+		<dynamic>
+				<isNotEmpty property="customer_code" prepend="and">
+					<![CDATA[customer_code=#customer_code#]]>
+				</isNotEmpty>
+				<isNotEmpty property="partnerType" prepend="and">
+					<![CDATA[partnerType=#partnerType#]]>
+				</isNotEmpty>
+				<isNotEmpty property="partnerId" prepend="and">
+					<![CDATA[partnerId=#partnerId#]]>
+				</isNotEmpty>
+			</dynamic>
+	</update>
+	
+	<select id="getKunnrCompanyCount" parameterClass="kunnrCompany" resultClass="java.lang.Integer">
+		<![CDATA[
+			   select 
+			   count( t.id)
+			   from BASIS_TB_CUS_RELATIONSHIP t , BASIS_TB_CUSTOMERINFO i
+			   where 1=1 and t.customer_code = i.customer_code
+		]]>
+		
+		<dynamic>
+				<isNotEmpty property="customer_code" prepend="and">
+					<![CDATA[t.customer_code=#customer_code#]]>
+				</isNotEmpty>
+				<isNotEmpty property="partnerType" prepend="and">
+					<![CDATA[t.partnerType=#partnerType#]]>
+				</isNotEmpty>
+				<isNotEmpty property="partnerId" prepend="and">
+					<![CDATA[t.partnerId=#partnerId#]]>
+				</isNotEmpty>
+			</dynamic>
+			
+	</select>
+	
+	
+	
+	
+	
+
+	
+	<insert id="insertMaterials" parameterClass="materials" >
+	<selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				SELECT basis.basis_seq_productInfo.nextval AS id FROM DUAL
+			]]>
+			</selectKey>
+	<![CDATA[
+		
+	   insert into basis_tb_productInfo
+		(
+		id,
+		 material_id,
+		 material_exp,
+		 material_type,
+		 MATERIAL_GROUPID,
+		 base_unit,
+		 sale_unit,
+		 state,
+		 isDeleted,
+		 moq,
+		 material_name,
+		 cost,
+		 factory,
+		 PQ,
+		 NUMERATOR,
+		 DENOMINATOR,
+		 isLocked,
+		 isOrderItem,
+		 isQuoteItem,
+		 isDRItem,
+		 sync_userId,
+		 sync_time)
+		 values
+		 (
+		#id#,
+		 #material_id#,
+		 #material_exp#,
+		 #material_type#,
+		 #remark#,
+		 #base_unit#,
+		 #sale_unit#,
+		 #state#,
+		 #isDeleted#,
+		 #moq#,
+		 #material_name#,
+		 #cost#,
+		 #factory#,
+		 #wm_Unit#,
+		 #numerator#,
+		 #denominator#,
+		 #isLocked#,
+		 'N',
+		 'N',
+		 'N',
+		 #sync_userId#,
+		 sysdate
+		 )
+	]]>
+	</insert>
+ 
+	<update id="updateMaterials" parameterClass="materials">
+		<![CDATA[
+			update basis_tb_productInfo a
+			   set a.material_id=#material_id#,a.material_exp=#material_exp#,a.material_type=#material_type#,
+			   	   a.MATERIAL_GROUPID=#remark#,a.base_unit=#base_unit#,a.sale_unit=#sale_unit#,
+			   	   a.state=#state# , a.isDeleted=#isDeleted#,a.moq=#moq#,a.material_name=#material_name#,
+			   	   a.cost=#cost# ,a.factory=#factory#,a.PQ=#wm_Unit#,a.numerator=#numerator#,a.denominator=#denominator#,a.isLocked=#isLocked#,
+			   	   a.sync_time=sysdate,
+			   	   a.sync_userId=#sync_userId#,
+			   	   a.rfs_date = #rfs_date#
+			where a.material_id=#material_id# and a.factory=#factory#
+		]]>
+	</update> 
+	
+	
+	
+	<select id="getMaterialsCount" parameterClass="materials" resultClass="java.lang.Integer">
+		<![CDATA[
+			   select 
+			   count( t.material_id)
+			   from basis_tb_productInfo t 
+			   where 1=1
+		]]>
+			<dynamic>
+				<isNotEmpty property="material_id" prepend="and">
+					<![CDATA[t.material_id=#material_id#]]>
+				</isNotEmpty>
+				<isNotEmpty property="factory" prepend="and">
+					<![CDATA[t.factory=#factory#]]>
+				</isNotEmpty>
+			</dynamic>
+	</select>
+	
+	
+	
+	
+	<select id="getQuoteTotal" parameterClass="quoteSap" resultClass="quoteSap">
+		<![CDATA[
+        select 
+			  aa.id,aa.quote_id,type_id,aa.currency_code,
+			  aa.project_name,aa.customer_id,aa.endCustomer_id,
+			  aa.isDelivery,aa.start_date,to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+			  aa.latest_expire,to_char(aa.latest_expire,'YYYY-MM-DD') latest_expireStr,
+			  aa.state,aa.remark,aa.cusGroup_id,aa.ecGroup_id,
+			  aa.create_time,aa.create_userId,
+			  aa.latest_time,aa.latest_userId,aa.org_code
+		from basis.basis_tb_quoteInfo aa			
+			
+	 	where aa.state = 1
+         
+  		]]>
+ 		
+	</select>
+	
+ 
+	
+	<select id="getQuoteDetail" parameterClass="quoteSap" resultClass="quoteDetailSap">
+		<![CDATA[
+		    
+         select 
+			  aa.id,aa.quote_id,aa.main_id,aa.row_no,aa.material_id,aa.drNum,aa.qty,
+			  aa.target_resale,aa.target_cost,aa.amount,aa.reason,aa.competitor,
+			  aa.start_date,to_char(aa.start_date,'YYYY-MM-DD') start_dateStr,
+			  aa.cus_remark,aa.suggest_resale,aa.suggest_cost,aa.state,			  
+			  aa.cus_profits_percent,aa.profits_percent,aa.remark
+		from basis.basis_tb_quote_detail aa
+		where  aa.main_id=#id#  
+          
+ 		]]>
+ 		
+	</select>
+	
+	
+	
+ 
+<update id="updateQuoteDetailSap" parameterClass="quoteDetailSap">
+	<![CDATA[
+	           update basis.basis_tb_quote_detail aa set sync_state='1' where quoteId=#quoteId#
+		]]>
+  	</update>
+	
+	
+	 
+	<select id="getSampleOrderTotal" parameterClass="sampleOrderSap" resultClass="sampleOrderSap">
+		<![CDATA[
+         select 
+         id,
+		 sale_group,
+		 distri_channel,
+		 PRODUCT_GROUPID product_group,
+		 type_id,
+		 ship_to,
+		 payer_to,
+		 billing_to,
+		 branch_id sale_to,
+		 currency_code,
+		 order_id,
+		 end_customer,
+		 project_name,
+		 contact_info
+		 from basis.BASIS_TB_ORDERINFO aa 
+ 		where 1=1
+         
+  		]]>
+ 		<dynamic>
+ 		    <isNotEmpty property="id" prepend="and">
+			   <![CDATA[  aa.id =#id#]]>
+			</isNotEmpty>
+ 		</dynamic>
+	</select>
+	
+ 
+	
+	<select id="getSampleOrderDetail" parameterClass="sampleOrderSap" resultClass="sampleOrderDetailSap">
+		<![CDATA[
+		    
+           select  
+           aa.id,
+		 row_no,
+		 material_id,
+		 order_QTY,
+		 sale_unit,
+		 aa.remark,
+		 delivery_date,
+		 to_char(delivery_date,'YYYYMMDD') delivery_dateStr,
+		 po_item
+		 
+		 from basis.BASIS_TB_ORDER_DETAIL aa 
+            where aa.main_id=#id# 
+          
+ 		]]>
+ 		
+	</select>
+	
+	
+	
+ 
+<update id="updateSampleOrderDetailSap" parameterClass="sampleOrderDetailSap">
+	<![CDATA[
+	           update basis.BASIS_TB_ORDER_DETAIL aa set  id=#id#
+		]]>
+  	</update>
+  	
+  	
+	
+	
+	
+	
+	<select id="getOrderTotal" parameterClass="orderSap" resultClass="orderSap">
+		<![CDATA[
+         select 
+         id,
+		 sale_group,
+		 distri_channel,
+		 PRODUCT_GROUPID product_group,
+		 type_id,
+		 branch_id ship_to,
+		 branch_id payer_to,
+		 branch_id billing_to,
+		 branch_id sale_to,
+		 currency_code,
+		 order_id,
+		 end_customer,
+		 project_name,
+		 contact_info,
+		 aa.contact_name,
+		 aa.contact_tel,
+		 aa.city,
+		 aa.street,
+		 aa.country,
+		 aa.zip,
+		 aa.company
+		 from basis.BASIS_TB_ORDERINFO aa 
+ 		where 1=1
+         
+  		]]>
+ 		<dynamic>
+ 		    <isNotEmpty property="id" prepend="and">
+			   <![CDATA[  aa.id =#id#]]>
+			</isNotEmpty>
+ 		</dynamic>
+	</select>
+	
+ 
+	
+	<select id="getOrderDetail" parameterClass="orderSap" resultClass="orderDetailSap">
+		<![CDATA[
+		    
+         select  
+         aa.id,
+		 row_no,
+		 material_id,
+		 order_QTY,
+		 sale_unit,
+		 aa.remark,
+		  delivery_date,
+		 to_char(delivery_date,'YYYYMMDD') delivery_dateStr
+		 
+		 from basis.BASIS_TB_ORDER_DETAIL aa 
+            where aa.main_id=#id# 
+          
+ 		]]>
+ 		
+	</select>
+	
+	
+	
+ 
+<update id="updateOrderDetailSap" parameterClass="orderDetailSap">
+	<![CDATA[
+	           update basis.BASIS_TB_ORDER_DETAIL aa set  id=#id#
+		]]>
+  	</update>
+	
+	
+	
+		<select id="getPosTotal" parameterClass="posSap" resultClass="posSap">
+		<![CDATA[
+         select ID, 
+	TRANSACTION_CODE, 
+	DISTI_NUM, 
+	DISTI_NAME, 
+	DISTI_BRANCH, 
+	DISTI_CITY, 
+	BOOK_PART, 
+	M_12NC, 
+	SHIP_DATE, 
+	QUOTE_SDATE, 
+	QUOTE_EDATE, 
+	SHIP_QTY, 
+	QUOTE_TOTALQTY, 
+	REBATE_QTY, 
+	DEBIT_NUMBER, 
+	DISTI_CLAIMNBR, 
+	OPPREG_NBR, 
+	CPN, 
+	DISTI_INVOICE_NBR, 
+	DISTI_INVOICE_ITEM_NUMBER, 
+	DISTI_COST, 
+	DISTI_COST_DENOM, 
+	DISTI_COST_CURRENCY, 
+	DISTI_COST_EXCHANGERATE, 
+	DISTI_BOOKCOST, 
+	DBC_DENOM, 
+	DBC_CURRENCY_CODE, 
+	DBC_EXCHANGE_RATE, 
+	DISTI_RESALE, 
+	DISTI_RESALE_DENOM, 
+	DISTI_RESALE_CURRENCY, 
+	DISTI_RESALE_EXCHANGE_RATE, 
+	PURCHASING_CUSTOMER_NAME, 
+	PURCHASING_CUST_COUNTRY, 
+	PURCHASING_CUST_STATE, 
+	PURCHASING_CUST_CITY, 
+	PURCHASING_CUST_ZIP, 
+	ENDCUST_NAME, 
+	ENDCUST_COUNTRY, 
+	ENDCUST_STATE, 
+	ENDCUST_CITY, 
+	ENDCUST_LOC, 
+	ENDCUST_ZIP, 
+	STATUS, 
+	DATA_FROM, 
+	CREATED_TIME, 
+	CREATED_USER, 
+	UPDATE_TIME, 
+	UPDATE_USER, 
+	TIPS
+		 from basis.BASIS_TB_CUS_POS aa 
+ 		where 1=1
+         
+  		]]>
+ 		<dynamic>
+ 		    <isNotEmpty property="id" prepend="and">
+			   <![CDATA[  aa.id =#id#]]>
+			</isNotEmpty>
+ 		</dynamic>
+	</select>
+	
+	
+<!-- 多行 -->	
+ <update id="updateSapState" parameterClass="pos">
+	<![CDATA[
+	          update basis.BASIS_TB_CUS_POS 
+			   set sapClaimNbr=#sapClaimNbr#,status=4,REBATE_QTY=#remainQty#,row_no=#row_no#,update_time=sysdate
+			where id=#id#
+		]]>
+  	</update>
+
+ <!-- 目前只传1行
+  <update id="updateSapState" parameterClass="pos">
+	<![CDATA[
+	        update basis.BASIS_TB_CUS_POS 
+			   set sapClaimNbr=#sapClaimNbr#,status=4,REBATE_QTY=#remainQty#,row_no=#row_no# 
+			where debit_number=#debit_number# and type=2 and status=3
+		]]>
+  	</update>
+ --> 
+	
+	<select id="getPosDetail" parameterClass="posSap" resultClass="posDetail">
+		<![CDATA[
+		    
+           select  
+           aa.id,
+		 row_no,
+		 material_id,
+		 order_QTY,
+		 sale_unit,
+		 aa.remark
+		 
+		 from basis.BASIS_TB_ORDER_DETAIL aa 
+            where aa.main_id=#id# 
+          
+ 		]]>
+ 		
+	</select>
+	
+	
+	
+ 
+<update id="updatePosDetailSap" parameterClass="posDetail">
+	<![CDATA[
+	           update basis.BASIS_TB_ORDER_DETAIL aa set  id=#id#
+		]]>
+  	</update>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<insert id="createPrice" parameterClass="price">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				select basis.basis_seq_price_rule.nextval as id from dual
+			]]>
+			</selectKey>
+		<![CDATA[
+		
+			insert into basis.basis_tb_price_rule
+			  (id, PRICE_TYPE,REMARK,ORG_ID,material_id,customer_code,sale_price,currency_code,perUnit,unit,START_DATE,END_DATE,OFFICE_ID)
+			values
+			 (#id#, #type#,#remark#,#salesOrg#,#materialNumber#,#customerNumber#,#price#,#ratioUnit#,#priceUnit#,#conditionUnit#,#startDate#,#endDate#,#officeId#)
+		]]>
+	</insert>
+	
+	<update id="updatePrice" parameterClass="price">
+		<![CDATA[
+			update basis_tb_price_rule a
+			   set a.PRICE_TYPE=#type#,a.REMARK=#remark#,a.ORG_ID=#salesOrg#,a.material_id=#materialNumber#,a.customer_code=#customerNumber# , a.sale_price=#price#,a.currency_code=#ratioUnit#,a.perUnit=#priceUnit#,a.unit=#conditionUnit#,a.START_DATE=#startDate#,a.END_DATE=#endDate#,a.office_id=#officeId#
+			where 1=1
+		]]>
+		<dynamic>
+				<isNotEmpty property="salesOrg" prepend="and">
+					<![CDATA[a.ORG_ID=#salesOrg#]]>
+				</isNotEmpty>
+				<!-- <isNotEmpty property="ratioUnit" prepend="and">
+					<![CDATA[a.currency_code=#ratioUnit#]]>
+				</isNotEmpty> -->
+				<isNotEmpty property="type" prepend="and">
+					<![CDATA[a.PRICE_TYPE=#type#]]>
+				</isNotEmpty>
+				<isNotEmpty property="startDate" prepend="and">
+					<![CDATA[a.START_DATE=#startDate#]]>
+				</isNotEmpty>
+				<isNotEmpty property="endDate" prepend="and">
+					<![CDATA[a.END_DATE=#endDate#]]>
+				</isNotEmpty>
+				<isNotEmpty property="customerNumber" prepend="and">
+					<![CDATA[a.customer_code=#customerNumber#]]>
+				</isNotEmpty>
+				<isNotEmpty property="materialNumber" prepend="and">
+					<![CDATA[a.MATERIAL_ID=#materialNumber#]]>
+				</isNotEmpty>
+				<isNotEmpty property="price" prepend="and">
+					<![CDATA[a.SALE_PRICE=#price#]]>
+				</isNotEmpty>
+				<isNotEmpty property="officeId" prepend="and">
+					<![CDATA[a.office_id=#officeId#]]>
+				</isNotEmpty>
+			</dynamic>
+	</update>
+	
+	
+	<update id="deletePrice" parameterClass="price">
+		<![CDATA[
+			delete from basis_tb_price_rule a 
+			where 1=1
+		]]>
+		<dynamic>
+				<isNotEmpty property="salesOrg" prepend="and">
+					<![CDATA[.org_id=#org_id#]]>
+				</isNotEmpty>
+				<isNotEmpty property="type" prepend="and">
+					<![CDATA[a.PRICE_TYPE=#type#]]>
+				</isNotEmpty>
+				<isNotEmpty property="customerNumber" prepend="and">
+					<![CDATA[a.customer_code=#customerNumber#]]>
+				</isNotEmpty>
+				<isNotEmpty property="materialNumber" prepend="and">
+					<![CDATA[a.MATERIAL_ID=#materialNumber#]]>
+				</isNotEmpty>
+				<isNotEmpty property="officeId" prepend="and">
+					<![CDATA[a.office_id=#officeId#]]>
+				</isNotEmpty>
+			</dynamic>
+	</update>
+	
+		
+	<update id="deletePriceInfoForSap" parameterClass="price">
+		<![CDATA[
+			delete from basis_tb_price_rule a 
+			where 1=1
+			
+			
+		]]>
+		<dynamic>
+				<isNotEmpty property="type" prepend="and">
+					<![CDATA[ a.PRICE_TYPE=#type#]]>
+				</isNotEmpty>
+				<isNotEmpty property="create_time" prepend="and">
+					<![CDATA[ round(to_number(sysdate - a.create_time) * 24) >= 10 ]]>
+				</isNotEmpty>
+			</dynamic>
+	</update>
+	
+	<select id="getPriceCount" parameterClass="price" resultClass="java.lang.Integer">
+		<![CDATA[
+			   select 
+			   count( t.id)
+			   from basis_tb_price_rule t 
+			   where 1=1
+		]]>
+			<dynamic>
+				<isNotEmpty property="salesOrg" prepend="and">
+					<![CDATA[t.org_id=#org_id#]]>
+				</isNotEmpty>
+				<isNotEmpty property="type" prepend="and">
+					<![CDATA[t.PRICE_TYPE=#type#]]>
+				</isNotEmpty>
+				<isNotEmpty property="customerNumber" prepend="and">
+					<![CDATA[t.customer_code=#customerNumber#]]>
+				</isNotEmpty>
+				<isNotEmpty property="materialNumber" prepend="and">
+					<![CDATA[t.MATERIAL_ID=#materialNumber#]]>
+				</isNotEmpty>
+				<isNotEmpty property="officeId" prepend="and">
+					<![CDATA[t.office_id=#officeId#]]>
+				</isNotEmpty>
+			</dynamic>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="getEndCustomerTotal" parameterClass="endCus" resultClass="endCus">
+		<![CDATA[
+         select id,disti_groupId,disti_customer_id,end_customer_groupId,end_customer_name,
+				customer_type,customer_property,currency_code,country,province,address,
+				contact_name,tel,state,audit_opinion,remark,end_customer_id				
+			from basis.basis_tb_end_customeInfo 
+			
+			
+ 				where 1=1
+         
+  		]]>
+ 		<dynamic>
+ 		    <isNotEmpty property="id" prepend="and">
+			   <![CDATA[  id =#id#]]>
+			</isNotEmpty>
+ 		</dynamic>
+	</select>
+	
+	
+	
+	<select id="getKunnrByProm" parameterClass="java.lang.String" resultClass="report">
+		<![CDATA[
+		select distinct pdl.kunnr,dl.promotion_id from crm.crm_tb_promotion_detail dl 
+		left join crm.crm_tb_customergroup_detail pdl on dl.customergroup_id = pdl.customergroup_id
+		where  dl.promotion_id=#promoId# and dl.state=1 and pdl.state=1
+		]]>
+	</select>
+	
+	<select id="getProductStock" parameterClass="pStock" resultClass="java.lang.Integer">
+		<![CDATA[
+		 select count(1) from crm.crm_tb_productstock p 
+		 where p.werks=#werks# and p.lgort=#lgort# and p.matnr=#matnr# and p.unit=#unit#
+		]]>
+	</select>
+	<update id="updateProductStock" parameterClass="pStock">
+	<![CDATA[
+		 update crm.crm_tb_productstock p 
+		 set 
+		 p.werks=#werks#,
+		 p.lgort=#lgort#,
+		 p.unit=#unit#,
+		 p.stocknum=#stocknum#,
+		 p.modifydate=sysdate,
+		 p.stockkcjy=#stocknum#,
+		 p.bigmg=#bigmg#,
+		 p.bigme=#bigme#
+		 where p.werks=#werks# 
+		 and   p.lgort=#lgort# 
+		 and   p.matnr=#matnr# 
+		 and   p.unit=#unit#
+		]]>
+	</update>
+	
+	<!-- 未清现金凭证清单 -->
+	<insert id="insertNoClearMoney" parameterClass="ncm">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				select CRM.CRM_SQ_NOCLEAR_ACCOUNT.NEXTVAL as id from dual
+			]]>
+		</selectKey>
+	<![CDATA[
+		  insert into crm.crm_tb_noclear_account
+		  (   id,
+			  bukrs,
+			  gjahr,
+			  belnr,
+			  buzei,
+			  hkont,
+			  budat,
+			  zuonr,
+			  dmbtr,
+			  remark)
+		  values 
+		  (#id#,#bukrs#,#gjahr#,#belnr#,#buzei#,#hkont#,#budat#,#zuonr#,#dmbtr#,#remark#)
+		]]>
+	</insert>   
+	<update id="updateNoClearMoney" parameterClass="ncm">
+		<![CDATA[
+			 update crm.crm_tb_noclear_account p 
+			 set 
+			  bukrs=#bukrs#,
+			  gjahr=#gjahr#,
+			  belnr=#belnr#,
+			  buzei=#buzei#,
+			  hkont=#hkont#,
+			  budat=#budat#,
+			  zuonr=#zuonr#,
+			  dmbtr=#dmbtr#,
+			  remark=#remark# 
+			  where bukrs=#bukrs# 
+			  and gjahr=#gjahr# 
+			  and belnr=#belnr#  
+			  and buzei=#buzei# 
+			  and hkont=#hkont#  
+			  and zuonr=#zuonr# 
+			]]>
+	</update>
+	<select id="getNoClearMoney" parameterClass="ncm" resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(1) from crm.crm_tb_noclear_account p where 1=1 and
+			  bukrs=#bukrs# 
+			  and gjahr=#gjahr# 
+			  and belnr=#belnr#  
+			  and buzei=#buzei# 
+			  and hkont=#hkont#  
+			  and zuonr=#zuonr# 
+		]]>
+	</select>
+ 
+	<select id="getNoClearMoneyList" parameterMap="parameterMap" resultClass="ncm">
+		<![CDATA[
+			select 
+			     id as id,
+			     bukrs as bukrs,
+			     gjahr as gjahr,
+			     belnr as belnr,
+			     buzei as buzei,
+			     hkont as hkont,
+			     budat as budat,
+			     zuonr as zuonr,
+			     dmbtr as dmbtr,
+			     remark as remark 
+			     from crm.crm_tb_noclear_account
+			     where bukrs=#pbukrs# 
+		]]>
+		<dynamic>
+		    <isNotNull>
+		        <isNotEmpty property="gjahr" prepend="and">
+		             <![CDATA[ gjahr=#gjahr#]]>
+		        </isNotEmpty>
+		    </isNotNull>
+		</dynamic>
+	</select>
+	
+	
+	<select id="getReceiveCode" parameterClass="java.lang.String" resultClass="ncm">
+	    <![CDATA[
+	          select 
+			     id as id,
+			     bukrs as bukrs,
+			     gjahr as gjahr,
+			     belnr as belnr,
+			     buzei as buzei,
+			     hkont as hkont,
+			     budat as budat,
+			     zuonr as zuonr,
+			     dmbtr as dmbtr ,
+			     remark
+			     from crm.crm_tb_noclear_account
+			     where belnr=#belnr# 
+	    ]]>
+	</select>
+	
+		<select id="checkExistReceivePay" parameterClass="ReceivePay" resultClass="java.lang.Long">
+		<![CDATA[
+		    select count(1) from crm.crm_tb_receivepay where receiveId = #receiveId# and sale_company = #saleCompany# and account_year = #accountYear# and buzei = #buzei#
+		]]>
+	</select>
+	
+	<!-- 保存回款信息 -->
+	<insert id="addReceivePay" parameterClass="ReceivePay">
+	   <selectKey resultClass="java.lang.Long" keyProperty="id">
+		<![CDATA[
+			select crm.crm_sq_receivepay.nextval as id from dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		  insert into crm.crm_tb_receivepay
+		  (   ID,
+			  KUNNR,
+			  SALE_COMPANY,
+			  ACCOUNT_YEAR,
+			  RECEIVE_MONEY,
+			  RECEIVE_DATE,
+			  SKPZ,
+			  RECEIVEID,
+			  CREATEUSER,
+			  CREATEDATE,
+			  MODIFYUSER,
+			  MODIFYDATE,
+			  STATUS,
+			  SY_MONEY,
+			  REMARK,
+			  BUZEI,
+			  SP
+			  )
+		  values 
+		  (#id#,#kunnr#,#saleCompany#,#accountYear#,#receiveMoney#,
+		    #receiveDate#,#skpz#,#receiveId#,#createUser#,#createDate#,
+		    #modifyUser#,#modifyDate#,#status#,#syMoney#,#remark#,#buzei#,#sp#)
+		]]>
+	</insert>
+	
+	  <update id="updateCreditByReceive" parameterClass="java.lang.String">
+	    <![CDATA[
+	        update crm.crm_tb_credit aa set aa.credit_useamount=(select sum(sy_money) from crm.crm_tb_receivepay where kunnr=#kunnrId#)
+               where kunnr=#kunnrId# and credit_range='1020'
+ 	    ]]>
+	     
+    </update>
+	
+	<select id="getClearMoneyList" resultClass="java.lang.String">
+		<![CDATA[
+			select distinct skpz from crm.crm_tb_receivePay where status != 3
+			]]>
+	</select>
+	
+	
+	
+		<update id="updateOrderState" parameterClass="starderOrder">
+		<![CDATA[
+			update basis.BASIS_TB_ORDERINFO 
+			   set sap_order_id=#sap_order_id#,sync_state=1
+			where id=#id#
+		]]>
+	</update>
+	
+	<update id="updateSampleOrderState" parameterClass="sampleOrder">
+		<![CDATA[
+			update basis.BASIS_TB_ORDERINFO 
+			   set sap_order_id=#sap_order_id#,sync_state=1
+			where id=#id#
+		]]>
+	</update>
+	
+		<update id="updateQuoteState" parameterClass="quote">
+		<![CDATA[
+			update basis.BASIS_TB_QUOTEINFO 
+			   set sync_state=1
+			where id=#id#
+		]]>
+	</update>
+	
+		<update id="updateEndCustomerState" parameterClass="endCustomer">
+		<![CDATA[
+			update basis.basis_tb_end_customeInfo 
+			   set sync_state=1
+			where id=#id#
+		]]>
+	</update>
+	
+	
+	<!-- 更新sap返回信息 -->  	
+  <update id="sapRebackToPos" parameterClass="pos">
+	<![CDATA[
+	          update basis.BASIS_TB_CUS_POS 
+			   set DISTI_CLAIMNBR=#disti_claimnbr#,status=1,REBATE_QTY=#rebate_qty#
+			where debit_number=#debit_number#
+		]]>
+  	</update>  
+  	
+  <!-- 更新quote剩余数量 -->
+  <update id="updateQuoteResQty" parameterClass="pos">
+	<![CDATA[
+	          update basis.basis_tb_quote_detail 
+			   set res_qty = #res_qty#
+			where quote_id=#debit_number# and material_name=#book_part#
+		]]>
+  	</update>
+	
+		
+	<select id="getPosShipTo" parameterClass="pos" resultClass="pos">
+		<![CDATA[
+			select sold_to ,ship_to , bill_to billing_to,payer_to
+			from basis.BASIS_TB_DISTI_BRANCH 
+			 where payer_to = #disti_branch# and rownum = 1
+			]]>
+	</select>
+	
+	
+	<select id="getPosById" parameterClass="pos" resultClass="pos">
+		<![CDATA[
+			select id,sapClaimNbr,claim_deal_mark
+			from basis.BASIS_TB_CUS_POS 
+			 where id= #id# and rownum = 1
+			]]>
+	</select>
+	
+	<!-- 多行 -->	
+ 	<update id="updatePosClaimDealMark" parameterClass="pos">
+	<![CDATA[
+	          update basis.BASIS_TB_CUS_POS 
+			     set claim_deal_mark = #claim_deal_mark#
+			   where id=#id#
+		]]>
+  	</update>
+  	
+  	<select id="getLockmark" parameterClass="pos" resultClass="pos">
+		<![CDATA[
+			select id,type
+			from basis.BASIS_TB_CUS_POS_MN 
+			 where id= #id# and type= #type# 
+		]]>
+	</select>
+	
+  	<update id="updateLockMark" parameterClass="pos">
+		<![CDATA[
+          update basis.BASIS_TB_CUS_POS_MN 
+		     set type = #type#
+		   where id=#id#
+		]]>
+  	</update>
+  	
+ </sqlMap>

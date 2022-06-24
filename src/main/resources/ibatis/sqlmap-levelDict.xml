@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="levelDict">
+	<typeAlias alias="LevelDict" type="com.jingtong.platform.leveldict.pojo.LevelDict" />
+	
+	<select id="test" resultClass="LevelDict">
+		<![CDATA[
+	 	select id,name,parent_id,group_id,level_id,enable,create_time,create_userid,latest_time,latest_userid 
+	 	from basis.basis_tb_level_dict where 1=1
+		]]>
+	</select>
+	
+	<select id="searchById" parameterClass="java.lang.Integer" resultClass="LevelDict">
+		<![CDATA[
+	 	select id,name,parent_id,group_id,level_id,enable,create_time,create_userid,latest_time,latest_userid 
+	 	from basis.basis_tb_level_dict
+		where id=#id#
+		]]>
+	</select>
+
+	<select id="getAll" resultClass="LevelDict">
+ 	<![CDATA[
+		select * from basis.basis_tb_level_dict order by group_id,parent_id
+	]]>
+	</select>
+
+	<select id="searchByParameters" parameterClass="LevelDict"
+		resultClass="LevelDict">
+ 	<![CDATA[
+		select * from basis.basis_tb_level_dict
+		where group_id=#group_id# and parent_id=#parent_id#
+		order by group_id,parent_id,id
+	]]>
+	</select>
+
+	<insert id="saveLevelDict" parameterClass="LevelDict">
+		<selectKey resultClass="java.lang.Integer" keyProperty="id">
+		<![CDATA[
+			SELECT basis.basis_seq_level_dict.nextval as id from dual
+		]]>
+		</selectKey> 
+	<![CDATA[
+		insert into basis.basis_tb_level_dict 
+		values (#id#,#name#,#parent_id#,#group_id#,#level_id#,#enable#,#create_time#,#create_userid#,#latest_time#,#latest_userid#);
+	]]>
+	</insert>
+
+	<update id="updateLevelDict" parameterClass="LevelDict">
+	<![CDATA[
+		update basis.basis_tb_level_dict 
+		set    name=#name#,
+		       parent_id=#parent_id#,
+		       group_id=#group_id#,
+		       level_id=#level_id#,
+		       enable=#enable#,
+		       create_time=#create_time#,
+		       create_userid=#create_userid#,
+		       latest_time=#latest_time#,
+		       latest_userid=#latest_userid#
+		where  	id=#id#
+	]]>
+	</update>
+
+	<delete id="deleteById" parameterClass="LevelDict">
+	<![CDATA[
+		delete from basis.basis_tb_level_dict 
+		where id=#id#
+	]]>
+	</delete>
+
+</sqlMap>

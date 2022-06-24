@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="message">
+
+	<typeAlias alias="message" type="com.jingtong.platform.message.pojo.Message" />
+
+	<select id="searchMessage" parameterClass="message" resultClass="message">
+		<![CDATA[
+	 	select  
+	 		id,smsid,name,sendNumber,content,state,sendTime,type
+		from basis.basis_tb_message 
+		
+		where state='0'
+		]]>
+	</select>
+
+	<insert id="saveMessage" parameterClass="message">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		<![CDATA[
+			SELECT basis.basis_sq_message.nextval as id from dual
+		]]>
+		</selectKey> 
+	<![CDATA[
+		insert into basis.basis_tb_message(id,smsid,name,sendNumber,content,state,createTime,type)
+		values(#id#,#smsid#,#name#,#sendNumber#,#content#,'0',sysdate,#type#)
+	]]>
+	</insert>
+
+	<update id="updateMessage" parameterClass="message">
+	<![CDATA[
+		update basis.basis_tb_message 
+		set    state=#state#,resultMessage=#resultMessage#,sendTime=sysdate
+		where  	id = #id#
+	]]>
+	</update>
+
+
+</sqlMap>

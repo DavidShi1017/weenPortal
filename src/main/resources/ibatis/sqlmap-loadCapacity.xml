@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="loadCapacity">
+	<typeAlias alias="lc"
+		type="com.jingtong.platform.logisticsScheduling.pojo.LoadCapacity" />
+   <select id="getLoadCapacityListTotal" parameterClass="lc"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select count(*)  from basis.Load_Capacity a where 1=1 
+		]]>
+		
+	</select>
+	
+	<select id="getLoadCapacityList" parameterClass="lc"
+		resultClass="lc">
+		<include refid="global.paginationStart" />
+		<![CDATA[
+			select a.id,a.vstel,a.hand_team,a.start_date,a.end_date,a.scheduling  from basis.Load_Capacity a
+			where 1=1 
+		]]>
+		<dynamic>
+			 <isNotEmpty property="vstel" prepend="and">
+			    <![CDATA[ a.vstel = #vstel# ]]>
+			 </isNotEmpty>
+			 <isNotEmpty property="hand_team" prepend="and">
+			 	<![CDATA[ a.hand_team = #hand_team# ]]>
+			 </isNotEmpty>
+		</dynamic> 
+		<![CDATA[
+			order by a.hand_team 
+		]]>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select> 
+	
+	<insert id="insetLoadCapacity" parameterClass="lc" >
+	<selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				select basis.basis_SEQ_LoadCapacity.NEXTVAL as id from dual
+			]]>
+			</selectKey>
+	<![CDATA[
+		insert into basis.Load_Capacity
+			(id,vstel,hand_team,start_date,end_date,scheduling)
+		values
+			(#id#,#vstel#,#hand_team#,#start_date#,#end_date#,#scheduling#)
+	]]>
+	</insert>
+	<update id="updateLoadCapacity" parameterClass="lc">
+		<![CDATA[
+			update basis.Load_Capacity a
+			   set a.vstel=#vstel#,
+		 		   a.hand_team=#hand_team#,
+		 		   a.start_date = #start_date#,
+		 		   a.end_date = #end_date#,
+		 		   a.scheduling=#scheduling#
+			where a.id=#id#
+		]]>
+	</update> 
+	
+	
+	<select id="getLoadCapacity" parameterClass="java.lang.Long" resultClass="lc">
+	<![CDATA[
+			select a.id,a.vstel,a.hand_team,a.start_date,a.end_date,a.scheduling 
+			from  basis.Load_Capacity a 
+			where a.id =#ids#
+		]]>
+	</select>
+	
+	 <delete id="delLoadCapacity" parameterClass="java.lang.Long">
+		<![CDATA[
+			delete basis.Load_Capacity a
+			where a.id =#id#
+		]]>
+	</delete>
+	
+</sqlMap>

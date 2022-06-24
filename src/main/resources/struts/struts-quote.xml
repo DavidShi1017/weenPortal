@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="quote" extends="jingtong-default">
+		
+		<action name="quoteAction" class="quoteAction" >
+			<result name="toSearchQuote">/platform/quote/searchQuote.vm</result>
+			<result name="toViewQuote">/platform/quote/viewQuote.vm</result>
+			<result name="toCreateQuote">/platform/quote/createQuote.vm</result>
+			<result name="toSalerQuote">/platform/quote/salerQuote.vm</result>
+			<result name="toMarketQuote">/platform/quote/marketQuote.vm</result>
+			<result name="toBusinessQuote">/platform/quote/businessQuote.vm</result>
+			<result name="toOutPortQuote">/platform/quote/outPortQuote.vm</result>
+			<result name="toOutPort">/platform/quote/outPort.vm</result>
+			<result name="toSalerViewQuote">/platform/quote/salerViewQuote.vm</result>
+			<result name="toSearchQuoteLog">/platform/quote/searchQuoteLog.vm</result>
+			<result name="importExcel">/platform/quote/importExcel.vm</result>
+			<result name="toCheck">/platform/quote/toCheck.vm</result>
+			<result name="toRemarkTxt">/platform/quote/remarkTxt.vm</result>
+			<result name="toCopyCreate">/platform/quote/copyCreate.vm</result>
+			<result name="toEDIQuote">/platform/quote/EDIQuote.vm</result>
+			<result name="toSearchQuotePrice">/platform/quote/searchQuotePrice.vm</result>
+			<result name="toQuotePcCountry">/platform/quote/quotePcCountry.vm</result>
+			<result name="toSelectUserForQuoteForward">/platform/quote/selectUserForQuoteForward.vm</result>
+			<result name="toQuoteCenter">/platform/quote/quoteCenter.vm</result>
+			
+		</action>
+	</package>
+</struts>

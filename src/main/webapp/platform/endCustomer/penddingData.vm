@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		<!-- 查询 -->
+		<div class="easyui-layout"  border="0" data-options="fit:true,border:false"> 
+			<input type="hidden" id="end_customer_id" name="ec.id" value="$!{ec.end_customer_id}">
+	        <form method="post" target="hideFrame"  enctype="multipart/form-data">
+			
+			    <div data-options="region:'center'"  border="0">
+					<table id="datagrid" border="0"></table>
+				</div>
+	</form>
+	</div>
+	<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+	<div id="hiddenWin"/> 
+	</div>
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/endCustomer/pendingdata.js"></script>
+</html>

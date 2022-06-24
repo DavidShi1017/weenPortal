@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" title="基本信息" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="5">
+					<input type="hidden" id="id" name="g.id" value="$!{c.id}"/>
+						<tr>
+							<td class="head" noWrap><label for="name">Customer Id:</label></td>
+                            <td>
+								<input type="text" id="ec_id" name="ea.ec_id" value='$!{ea.ec_id}' readonly></input>
+							</td>
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Customer Name:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="ec_name" name="ea.ec_name" value='$!{ea.ec_name}' readonly></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Customer Group:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="ec_groupName" name="ea.ec_groupName" value='$!{ea.ec_groupName}' readonly></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Customer City:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="ec_city" name="ea.ec_city" value='$!{ea.ec_city}' readonly></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Alias Name:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="ec_alias_name" name="ea.ec_alias_name" value='$!{ea.ec_alias_name}' readonly></input>
+							</td>							
+						</tr>
+						<tr>                
+                            <td class="head" noWrap><label for="name">Alias City:</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="alias_city" name="ea.alias_city" value='$!{ea.alias_city}' readonly></input>
+							</td>							
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>  
+		
+		<br/>
+			<div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Close</a>
+			</div>
+
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/endCustomer/viewECAlias.js"></script>
+</html>

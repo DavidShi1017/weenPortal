@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="channelPrice">
+	<typeAlias alias="channelPrice" type="com.jingtong.platform.sap.pojo.ChannelPrice" />
+	<typeAlias alias="materials" type="com.jingtong.platform.sap.pojo.Material" />
+	<insert id="insertChannelPrice" parameterClass="channelPrice" >
+	<selectKey resultClass="java.lang.Long" keyProperty="id">
+			<![CDATA[
+				select crm.CRM_SQ_CHANNEL_PRICE.NEXTVAL as id from dual
+			]]>
+	</selectKey>
+	<![CDATA[
+	   insert into crm.crm_tb_channel_price
+		(
+		    id,
+		    VKORG,
+			VTWEG,
+			MATNR,
+			DATAB,
+			DATBI,
+			KBETR,
+			KONWA,
+			KPEIN,
+			KMEIN,
+			KFRST,
+			KUNNR,
+			MAKTX,
+			channleprice_type,
+			modify_date,
+			create_date
+		)
+		 values
+		 (
+		 #id#,#vkorg#,#vtweg#,#matnr#,#datab#,#datbi#,#kbetr#,#konwa#,#kpein#,#kmein#,#kfrst#,#kunnr#,#maktx#,#channelPriceType#
+		 ,sysdate,sysdate)
+	]]>
+	</insert>
+ 
+	<update id="updateChannelPrice" parameterClass="channelPrice">
+		<![CDATA[
+			update crm.crm_tb_channel_price a
+			   set 
+				      a.VKORG =#vkorg#,
+				      a.VTWEG = #vtweg#,
+				      a.MATNR =#matnr#,
+				      a.DATAB =#datab#,
+				      a.DATBI =#datbi#,
+				      a.KBETR =#kbetr#,
+				      a.KONWA =#konwa#,
+				      a.KPEIN =#kpein#,
+				      a.KMEIN =#kmein#,
+				      a.KFRST =#kfrst#,
+				      a.KUNNR =#kunnr#,
+				      a.MAKTX =#maktx#,
+				      a.modify_date=sysdate
+				      
+			where 1=1
+		]]>
+		<dynamic>
+				<isNotEmpty property="vkorg" prepend="and">
+					<![CDATA[a.vkorg=#vkorg#]]>
+				</isNotEmpty>
+				<isNotEmpty property="vtweg" prepend="and">
+					<![CDATA[a.vtweg=#vtweg#]]>
+				</isNotEmpty>
+				<isNotEmpty property="matnr" prepend="and">
+					<![CDATA[a.matnr=#matnr#]]>
+				</isNotEmpty>
+				<isNotEmpty property="kunnr" prepend="and">
+					<![CDATA[a.KUNNR=#kunnr#]]>
+				</isNotEmpty>
+				<isNotEmpty property="channelPriceType" prepend="and">
+					<![CDATA[a.channleprice_type=#channelPriceType#]]>
+				</isNotEmpty>
+			</dynamic>
+	</update> 
+	
+	<select id="getChannelPriceCount" parameterClass="channelPrice" resultClass="java.lang.Integer">
+		<![CDATA[
+			   select 
+			   count( t.id)
+			   from crm.crm_tb_channel_price t 
+			   where 1=1
+		]]>
+			<dynamic>
+				<isNotEmpty property="vkorg" prepend="and">
+					<![CDATA[t.vkorg=#vkorg#]]>
+				</isNotEmpty>
+				<isNotEmpty property="vtweg" prepend="and">
+					<![CDATA[t.vtweg=#vtweg#]]>
+				</isNotEmpty>
+				<isNotEmpty property="matnr" prepend="and">
+					<![CDATA[t.matnr=#matnr#]]>
+				</isNotEmpty>
+				<isNotEmpty property="kunnr" prepend="and">
+					<![CDATA[t.KUNNR=#kunnr#]]>
+				</isNotEmpty>
+				<isNotEmpty property="channelPriceType" prepend="and">
+					<![CDATA[t.channleprice_type=#channelPriceType#]]>
+				</isNotEmpty>
+			</dynamic>
+	</select>
+	<select id="getMaterial" parameterClass="java.lang.String" resultClass="materials">
+		<![CDATA[
+			   select 
+			    materialname,
+				 materialnumber,
+				 materialsort,
+				 materialunit,
+				 MATERIALWEIGHT,
+				 MATERIALVOLUME,
+				 MATERIALSKU,
+				 materialseries,
+				 state,
+				 vrkmeTxt,
+				 UMREZ
+			   from crm.crm_tb_material t 
+			   where 1=1 and t.state='Y' and t.materialnumber = #materNumber#
+		]]>
+		 
+	</select>
+</sqlMap>

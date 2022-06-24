@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()	
+	</head>
+	<body class="easyui-layout">
+		<form method="post" target="hideFrame">
+			<div region="center" class="easyui-panel" title="" data-options="iconCls:'icon-edit'">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+        			<tr>
+                        <td class="head" noWrap>LoginId:</td>
+        				<td><input class="easyui-validatebox"  id="loginId" name="cusUser.loginId" data-options="required:true" missingMessage="Please enter a valid LoginId" onblur="testId(document.getElementById('loginId').value)">
+						<div style="display: none" id="infoDiv"><input type="text" id = "infoTxt" style="border:1px;border-bottom-style:none;border-top-style:none;border-left-style:none;border-right-style:none;" disabled >
+                          <input type="hidden"  id="pass" />
+                         </div>
+						</td>
+        				<td class="head" noWrap>UserName<font color='red'>*</font>:</td>
+        				<td><input class="easyui-validatebox"  id="userName" name="cusUser.userName" 
+							data-options="required:true" missingMessage="Please enter a valid Username"></td>
+						<!--<td class="head" noWrap>职务:</td>
+        				<td>-->
+        			</tr>
+        			<tr>
+        				<input class="easyui-validatebox"  id="empPostName"    value=""  type="hidden" readonly >
+						<input class="easyui-validatebox" type='hidden' id="empPostId" name="cusUser.empPostId">
+						<input class="easyui-validatebox" type='hidden' id="orgId1" >
+						<!--<input type="button"  value="组织"  onclick="selectOrgTree()"/>-->
+						<!--
+                        <a class="easyui-linkbutton" id="postButton" href="javascript:selectOrgTree4Post()">职务</a>
+        				</td>	
+						-->
+        			</tr>
+        			<tr>
+        				<td class="head" noWrap>Password<font color='red'>*</font>:</td>
+        				<td>
+        				<input class="easyui-validatebox"  type="password" id="passWd" value='123456' name="cusUser.passWd" data-options="required:true" validType="length[6,99]" missingMessage="at least 6 characters" invalidMessage="at least 6 characters">
+                            <font color='green'>Initial password:123456</font>
+						</td>
+        				<td class="head" noWrap>Password again<font color='red'>*</font>:</td>
+        				<td>
+        				<input class="easyui-validatebox" type="password" id="repassWd" value='123456' name="statirepassWdonId" validType="equalTo['#passWd']" invalidMessage="Passwords must match"></td>
+        			</tr>
+        			<tr>
+						<td class="head" noWrap>Org<font color='red'>*</font>:</td>
+        				<td>
+        				<input class="easyui-validatebox"  id="orgName" name="cusUser.orgName"   value="HK10" data-options="required:true"  missingMessage="Please choose Org" readonly >
+						<input class="easyui-validatebox" type='hidden' id="orgId" name="cusUser.orgId" value="1000001">
+						<!--<input type="button"  value="组织"  onclick="selectOrgTree()"/>-->
+                        <a class="easyui-linkbutton"  href="javascript:selectOrgTree()">Org</a>
+						</td>
+						<td class="head" noWrap>Deptment:</td>
+        				<td><input class="easyui-validatebox"  id="dept" name="cusUser.deptCode"></td>						
+        			</tr>
+        			<tr>
+						
+        				<td class="head" noWrap>Email<font color='red'>*</font>:</td>
+        				<td>
+        				<input class="easyui-validatebox"  id="email" name="cusUser.email" data-options="required:true"
+							missingMessage="Please enter your email" validType="email" invalidMessage="Please enter the correct mailbox format, such as:xxx@sina.com"></td>
+        				<td class="head" noWrap>MobilePhone<font color='red'>*</font>:</td>
+        				<td>
+        				<input class="easyui-validatebox"  id="busMobilephone" name="cusUser.busMobilephone" data-options="required:true"
+							missingMessage="Please enter your phone" ></td>
+						
+        			</tr>
+        			<tr>
+        				<td class="head" noWrap>Sample Funloc:</td>
+        				<td>
+							<input class="easyui-validatebox"  id="trafficExpense" name="cusUser.trafficExpense" data-options="required:true"  value="$!{cusUser.trafficExpense}">	
+							<div id="toolbarCustomer" class="datagrid-toolbar">
+								<input class="easyui-searchbox" searcher="searcherCustomer" prompt="Key word search" style="width:250px"></input>		
+							 </div>						
+						</td>
+        			</tr>
+		
+					<!--
+						<td class="head" noWrap>UserId</td>
+						<td>
+                        <input type="text" name="cusUser.empUserId"/>
+                        </td>	
+        			<tr>
+        				<td class="head" noWrap>Personnel Category</td>
+						
+						<td>
+                        <input type="radio" name="cusUser.hqSign" value="1" checked> 总部  </input>
+                        <input type="radio" name="cusUser.hqSign" value="0"> 非总部  </input>
+                        </td>
+					</tr>
+					-->
+					<!--
+					<td class="head" noWrap>Remark:</td>
+        				<td><input class="easyui-validatebox"  id="remark" name="cusUser.remark"></td>
+								<tr>
+					   <td class="head" noWrap>Address:</td>
+					   <td >
+						<input class="easyui-validatebox"  id="address" name="cusUser.address" style="widtn:260px">
+					   </td>
+                    </tr>
+						<td class="head" noWrap>Office Telephone:</td>
+        				<td><input class="easyui-validatebox"  id="phone" name="cusUser.phone"></td>
+						-->
+					<tr>
+						
+						<td class="head" noWrap><font color='green'>Reminder: </font></td>
+						<td colspan="3">
+							<font color='green'>Field marked with <font color='red'>*</font> is not allowed to blank</font>
+						</td>
+					</tr>
+		    </table>
+		</div>
+			</div>
+			<div region="south" border="false" style="text-align:right;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:close()">Cancel</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		 <div id="maintWindow"/> 
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/alluser/createUser.js"></script>
+</html>

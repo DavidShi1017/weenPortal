@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui","upload"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		<div class="easyui-layout"  data-options="fit:true,border:false">
+		<div region="north"  style="height:50px;text-align:left;" data-options="iconCls:'icon-edit'">
+			<form method="post" target="hideFrame" enctype="multipart/form-data" >
+			<input id="kunnr2" value="$!{kunnr2}" type="hidden"></input>
+			<table width="100%" border="0"  cellpadding="0" cellspacing="5">
+		      	<input type="hidden" id="id" name="o.id" value="0"/>
+
+					<input type="hidden" id="customer_code"  value='' ></input>
+						<tr>
+                            <td class="head" noWrap><label for="name">Disti  </label></td>
+							<td noWrap class="context">
+								 
+								<!--<input class="easyui-validatebox"  data-options="required:true" id="branch_id" name="o.branch_id"  />-->
+                                <input class="easyui-validatebox"   id="dist_name"  />
+<!--
+								<div id="toolbarCustomer" class="datagrid-toolbar">
+									<input class="easyui-searchbox" searcher="searcherCustomer" prompt="请输入客户名称关键字查询" style="width:300px"></input>		
+								</div>	-->
+							
+								<td class="head" noWrap><label for="name">Currency </label></td>
+                            <td class="context" >
+								<input  class="easyui-validatebox" id="currency_code" name="o.currency_code" value="" /> 
+								<input  class="easyui-validatebox" id="currency_name"  type="hidden" />  
+
+							</td>
+							<td class="head" noWrap><label for="name">Type </label></td>
+							<td>
+         					<select id="debitsOrRedits" name="debitsOrRedits" value="Debits"style="width:155px;" data-options="editable:false">
+        						<option value="Debits">Debits</option>  
+								<option value="Redits">Redits</option>
+                            </select>
+        					</td>
+						   <td ><a id="repayBtn" class="easyui-linkbutton" icon="icon-search" href="javascript:loadKunnrReceivePayDetail()">Search</a></td>
+						</tr>
+					</table>
+
+		</form>
+		</div>
+		
+		<div region="center" style="height:180px;">
+			<table>
+    			<tr style="text-align:center;" align="center">
+    			    <td ><a id="repayBtn1" class="easyui-linkbutton" icon="icon-add" href="javascript:confirmRepayment()">Create</a></td>
+				
+ 						<td ><a id="repayBtn" class="easyui-linkbutton" icon="icon-excel" href="javascript:outport()">Export Excel</a></td>
+    			</tr>
+		    </table>
+			<table id="datagrid"></table>
+		</div>
+		<div region="south" style="height:30px;">
+				
+		  </div>   
+		</div>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<input type="hidden" value="$!{kunnrLoadFlag}" id="kunnrLoadFlag"/>
+		<input type="hidden" value="$!{kunnr}" id="kunnrCode"/>
+	</body>
+	
+
+</html>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/pos/receivePayB.js"></script>

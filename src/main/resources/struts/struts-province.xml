@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="provinceAction" extends="jingtong-default">
+		
+		<action name="provinceAction" class="provinceAction">
+			<result name="tosearchProvince">/platform/province/searchProvince.vm</result>
+			<result name="toCreateProvince">/platform/province/createProvince.vm</result>
+			<result name="toViewProvince">/platform/province/viewProvince.vm</result>
+		</action>
+	</package>
+</struts>

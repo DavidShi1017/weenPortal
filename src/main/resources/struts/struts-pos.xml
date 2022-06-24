@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="posAction" extends="jingtong-default">
+		<action name="posAction" class="posAction">
+			<result name="toPosPre">/platform/pos/searchPos.vm</result>
+			<result name="toPosPreDetail">/platform/pos/searchPosDetail.vm</result>
+ 			<result name="importExcel">/platform/pos/importExcel.vm</result>
+ 			
+ 			<result name="toPosUnpre">/platform/pos/receivePay.vm</result>
+ 			<result name="toPosUnpreA">/platform/pos/searchClaim6q6t.vm</result>
+ 			<result name="toPosUnpreB">/platform/pos/receivePayB.vm</result>
+ 			<result name="toCreateECAlias">/platform/pos/createECAlias.vm</result>
+ 			<result name="searchBb">/platform/pos/searchBb.vm</result>
+			<result name="toPosTrackingDetail">/platform/pos/posTrackingDetail.vm</result>
+			<result name="toClaimTrackingDetail">/platform/pos/claimTrackingDetail.vm</result>
+			<result name="toUpdatePCEC">/platform/pos/updatePCEC.vm</result>
+			<result name="rejectToApproveRemark">/platform/pos/rejectToApproveRemark.vm</result>
+			<result name="searchClaimErrorCode">/platform/pos/searchClaimErrorCode.vm</result>
+		</action>
+		<action name="claimAction" class="claimAction">
+			<result name="toPosPre">/platform/pos/searchClaim.vm</result>
+			<result name="toPosPreDetail">/platform/pos/searchClaimDetail.vm</result>
+ 			<result name="importExcel">/platform/pos/importExcelClaim.vm</result>
+ 			<result name="searchClaimBb">/platform/pos/searchClaimBb.vm</result>
+ 			<result name="rejectToApproveRemark">/platform/pos/rejectToApproveRemark.vm</result>
+		</action>
+	</package>
+	
+	
+	
+	
+</struts>

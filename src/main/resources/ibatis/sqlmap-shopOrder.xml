@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="shopOrder">
+	<typeAlias alias="order" type="com.jingtong.platform.sap.pojo.CrmOrderToSap" />
+ 	<typeAlias alias="orderDetail" type="com.jingtong.platform.sap.pojo.CrmOrderItem"/>
+ 	<typeAlias alias="credit" type="com.jingtong.platform.sap.pojo.Credit"/>
+ 	<typeAlias alias="creditLog" type="com.jingtong.platform.sap.pojo.CreditLog"/>
+ 	<typeAlias alias="oldP" type="com.jingtong.platform.sap.pojo.OldProduct"/>
+ 	<typeAlias alias="receivePay" type="com.jingtong.platform.sap.pojo.ReceivePay"/>
+ 	<typeAlias alias="payment" type="com.jingtong.platform.sap.pojo.PaymentDetailRecords"/>
+ 	
+ 	
+	<select id="getCrmOrderTotal" parameterClass="order" resultClass="order">
+		<![CDATA[
+         select aa.order_Id id,decode(aa.order_type,'1','ZOR1','2','ZFD2') auart,aa.vkorg,aa.channel_type vtweg,bb.spart,aa.pokey bstkd,aa.kunnr kunag,aa.kunnr_we kunnr,
+               aa.kunnr_rg kunrg,aa.kunnr_re kunre,
+			    dd.sap_org_id vkbur ,ee.sap_org_id bzirk,to_char(aa.order_date,'yyyymmdd') prsdt,to_char(aa.create_date,'yyyymmdd') audat,aa.bill_type abrvw,aa.order_type orderType,aa.augru
+				from crm.crm_tb_order_total aa 
+				left outer join crm.crm_tb_kunnr bb on aa.kunnr=bb.kunnr
+				left outer join basis.basis_tb_org cc on bb.org_id=cc.org_code
+				left outer join basis.basis_tb_org dd on cc.org_parent_id = dd.org_code
+				left outer join basis.basis_tb_org ee on dd.org_parent_id = ee.org_code 
+ 				where aa.order_status in(0,5)
+         
+  		]]>
+ 		<dynamic>
+ 		    <isNotEmpty property="id" prepend="and">
+			   <![CDATA[  aa.order_Id =#id#]]>
+			</isNotEmpty>
+ 		</dynamic>
+	</select>
+	  
+	<select id="getCrmOrderItems" parameterClass="order" resultClass="orderDetail">
+		<![CDATA[
+		    
+           select  aa.order_id id,aa.crm_rownumber posnr,aa.materialnumber matnr,aa.quantity kwmeng,aa.unit_code vrkme
+		     ,aa.warehouse lgort,aa.factory werks,aa.forderdetail_id father,aa.price outPrice,
+           aa.order_type pstyv,(aa.price-aa.channelprice)  price,'CNY' waerk,aa.credit_id creditId,aa.promotion_id promotionId,
+           aa.promotiondetail_id promoDetailId,aa.row_type rowType,aa.batch,aa.sap_order_id sapOrderId  from crm.crm_tb_order_detail aa 
+            where aa.order_id=#id#  and aa.status=0 and aa.quantity>0
+          
+ 		]]>
+ 		
+ 		 <dynamic>
+ 		     <isNotEmpty property="sapOrderType" prepend="and">
+ 		     <![CDATA[
+  		         sap_order_type =#sapOrderType#
+ 		     ]]>
+  		     </isNotEmpty>
+ 		     <isNotEmpty property="ids" prepend="and">
+ 		       <![CDATA[aa.order_detail_id in  ]]>
+  		       <iterate property="ids" open="(" close=")" conjunction=",">#ids[]#
+		       </iterate> 
+		     </isNotEmpty>
+		      
+ 		</dynamic>  
+	</select>
+	 
+	 <select id="getDeleteCrmOrder"  parameterClass="order" resultClass="orderDetail">
+ 	 <![CDATA[
+            select  aa.order_id id,aa.crm_rownumber posnr,aa.materialnumber matnr,aa.quantity kwmeng,aa.unit_code vrkme
+		     ,aa.warehouse lgort,aa.factory werks,aa.forderdetail_id father,aa.price outPrice,
+           aa.order_type pstyv,(aa.price-aa.channelprice)  price,'CNY' waerk,aa.credit_id creditId,aa.promotion_id promotionId,
+           aa.promotiondetail_id promoDetailId,aa.row_type rowType,aa.batch,aa.sap_order_id sapOrderId,bb.kunnr  from crm.crm_tb_order_detail aa 
+           left outer join crm.crm_tb_order_total bb on aa.order_id =bb.order_id 
+            where aa.order_id=#id#   
+  		]]>
+  		 <dynamic>
+  		     <isNotEmpty property="ids" prepend="and">
+ 		       <![CDATA[aa.order_detail_id in  ]]>
+  		       <iterate property="ids" open="(" close=")" conjunction=",">#ids[]#
+		       </iterate> 
+		     </isNotEmpty>
+  		</dynamic>  
+ 	 </select>
+	 
+	 
+	 
+	 
+	<update id="updateOrderDetail" parameterClass="orderDetail">
+	<![CDATA[
+	           update crm.crm_tb_order_detail aa set sap_order_id=#sapOrderId#,status='2' where order_id=#id# and sap_rownumber=#posnr#
+		]]>
+  	</update>
+  	
+  	
+	<update id="updateProductStock" parameterClass="orderDetail">
+		<![CDATA[
+		 update crm.crm_tb_productstock aa set aa.modifydate =sysdate,aa.bigkcjy=bigkcjy-#kwmeng#
+ 		 where aa.werks=#werks# and aa.lgort=#lgort# and matnr=#matnr# 
+ 		]]>
+	</update>
+	
+ 	
+	<update id="updateCredit" parameterClass="credit">
+		<![CDATA[
+		 update crm.crm_tb_credit aa set  aa.credit_useamount=#xyjy#,aa.syxy=#syxy#,aa.xytake=#xyTake#
+ 		 where aa.credit_id=#creditid#
+ 		]]>
+	</update>
+	
+	<update id="updateOrderStatus" parameterClass="order">
+	    <![CDATA[
+			 update crm.crm_tb_order_total aa set  aa.order_status=#status# 
+	 		 where aa.order_Id=#id#
+ 		]]>
+ 	</update>
+	
+	<update id="updateOldProductStock" parameterClass="oldP">
+	    <![CDATA[
+			 update crm.crm_tb_oldproduct aa set  aa.lastNum=lastNum-#lastnum# 
+	 		 where aa.kunnr=#kunnr# and materialnumber=#materialnumber# and beginDate<sysdate and endDate>sysdate
+ 		]]>
+ 	</update>
+	
+	
+	
+	
+	<insert id="addCreditLog" parameterClass="creditLog">
+	<selectKey resultClass="java.lang.Long" keyProperty="creditLogId">
+		<![CDATA[
+			select crm.crm_sq_credit_Log.nextval as creditLogId from dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into  crm.crm_tb_credit_log 
+			(id,kunnr,credit_Id,
+			credit_dbekr,creditxyjy,create_date,
+			create_user,remark,creditlog_type,BEFORE_INTEREST_RATE,AFTER_INTEREST_RATE,START_DATE,END_DATE)
+		values
+			(#creditLogId#,#kunnr#,#creditId#,
+			#creditdbekr#,#creditxyjy#,sysdate,
+			#revisionId#,#remark#,#creditlogtype#,#beforeInterestRate#,#afterInterestRate#,#startDate#,#endDate#)
+
+	]]>
+	
+	</insert>
+	
+	
+	<select id="getCreditList" parameterClass="credit"
+		resultClass="credit">
+ 	<![CDATA[
+			   select  a.credit_id as creditid,a.kunnr as  kunnr,k.name1 as name1,a.OVERDUE_INTEREST_RATE as overdueInterestRate,renewal_Interest_Rate as renewalInterestRate,a.CREDIT_NAME as creditName,
+			  a.status as status,dict.crdittypename creditRangeName,a.credit_range creditRange,credit_type creditType,materialNumber,credit_Amount dbekr,credit_useAmount xyjy,
+			  interest_rate interestRate,begin_date beginDate,end_date endDate,policy_code policyCode,a.remark,decode(a.syxy,'',0,null,0,a.syxy) syxy,decode(a.xytake,'',0,null,0,a.xytake) xytake from crm.crm_tb_credit  a       
+			  left join crm.crm_tb_kunnr k on a.kunnr=k.kunnr     
+        left join crm.crm_tb_credit_type dict on a.credit_range=dict.id
+        where 1=1 
+	]]>
+		<dynamic>
+			<isNotEmpty property="name1" prepend="and">
+			<![CDATA[k.name1 like #name1,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="kunnr" prepend="and">
+			<![CDATA[a.kunnr =#kunnr# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="creditid" prepend="and">
+			<![CDATA[a.credit_id=#creditid#]]>
+			</isNotEmpty>
+		</dynamic>
+ 	</select>
+	
+	<select id="getNewReceivePayId" parameterClass="java.lang.String" resultClass="receivePay">
+	<![CDATA[
+	     select id,kunnr,sy_money syMoney from crm.crm_tb_receivepay aa where kunnr=#kunnrId# and sy_money>0 order by receive_date desc    
+  
+ 	]]>
+ 	</select>
+	
+	<update id="updateReceivePay"  parameterClass="receivePay">
+	  <![CDATA[
+			 update crm.crm_tb_receivepay   set   sy_money=sy_money-#syMoney#,modifyDate=sysdate
+	 		 where id=#id#
+ 		]]>
+	</update>
+	
+	
+	 <!-- 保存记录 -->
+    <insert id="saveRepaymentRecords" parameterClass="payment">
+        <selectKey resultClass="java.lang.Long" keyProperty="id">
+            select crm.crm_sq_payment.nextval as id from dual
+        </selectKey>
+        <![CDATA[
+           insert into crm.crm_tb_Payment 
+              (id,ACCRUAL_ID,KUNNR,PAY_DATE,PAY_MONEY,receivable_Id,CREATEDATE,CREATEUSER,MODIFYUSER,MODIFYDATE,STATUS,acc_type) 
+              values
+                (#id#,#accrualId#,#kunnr#,sysdate,#payMoney#,#receivableId#,sysdate,#createUser#,#modifyUser#,sysdate,#status#,#accType#)
+          ]]>
+    </insert>
+	
+	<select id="getUseRepaymentList" parameterClass="orderDetail" resultClass="orderDetail">
+		<![CDATA[
+		  select aa.credit_id creditId,cc.credit_range creditRange,aa.price,aa.order_type orderType
+		  ,aa.promotion_id promotionId,aa.promotiondetail_id promotionDetailId,cc.kunnr,aa.materialNumber matnr  from crm.crm_tb_order_detail aa  
+             left outer join crm.crm_tb_credit cc on aa.credit_id=cc.credit_id 
+               where aa.sap_order_id=#sapOrderId# and  aa.sap_rownumber=#posnr#
+		]]>
+ 	</select>
+	
+	<select id="getPayMentList" parameterClass="payment" resultClass="payment">
+		<![CDATA[
+		   select id,accrual_id accrualId,pay_money payMoney,receivable_Id receivableId 
+		   from crm.crm_tb_payment where acc_type='1' and accrual_Id=#accrualId#
+  		]]>
+ 	</select>
+	
+	<select id="getLimitedNumByOrder" parameterClass="orderDetail" resultClass="java.lang.String">
+		<![CDATA[
+		  select bb.limitednum  limitedNum from crm.crm_tb_promotion_detail aa 
+				left outer join  crm.crm_tb_productgroup_rule bb on aa.productgroup_id=bb.productgroup_id
+				where aa.promotion_id =#promotionId# and aa.promotiondetail_id =#promoDetailId# and bb.materialnumber=#matnr#
+ 	    ]]>
+ 	</select>
+	
+	<update id="updateLimitedNumByOrder" parameterClass="orderDetail" >
+		<![CDATA[
+		update  crm.crm_tb_productgroup_rule bb set bb.limitednum =limitednum+#kwmeng# 
+		where bb.productgroup_id in (select aa.productgroup_id from crm.crm_tb_promotion_detail aa where aa.promotion_id =#promotionId# and aa.promotiondetail_id =#promoDetailId#)
+	     and    bb.materialnumber=#matnr#
+ 	    ]]>
+ 	</update>
+	
+	<update id="updateOrderDetailStatus" parameterClass="orderDetail" >
+		<![CDATA[
+		update  crm.crm_tb_order_detail aa set status='4' where sap_order_id=#sapOrderId# and sap_rownumber=#posnr#
+ 	    ]]>
+ 	</update>
+	
+</sqlMap>

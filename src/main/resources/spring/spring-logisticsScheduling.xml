@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<!-- 装卸能力-->
+	<bean id="loadCapacityAction" class="com.jingtong.platform.logisticsScheduling.action.LoadCapacityAction"
+		parent="baseAction" scope="request">
+		<property name="loadCapacityService" ref="loadCapacityService" ></property>
+	</bean>
+	
+	<bean id="loadCapacityService" class="com.jingtong.platform.logisticsScheduling.service.impl.LoadCapacityServiceImpl">
+		<property name="loadCapacityDao" ref="loadCapacityDao" ></property>
+	</bean>
+
+	<bean id="loadCapacityDao" class="com.jingtong.platform.logisticsScheduling.dao.impl.LoadCapacityDaoImpl" parent="baseDao">
+	</bean>
+    <!-- 排程-->
+	<bean id="scheduleListAction" class="com.jingtong.platform.logisticsScheduling.action.ScheduleListAction"
+		parent="baseAction" scope="request">
+		<property name="scheduleListService" ref="scheduleListService" ></property>
+	</bean>
+	
+	<bean id="scheduleListService" class="com.jingtong.platform.logisticsScheduling.service.impl.ScheduleListServiceImpl">
+		<property name="scheduleListDao" ref="scheduleListDao" ></property>
+	</bean>
+
+	<bean id="scheduleListDao" class="com.jingtong.platform.logisticsScheduling.dao.impl.ScheduleListDaoImpl" parent="baseDao">
+	</bean>
+    
+</beans>

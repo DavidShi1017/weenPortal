@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="travelApp" extends="jingtong-default" namespace="/travelApp">
+		
+		<action name="travelAppAction" class="travelAppAction">
+			<result name="travelApp">/platform/travelapp/travelApp.vm</result>
+			<result name="searchTravel">/platform/travelapp/searchTravel.vm</result>
+			<result name="travelWta">/platform/travelapp/travelWtr.vm</result>
+			<result name="searchAllTravel">/platform/travelapp/searchAllTravel.vm</result>
+			<result name="readTravelAppTr">/platform/travelapp/travelAppTr.vm</result>
+			<result name="printTravel">/platform/travelapp/printTravel.vm</result>
+			<result name="readTravelWtrTr">/platform/travelapp/travelWtrTr.vm</result>
+			<result name="travelDetail">/platform/travelapp/travelDetail.vm</result>
+		</action>
+	</package>
+</struts>

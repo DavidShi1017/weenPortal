@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="country">
+
+	<typeAlias alias="country" type="com.jingtong.platform.country.pojo.Country" />
+	<typeAlias alias="province" type="com.jingtong.platform.province.pojo.Province" />
+	<typeAlias alias="saleCountry" type="com.jingtong.platform.country.pojo.SaleCountry" />
+	<typeAlias alias="branchMapping" type="com.jingtong.platform.country.pojo.BranchMapping"/>
+	
+	
+	<select id="searchCountry" parameterClass="country"
+		resultClass="country">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+	 	select  aa.id,
+ 			aa.country_code,aa.country_name,aa.org_code,bb.org_id,bb.org_name  
+		from basis.basis_tb_country aa
+			left outer join basis.basis_tb_org bb on (aa.org_code=to_char(bb.org_code) or aa.org_code=bb.sap_org_id )
+		where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="country_code" prepend="and">
+				<![CDATA[ upper(aa.country_code) = #country_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="country_name" prepend="and">
+				<![CDATA[ upper(aa.country_name) like #country_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+				<![CDATA[ (upper(aa.country_name) like #search,handler=wildcard# escape '\' or upper(aa.country_code) like #search,handler=wildcard# escape '\')]]>
+			</isNotEmpty>
+			<isNotEmpty property="org_code" prepend="and">
+				<![CDATA[ (to_char(bb.org_code) = #org_code# or bb.sap_org_id=#org_code#)]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+
+	<select id="getCountryListCount" parameterClass="country"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_country aa
+		left outer join basis.basis_tb_org bb on (aa.org_code=to_char(bb.org_code) or aa.org_code=bb.sap_org_id )
+ 		where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="country_code" prepend="and">
+				<![CDATA[ upper(aa.country_code) = #country_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="country_name" prepend="and">
+				<![CDATA[ upper(aa.country_name) like #country_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+				<![CDATA[ (upper(aa.country_name) like #search,handler=wildcard# escape '\' or upper(aa.country_code) like #search,handler=wildcard# escape '\')]]>
+			</isNotEmpty>
+			<isNotEmpty property="org_code" prepend="and">
+				<![CDATA[ (to_char(bb.org_code) = #org_code# or bb.sap_org_id=#org_code#)]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getCountByCode" parameterClass="country"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_country
+		where country_code = #country_code#
+	]]>
+	</select>
+
+	<insert id="saveCountry" parameterClass="country">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		<![CDATA[
+			SELECT basis.basis_sq_country.nextval as id from dual
+		]]>
+		</selectKey> 
+	<![CDATA[
+		insert into basis.basis_tb_country(id,country_code,country_name,org_code)
+		values(#id#,#country_code#,#country_name#,#org_code#)
+	]]>
+	</insert>
+
+	<update id="updateCountry" parameterClass="country">
+	<![CDATA[
+		update basis.basis_tb_country 
+		set    country_code=#country_code#,
+		       country_name=#country_name#,
+		       org_code=#org_code#
+		where  	id = #id#
+	]]>
+	</update>
+
+	<delete id="deleteCountryById" parameterClass="country">
+	<![CDATA[
+		delete from basis.basis_tb_country 
+		where id=#id#
+	]]>
+	</delete>
+
+	<select id="getCountryById" parameterClass="country"
+		resultClass="country">
+		<![CDATA[
+			select   
+			aa.id,aa.country_code,aa.country_name,aa.org_code,bb.org_name  
+		from basis.basis_tb_country aa
+		left outer join basis.basis_tb_org bb on (aa.org_code=to_char(bb.org_id) or aa.org_code=bb.sap_org_id )
+			where
+			 	 aa.id = #id#
+		]]>
+
+	</select>
+
+<!-- 查询国家与省份信息以分配到各个销售    (原限制一个国家省份只能对应一个销售（即右侧条件）)( aa.isAssign is null or aa.isAssign='N') and (bb.isAssign is null or bb.isAssign='N' ) -->	
+	<select id="searchCountryProvince" parameterClass="country"
+		resultClass="country">
+
+		<![CDATA[
+		select 
+ 			aa.country_code,aa.country_name,aa.org_code,cc.org_name,bb.province_code,bb.province_name  
+		from basis.basis_tb_country aa
+			left outer join  basis.basis_tb_province bb on aa.country_code = bb.country_code
+			left outer join basis.basis_tb_org cc on (aa.org_code=to_char(cc.org_id) or aa.org_code=cc.sap_org_id )
+		 where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="country_code" prepend="and">
+				<![CDATA[ upper(aa.country_code) = #country_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="country_name" prepend="and">
+				<![CDATA[ upper(aa.country_name) like #country_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+				<![CDATA[ (upper(aa.country_name) like #search,handler=wildcard# escape '\' or upper(aa.country_code) like #search,handler=wildcard# escape '\')]]>
+			</isNotEmpty>
+			<isNotEmpty property="org_code" prepend="and">
+				<![CDATA[ (to_char(cc.org_id) = #org_code# or cc.sap_org_id=#org_code#)]]>
+			</isNotEmpty>
+		</dynamic>
+		<![CDATA[order by cc.org_name asc,aa.country_name asc,bb.province_name asc]]>
+	</select>
+	
+	
+<!-- 查询销售与国家对应列表 -->	
+	<select id="searchSaleCountry" parameterClass="saleCountry"
+		resultClass="saleCountry">
+		<include refid="global.paginationStart" /> 
+		<![CDATA[
+		select 
+ 			aa.id,aa.country_code,aa.country_name,aa.org_code,cc.org_name,
+ 			aa.province_code,aa.province_name,aa.userId,bb.emp_name userName,bb.org_id userOrg  
+		from basis.basis_tb_saleCountry aa
+		  left outer join basis.basis_tb_salesemp_info bb on bb.emp_id=aa.userId 
+		left outer join basis.basis_tb_org cc on (aa.org_code=to_char(cc.org_id) or aa.org_code=cc.sap_org_id )
+		where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="country_code" prepend="and">
+				<![CDATA[ upper(aa.country_code) = #country_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="country_name" prepend="and">
+				<![CDATA[ upper(aa.country_name) like #country_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="province_name" prepend="and">
+				<![CDATA[ upper(aa.province_name) like #province_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+				<![CDATA[ (upper(aa.country_name) like #search,handler=wildcard# escape '\' or upper(aa.country_code) like #search,handler=wildcard# escape '\')]]>
+			</isNotEmpty>
+			<isNotEmpty property="userId" prepend="and">
+				<![CDATA[ aa.userId = #userId#]]>
+			</isNotEmpty>
+		</dynamic>
+		<![CDATA[order by cc.org_name asc,aa.country_name asc,aa.province_name asc]]>
+		<include refid="global.paginationEnd" />
+	</select>	 
+	<select id="getSaleCountryListCount" parameterClass="saleCountry"
+		resultClass="java.lang.Integer">
+ 	<![CDATA[
+		select count(*) from basis.basis_tb_saleCountry aa
+		
+ 		where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="country_code" prepend="and">
+				<![CDATA[ upper(aa.country_code) = #country_code#]]>
+			</isNotEmpty>
+			<isNotEmpty property="country_name" prepend="and">
+				<![CDATA[ upper(aa.country_name) like #country_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="province_name" prepend="and">
+				<![CDATA[ upper(aa.province_name) like #province_name,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+				<![CDATA[ (upper(aa.country_name) like #search,handler=wildcard# escape '\' or upper(aa.country_code) like #search,handler=wildcard# escape '\')]]>
+			</isNotEmpty>
+			<isNotEmpty property="userId" prepend="and">
+				<![CDATA[ aa.userId = #userId#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<insert id="addSaleCountry" parameterClass="saleCountry">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		<![CDATA[
+			SELECT basis.basis_seq_saleCountry.nextval as id from dual
+		]]>
+		</selectKey> 
+	<![CDATA[
+		insert into basis.basis_tb_saleCountry(id,userId,org_code,country_code,country_name,province_code,province_name)
+		values(#id#,#userId#,#org_code#,#country_code#,#country_name#,#province_code#,#province_name#)
+	]]>
+	</insert>
+	
+	<delete id="delSaleCountry" parameterClass="saleCountry">
+	<![CDATA[
+		delete from basis.basis_tb_saleCountry 
+		where id=#id#
+	]]>
+	
+	</delete>
+		<update id="assignCountry" parameterClass="saleCountry">
+	<![CDATA[
+		update  basis.basis_tb_country set isAssign=#isAssign#
+		where country_code=#country_code#
+	]]>
+	</update>
+	
+	<update id="assignProvince" parameterClass="saleCountry">
+	<![CDATA[
+		update  basis.basis_tb_province set isAssign=#isAssign#
+		where province_code=#province_code#
+	]]>
+	</update>
+	
+	
+	
+
+	<!-- branch mapping table xcfeng 20180615-->	
+	
+	<select id="getBranchMappingList" parameterClass="branchMapping" resultClass="branchMapping">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select  id,disti_hq_soldto,region_level2,global_account,loc_rep_country,create_time,create_userid,update_time,update_userid
+		from basis.basis_tb_branch_mapping aa
+			left outer join basis.basis_tb_salesemp_info cc 
+			on aa.create_userId = cc.emp_id
+				where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="disti_hq_soldto" prepend="and">
+				<![CDATA[ aa.disti_hq_soldto like #disti_hq_soldto,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="region_level2" prepend="and">
+				<![CDATA[ upper(aa.region_level2) like #region_level2,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="global_account" prepend="and">
+				<![CDATA[ upper(aa.global_account) like #global_account,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="loc_rep_country" prepend="and">
+				<![CDATA[ upper(aa.loc_rep_country) like #loc_rep_country,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="id" prepend="and">
+				 <isNotEqual prepend="" property="id" compareValue = "0">
+		     		    <![CDATA[ aa.id = #id#]]>
+		          </isNotEqual>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy"/>
+		<include refid="global.paginationEnd" /> 
+	</select>
+
+	
+	<select id="getBranchMappingListCount" parameterClass="branchMapping"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+			select  count(*)
+		from basis.basis_tb_branch_mapping aa
+			left outer join basis.basis_tb_salesemp_info cc 
+			on aa.create_userId = cc.emp_id
+			where 1=1
+		]]>
+		<dynamic>
+			<isNotEmpty property="disti_hq_soldto" prepend="and">
+				<![CDATA[ aa.disti_hq_soldto like #disti_hq_soldto,handler=wildcard# escape '\']]>
+			</isNotEmpty>	
+			<isNotEmpty property="region_level2" prepend="and">
+				<![CDATA[ upper(aa.region_level2) like #region_level2,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="global_account" prepend="and">
+				<![CDATA[ upper(aa.global_account) like #global_account,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="loc_rep_country" prepend="and">
+				<![CDATA[ upper(aa.loc_rep_country) like #loc_rep_country,handler=wildcard# escape '\']]>
+			</isNotEmpty>
+			<isNotEmpty property="id" prepend="and">
+				 <isNotEqual prepend="" property="id" compareValue = "0">
+		     		    <![CDATA[ aa.id = #id#]]>
+		          </isNotEqual>
+			</isNotEmpty>
+		</dynamic>	 
+	</select>
+	
+	
+	<insert id="createBranchMapping" parameterClass="branchMapping">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		      SELECT basis.basis_seq_price_rule.nextval AS id FROM DUAL	
+		</selectKey>
+		<![CDATA[
+			insert into basis.basis_tb_branch_mapping  
+			(id,disti_hq_soldto,region_level2,global_account,loc_rep_country,create_time,create_userid)
+			values	(
+				#id#,#disti_hq_soldto#,#region_level2#,#global_account#,#loc_rep_country#,#create_time#,#create_userid#)
+		
+		]]>
+	</insert>
+	
+	<update  id="updateBranchMapping" parameterClass="branchMapping">
+		update basis.basis_tb_branch_mapping  set 
+			disti_hq_soldto=#disti_hq_soldto#,region_level2=#region_level2#,global_account=#global_account#,loc_rep_country=#loc_rep_country#,
+			update_time=#update_time#,
+			update_userid=#update_userid#
+		where id=#id#
+	</update>
+	
+	
+	<delete id="deleteBranchMapping" parameterClass="branchMapping">
+		delete from basis.basis_tb_branch_mapping  
+		where id=#id#
+	</delete> 
+	
+	<select id="getOrgCodeByOrgId" parameterClass="Country" resultClass="Country">
+        SELECT org_code
+          FROM basis.basis_tb_org
+         WHERE state = 'Y'
+           AND org_id=#org_id#
+    </select> 
+</sqlMap>

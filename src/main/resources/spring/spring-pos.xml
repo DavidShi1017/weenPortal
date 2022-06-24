@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="posAction" class="com.jingtong.platform.pos.action.PosAction"
+        parent="baseAction" scope="request">
+        <property name="designRegService" ref="designRegService" />
+        <property name="posService" ref="posService"/>
+        <property name="dictService" ref="dictService" />
+        <property name="roleService" ref="roleService" />
+     </bean>
+         <bean id="claimAction" class="com.jingtong.platform.pos.action.ClaimAction"
+        parent="baseAction" scope="request">
+        
+        <property name="posService" ref="posService"/>
+        </bean>
+     <bean id="posService" class="com.jingtong.platform.pos.service.impl.PosServiceImpl">
+        <property name="posDao" ref="posDao"/>
+     </bean>
+    <bean id="designRegService" class="com.jingtong.platform.designReg.service.impl.DesignRegServiceImpl">
+        <property name="designRegDao" ref="designRegDao"/>
+        <property name="transactionTemplate" ref="transactionTemplate" />
+    </bean>
+    <bean id="posDao" class="com.jingtong.platform.pos.dao.impl.PosDaoImpl" parent="baseDao">
+    </bean>
+</beans>

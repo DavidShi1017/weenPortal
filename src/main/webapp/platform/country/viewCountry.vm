@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" title="基本信息" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+			<table width="100%" border="0" cellpadding="0" cellspacing="5">
+					<input type="hidden" id="id" name="g.id" value="$!{c.id}"/>
+						<tr>      
+							<td class="head" noWrap><label for="name">Country Code<font color="red">*</font> ：</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="country_code" name="c.country_code" value='$!{c.country_code}'></input>
+							</td>
+                           							
+						</tr>
+						<tr>
+						  <td class="head" noWrap><label for="name">Country Name<font color="red">*</font> ：</label></td>
+							<td noWrap>
+								 <input class="easyui-validatebox"  id="country_name" name="c.country_name" value='$!{c.country_name}'></input>
+							</td>
+                         </td>
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>
+
+
+		
+		<div id="p_search" class="easyui-panel" title="" style="padding: 2px; background: #fafafa;" data-options="collapsible:true">
+			<table id="datagrid">
+			</table>			
+			<input class="easyui-validatebox" data-options="required:true" id="poDetailJson" name="poDetailJson" type="hidden">
+        </div>
+
+		</div>  
+		
+		<br/>
+			<div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Close</a>
+			</div>
+
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/country/viewCountry.js"></script>
+</html>

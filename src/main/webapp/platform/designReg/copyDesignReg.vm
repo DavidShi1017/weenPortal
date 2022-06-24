@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+        #CSSM(["easyui","style"])
+        #JSM(["jquery", "easyui"])
+        #JS_ENV_VAL()
+    </head>
+    <body>
+        <form action="" method="post">
+            <div class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+                <table  border="0" cellpadding="0" cellspacing="5">
+                    <input type="hidden" id="drNum" name="dr.drNum" value="$!{dr.drNum}" />
+                    <input type="hidden" id="id" name="dr.id" value="$!{dr.id}" />
+                    <input type="hidden" id="customer_code"  value='$!{dr.customer_id}' />
+                    <input type="hidden" id="forWho" value="$!{forWho}" />
+                    <tr>                
+                        <td class="head" noWrap width='100'><label for="name"><span style="color:red">*</span>Disti :</label></td>
+                        <td noWrap class="context" width='220'>
+                            <input class="easyui-validatebox" id="cus_groupId" name="dr.cus_groupId" value='$!{dr.cus_groupId}' style="width:200px" readonly />
+                            <input type='hidden' id="payerTo" name="dr.customer_id" value='$!{dr.customer_id}' />
+                            <input type='hidden' id="currency_code" value='$!{dr.currency_code}' />
+                            <input type='hidden' id="office_id" value='$!{dr.office_id}' />
+                        </td>
+                        <td class="head" noWrap width='160'><label for="name"><span style="color:red">*</span>Registration Date :</label></td>
+                        <td noWrap class="context" width='220'>
+                            <input class="easyui-validatebox" id="start_date" name="dr.start_dateStr" value='$!{dr.start_dateStr}' readonly />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap width='120'><label for="name"><span style="color:red">*</span>Disti Branch :</label></td>
+                        <td noWrap class="context" width='220'>
+                            <input class="easyui-validatebox" id="disti_branch" name="dr.disti_branch" value='$!{dr.disti_branch}' style="width:200px" />
+                            <div id="toolbarDistiBranch" class="datagrid-toolbar">
+                                <input class="easyui-searchbox" searcher="searcherDistiBranch" prompt="Key word search" style="width:200px"></input>        
+                            </div>    
+                        </td>
+                        <td class="head" noWrap><label for="name"><span style="color:red">*</span>Expiry Date :</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-validatebox" id="end_date" name="dr.end_dateStr" value='$!{dr.end_dateStr}' readonly />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name"><span style="color:red">*</span>End Customer :</label></td>
+                        <td noWrap class="context">
+                            <input type="hidden" id="endCus_name" value="$!{dr.endCus_name}" />                    
+                            <input class="easyui-validatebox" id="endCus_id" name="dr.endCus_id" value="$!{dr.endCus_id}" />                  
+                            <div id="toolbarEndCustomer" class="datagrid-toolbar">
+                                 <input class="easyui-searchbox" searcher="searcherEndCustomer" prompt="Please enter key word to search customer" style="width:300px" />
+                            </div>    
+                            <img style="cursor:add" title="" onclick=applyEC() src="$!{env.imgUrl}/images/actions/action_add.png" align="absMiddle"></img>
+                        </td>  
+                        <td class="head" noWrap><label for="name"><span style="color:red">*</span>MP Schedule:</label></td>
+                        <td noWrap class="context">
+                            <input class="Wdate" id="mp_schedule" name="dr.mp_scheduleStr" value='$!{dr.mp_scheduleStr}' onfocus="WdatePicker({minDate:'%y-%M-%d'})" ></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name"><span style="color:red">*</span>EC City :</label></td>
+                        <td noWrap class="context">
+                            <input id="endCus_groupName" class="easyui-validatebox" value='$!{dr.ec_city}' readonly />  
+                            <input id="endCus_groupId" type="hidden" name="dr.endCus_groupId" value='$!{dr.ec_city}' readonly />  
+                        </td>    
+                        <td class="head" noWrap><label for="name"><span style="color:red">*</span>Annual runrate(sets) :</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-numberbox" id="usage_amount" name="dr.usage_amount" value="$!{dr.usage_amount}" ><span id='runrateMSG' border=0 style="color:red"></span>
+                        </td>  
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name"><span style="color:red">*</span>EC Contact :</label></td>
+                        <td noWrap class="context">
+                            <input id="ec_contact" class="easyui-validatebox" name="dr.ec_contact" value='$!{dr.ec_contact}' />  
+                        </td>    
+                        <td class="head" noWrap><label for="name"><span style="color:red">*</span>Application :</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-validatebox" id="equip_type" name="dr.equip_type" value="$!{dr.equip_name}" ></input>  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name"><span style="color:red">*</span>EC Tel Number :</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-validatebox" id="tel" name="dr.tel" value="$!{dr.tel}" />  
+                        </td>
+                        <td class="head" noWrap><label for="name"><span style="color:red">*</span>Project :</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-validatebox" id="project_name" name="dr.project_name" value="$!{dr.project_name}" />  
+                            <input  type="hidden" id="total_amount" name="dr.total_amount" value="$!{q.total_amount}" readonly />  
+                            <input type="hidden" id="total_type" name="dr.total_type" value="$!{q.total_type}"  readonly />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head" noWrap><label for="name">Estimated Share(%) :</label></td>
+                        <td noWrap class="context">
+                            <input class="easyui-validatebox" id="estimated_share" name="dr.estimated_share" value="$!{dr.estimated_share}" />  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head">Remark :</td>
+                        <td colspan="3">
+                            <textarea style="width:650px ;height:60px;" id="remark" name="dr.remark"> $!{dr.remark}</textarea>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <div id="p_search" class="easyui-panel" title="" style="padding: 2px; background: #fafafa;" data-options="collapsible:true">
+                    <table id="datagrid" border="0">
+                    </table>            
+                    <input class="easyui-validatebox" data-options="required:true" id="designRegDetailJson" name="designRegDetailJson" type="hidden" />
+                    <input class="easyui-validatebox" data-options="required:true" id="delDesignReg" name="delDesignRegDetail" type="hidden" />
+                </div>
+            </div>  
+            <br/>
+            <div region="south" border="false" style="text-align:center;height:20px;line-height:20px;">
+                <a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+                <a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+            </div>
+        </form>
+        <iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+        <div id="hiddenWin"/> 
+    </body>
+    <script type="text/javascript" src="$!{env.imgUrl}/js/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="$!{env.imgUrl}/js/platform/designReg/copycreateDesignReg.js?time=New Date()"></script>
+</html>

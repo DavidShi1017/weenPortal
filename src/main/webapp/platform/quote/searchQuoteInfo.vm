@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		<!-- 查询 -->
+		<div class="easyui-layout" data-options="fit:true,border:false"> 
+			<input type="hidden" id="ids"/>
+			<input  type="hidden"  id="loginRole" value="$!{loginRole}">
+	        <form method="post" target="hideFrame">
+			<div id="p_search" title="" style="height:80px;padding: 2px; background: #fafafa;" data-options="region:'north',iconCls:'icon-search'">
+				<br>
+				<table  border="0" cellpadding="0" cellspacing="1">
+				<tr>				
+					 <td class="head" noWrap width='160'>Disti</td>
+                    <td class="context"  width='200'>
+						<input class="easyui-validatebox" id="customer_id" name="customer_id">
+						<div id="toolbarCustomer" class="datagrid-toolbar">
+							<input class="easyui-searchbox" searcher="searcherCustomer" prompt="请输入客户名称关键字查询" style="width:300px"></input>		
+						</div>						
+					</td>
+ 					
+					 <td class="head" noWrap width='160'>EndCustomer</td>
+                    <td class="context"  width='200'>
+						<input class="easyui-validatebox" id="endCustomer_id" name="endCustomer_id">
+						<div id="toolbarEndCustomer" class="datagrid-toolbar">
+							<input class="easyui-searchbox" searcher="searcherEndCustomer" prompt="请输入终端客户名称关键字查询" style="width:300px"></input>		
+						</div>						
+					</td>
+				</tr>
+				<tr>
+                     <td class="head" noWrap width='160'>Quote Num</td>
+                    <td class="context"  width='200'><input class="easyui-validatebox" id="quote_id" name="quote_id"></td>
+ 					 <td class="head" noWrap width='160'>Project</td>		 
+                    <td class="context"  width='200'><input class="easyui-validatebox" id="project_name" name="project_name"></td>
+                     
+
+					<td colspan="2">
+						<a id="search" href="javascript:search()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">Search</a>
+                    	<a id="clearV" href="javascript:clearValue()" class="easyui-linkbutton" iconCls="icon-clear">Reset</a> 	
+					</td>		
+					
+                </tr>
+                </table>
+				 </div>
+			    <div data-options="region:'center'"  border="0">
+					<table id="datagrid"  border="0"></table>
+				</div>
+	</form>
+	</div>
+	<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+	<div id="hiddenWin"/> 
+	</div>
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/quote/searchQuote.js"></script>
+</html>

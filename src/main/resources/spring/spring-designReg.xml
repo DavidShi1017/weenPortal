@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="designRegAction" class="com.jingtong.platform.designReg.action.DesignRegAction"
+		parent="baseAction" scope="request">
+		<property name="designRegService" ref="designRegService" />
+		<property name="customerService" ref="customerService" />
+		<property name="roleService" ref="roleService"></property>
+			<property name="messageService" ref="messageService" />
+		
+		<property name="quoteService" ref="quoteService" />
+	</bean>
+	<bean id="designRegService" class="com.jingtong.platform.designReg.service.impl.DesignRegServiceImpl">
+		<property name="designRegDao" ref="designRegDao"/>
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+	
+	<bean id="designRegDao" class="com.jingtong.platform.designReg.dao.impl.DesignRegDaoImpl" parent="baseDao">
+	</bean>
+	 
+</beans>

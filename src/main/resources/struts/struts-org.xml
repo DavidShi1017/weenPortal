@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="org" extends="jingtong-default">
+		<default-interceptor-ref name="jingtongInterceptor" />
+		<action name="orgTreeAjaxAction" class="orgTreeAjaxAction"></action>
+		<action name="orgAction" class="orgAction">
+			<result>/platform/org/orgMainManage.vm</result>
+			<result name="orgtree">/platform/org/orgTree.vm</result>
+			<result name="orgTreePage4Post">/platform/org/orgTreePage4Post.vm</result>
+		</action>
+	</package>
+</struts>

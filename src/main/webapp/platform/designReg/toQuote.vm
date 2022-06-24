@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+ 				<table  border="0" cellpadding="0" cellspacing="5">
+					<input  type="hidden" id="quote_id" name="q.quote_id" value="$!{q.quote_id}"/>
+					<input type="hidden" id="id" name="q.id" value="$!{q.id}"/>
+					<input type="hidden" id="quoteDetail"  value="$!{quoteDetail}"/>
+					<input type="hidden" id="rate" name="q.rate"/>
+						<tr>  
+							<!--
+                            <td class="head" noWrap width='160'><label for="name">Quote Type</label></td>
+							<td noWrap class="context" width='220'>
+							</td>
+							-->
+							<td class="head" noWrap><label for="name">Disti</label></td>
+                            <td noWrap class="context">
+								<input  id="cusGroup_id" class="easyui-validatebox" name="q.cusGroup_id" value='$!{q.cusGroup_id}' style="width:200px" readonly/> 
+							</td>		
+								 <input class="easyui-validatebox" type='hidden' id="type_id" name="q.type_id" value='Quote' readonly></input>
+                            <td class="head" noWrap width='160'><label for="name">Project</label></td>
+							<td noWrap class="context" width='220'>
+								 <input class="easyui-validatebox"  id="project_name" name="q.project_name" value='$!{q.project_name}' readonly></input>
+							</td>							
+						</tr>
+						<tr>
+							<td class="head" noWrap width='120'><label for="name">Disti Branch</label></td>
+							<td noWrap class="context" width='220'>
+								<input class="easyui-validatebox"  id="disti_branch" name="q.disti_branch" value='$!{q.disti_branch}' style="width:200px" readonly></input>
+								<input type="hidden" id="payerTo" name="q.customer_id" value='$!{q.customer_id}'>
+								<input type="hidden" id="salesOrg"name="q.salesOrg"  value='$!{q.salesOrg}'>
+							</td>
+							<td class="head" noWrap><label for="name">Currency</label></td>
+                            <td noWrap class="context">
+								<input class="easyui-validatebox" id="currency_code" name="q.currency_code" value="$!{q.currency_code}"  readonly/>  
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Purchasing Customer</label></td>
+                            	<td class="context">
+								 <input class="easyui-validatebox"  id="purchaseCustomer_id" name="q.purchaseCustomer_id" value="$!{q.purchaseCustomer_id}"  readonly ></input>
+								 <input type="hidden" id="purchaseCustomer_name"  name="q.purchaseCustomer_name" value="$!{q.endCustomer_name}" />
+								 <img style="cursor:add"  title=""  onclick=applyEC()  src="$!{env.imgUrl}/images/actions/action_add.png" align="absMiddle"></img> 
+								<div id="toolbarPurchaseCustomer" class="datagrid-toolbar">
+									<input class="easyui-searchbox" searcher="searcherPurchaseCustomer" prompt="Key word search" style="width:300px"></input>		
+								</div>	
+							</td>  
+							<td class="head" noWrap><label for="name">Creator</label></td>
+                            <td noWrap class="context" width='220'>
+								<input class="easyui-validatebox" id="create_userId"  value="$!{q.create_userId}" readonly>
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">PC Group</label></td>
+                            <td noWrap class="context">
+								<input class="easyui-validatebox" id="pcGroup_name" value="$!{q.pcGroup_name}" readonly >
+								<input type="hidden"id="pcGroup_id" name="q.pcGroup_id"  value="$!{q.pcGroup_id}" readonly >
+							</td>
+							<td class="head" noWrap><label for="name">Created date</label></td>
+                            <td noWrap class="context">
+								<input class="easyui-validatebox" id="create_timeStr" value="$!{q.create_timeStr}" readonly/>  
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">End Customer</label></td>
+                           <td noWrap class="context">
+								 <input class="easyui-validatebox"  id="endCustomer_name"  name="q.endCustomer_name" value="$!{q.endCustomer_name}" readonly ></input>	
+								 <input type="hidden" id="endCustomer_id" name="q.endCustomer_id" value="$!{q.endCustomer_id}"  readonly ></input>					                        
+							</td> 
+                            <td class="head" noWrap>File:</td>
+                            <td class="context" noWrap><input  id="old_file_name" style="border:1" name="q.file_name" value='$!{q.file_name}' readonly/><a href="javascript:upload()" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-save'">Upload</a></td>
+							<input  id="new_file_name"  value='$!{q.file_name}'type="hidden"/>
+							<input  id="file_path" name="q.file_path" value='$!{q.file_path}'type="hidden"/>
+                        </tr>
+						<tr>
+							<td class="head" noWrap><label for="name">EC Group</label></td>
+							<td noWrap class="context">
+								<input class="easyui-validatebox" id="ecGroup_name" value="$!{q.ecGroup_name}" readonly>
+								<input type="hidden" id="ecGroup_id" name="q.ecGroup_id"  value="$!{q.ecGroup_id}" readonly>
+								<input type="hidden" id="total_amount" name="q.total_amount"  value="$!{q.total_amount}" readonly/>  
+								<input type="hidden" id="total_type" name="q.total_type" value="$!{q.total_type}"  readonly ></input>
+							</td>
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>
+
+
+		
+		<div id="p_search" class="easyui-panel" title="" style="padding: 2px; background: #fafafa;" data-options="collapsible:true">
+			<table id="datagrid">
+			</table>			
+			<input class="easyui-validatebox" data-options="required:true" id="quoteDetailJson" name="quoteDetailJson" type="hidden">
+				<input class="easyui-validatebox" data-options="required:true" id="delQuote" name="delQuoteDetail" type="hidden">
+        </div>
+
+		</div>  
+		
+		<br/>
+			<div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-ok" href="javascript:submit()">Submit</a>
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Cancel</a>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="hiddenWin"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/designReg/toQuote.js?v=3"></script>
+</html>

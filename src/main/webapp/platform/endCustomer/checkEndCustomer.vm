@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		<!-- 查询 -->
+		<div class="easyui-layout" data-options="fit:true"> 
+	        <form method="post" target="hideFrame">
+		
+			<input type="hidden" id="ids"/>
+			<input type="hidden" id="id" name="ec.id" value="$!{ec.id}"/>
+			<input type="hidden" id="country" name="ec.country" value="$!{ec.country}">
+			<input type="hidden" id="ec_alias_name" name="ec.ec_alias_name"  value="$!{ec.ec_alias_name}">	
+				<div data-options="region:'center'" border="0">
+					<table id="datagrid"></table>
+				</div>
+
+		<div id="backBtn" region="south" border="false" style="text-align:center;height:30px;line-height:30px;padding:0px;">
+			<a class="easyui-linkbutton" icon="icon-left" href="javascript:back()">Back</a>
+		</div>
+		<!--
+	<div id="tool">
+		<a href="#" onclick="javascript:reloadOA()" class="icon-reload" ></a>
+		<a href="javascript:void(0)" class="icon-blank"></a>
+		<a href="loginAction!logout.jspa?action=logout" class="icon-logout" ></a>
+		<a href="javascript:void(0)" class="icon-blank"></a>
+	</div>
+		-->
+	</form>
+	</div>
+	<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+	<div id="hiddenWin"/> 
+	</div>
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/endCustomer/checkEndCustomer.js"></script>
+</html>

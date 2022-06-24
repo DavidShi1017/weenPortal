@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()	
+	</head>
+	<body>
+			<div class="easyui-panel"  title="事务抬头" data-options="iconCls:'icon-edit'" style="width:1120px">
+			<table width="100%"  border="0" cellpadding="0" cellspacing="1">
+				<tr>
+    				<td class="head" noWrap style="text-align: right">
+    					事务标题
+    				</td>
+					<td noWrap>
+						<input class="easyui-validatebox" type='text' size="30" id='title' name="title" value='$!{businessTripApply.eventTitle}' data-options ="required:true"/>
+					</td>
+                </tr>
+				<tr>
+    				<td class="head" noWrap style="text-align: right">
+    					申请日期
+    				</td>
+					<td noWrap>
+						<input id="createDate" name="businessTripApply.createDate"  value='$!{businessTripApply.createDate}' />
+					</td>
+                 </tr>
+				<tr>
+    				<td class="head" noWrap style="text-align: right">
+    					申请人
+    				</td>
+					<td noWrap>
+						<input id="userName" name="userName" size="30" class="easyui-validatebox" type='text' value='$!{businessTripApply.userName}' readonly />
+					</td>
+                 </tr>
+				 <tr>
+					<td class="head" noWrap style="text-align: right">
+						申请人组织
+                    </td>
+					<td>
+						<input name="orgName" type='text' size="30" value='$!{businessTripApply.orgName}' class="easyui-validatebox" readonly/>
+                    </td>
+				 </tr>
+		    </table>
+		</div>
+		<div region="south" border="false" style="height:12px;"></div>
+		<div class="easyui-panel" title="出差申请" data-options="iconCls:'icon-edit'" style="width:1120px">
+			<table width="100%" border="0" cellpadding="0" cellspacing="1">
+				<tr>
+    				<td class="head" noWrap style="text-align: right">
+    					起始日期<font color='red'>*</font>:
+    				</td>
+					<td >
+						<input type="text" id="beginDate" name="businessTripApply.beginDate" value="$!dateUtil.datetime($!{businessTripApply.beginDate},'yyyy-MM-dd')" />
+					</td>
+					<td class="head" noWrap style="text-align: right">
+    					结束日期<font color='red'>*</font>:
+    				</td>
+					<td >
+						<input type="text" id="endDate" name="businessTripApply.endDate" value="$!dateUtil.datetime($!{businessTripApply.endDate},'yyyy-MM-dd')" />
+					</td>
+				 </tr>
+				  <tr>
+    				<td class="head" noWrap style="text-align: right">
+    					出差天数:
+    				</td>
+					<td>
+						<input type="text" id="tripDays" name="businessTripApply.tripDays" value="$!{businessTripApply.tripDays}" />
+					</td>
+					<td class="head" noWrap style="text-align: right">
+    					住宿天数:
+    				</td>
+					<td>
+						<input type="text" id="stayDays" name="businessTripApply.stayDays" value="$!{businessTripApply.stayDays}" />
+					</td>
+				 </tr>
+				 <tr>
+    				<td class="head" noWrap style="text-align: right">
+    					出发地<font color='red'>*</font>:
+    				</td>
+					<td>
+						<input class="easyui-validatebox" type="text" id="departure" name="businessTripApply.departure" value="$!{businessTripApply.departure}" data-options ="required:true"/>
+					</td>
+					<td class="head" noWrap style="text-align: right">
+    					目的地<font color='red'>*</font>:
+    				</td>
+					<td>
+						<input class="easyui-validatebox" type="text" id="place" name="businessTripApply.place" value="$!{businessTripApply.place}" data-options ="required:true"/>
+					</td>
+				 </tr>
+				 <tr>
+    				<td class="head" noWrap style="text-align: right">
+    					经停地:
+    				</td>
+					<td>
+						<input type="text" size="50" id="stop" name="businessTripApply.stop" value="$!{businessTripApply.stop}" />
+					</td>
+					<td class="head" noWrap style="text-align: right">
+    					拟出行方式<font color='red'>*</font>:
+    				</td>
+					<td>
+						$!{businessTripApply.tripWayName}
+					</td>
+				 </tr>
+				  <tr>
+					<td class="head" noWrap style="text-align: right">
+    					申请金额:
+    				</td>
+					<td>
+						<input class="easyui-numberbox" id="amount" name="businessTripApply.amount" value="$!{businessTripApply.amount}" data-options="required:true,min:0,precision:2" />
+					</td>
+				 </tr>
+				 <tr>
+					<td class="head" noWrap style="text-align: right">
+    					详细说明:
+    				</td>
+					<td colspan="3">
+						<textarea type="text" id="reason" name="businessTripApply.reason" cols="100" rows="5">$!{businessTripApply.reason}</textarea>
+					</td>
+				 </tr>
+				
+		    </table>
+		</div>
+    </body>
+</html>

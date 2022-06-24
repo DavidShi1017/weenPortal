@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="logisticsscheduling" extends="jingtong-default">
+		<action name="loadCapacityAction" class="loadCapacityAction">
+			<result name="toLoadCapacity">/platform/loadCapacity/searchLoadCapacity.vm</result>
+			<result name="editLoadCapacity">/platform/loadCapacity/createLoadCapacity.vm</result>
+		</action>
+		<action name="schedulelistAction" class="scheduleListAction">
+			<result name="toScheduleSmtor">/platform/schedulelist/searchScheduleSmtor.vm</result>
+			<result name="toviewshcedulelist">/platform/schedulelist/viewshcedulelist.vm</result>
+			<result name="toeditShceduleList">/platform/schedulelist/editShceduleList.vm</result>
+		</action>
+	</package>
+</struts>

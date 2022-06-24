@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ZeroClipboard Test</title>
+<meta charset="utf-8">
+<style type="text/css">
+.line{margin-bottom:20px;}
+
+.copy-tips{position:fixed;z-index:999;bottom:50%;left:50%;margin:0 0 -20px -80px;background-color:rgba(0, 0, 0, 0.2);filter:progid:DXImageTransform.Microsoft.Gradient(startColorstr=#30000000, endColorstr=#30000000);padding:6px;}
+.copy-tips-wrap{padding:10px 20px;text-align:center;border:1px solid #F4D9A6;background-color:#FFFDEE;font-size:14px;}
+</style>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="jquery.zclip.js"></script>
+</head>
+<body>
+<div class="line">
+	<h2>demo1 </h2>
+	<a href="#none" class="copy">copy</a>
+</div>
+<div class="line">
+	<h2>demo2 ddd</h2>
+	<a href="#none" class="copy-input">copy test</a>
+	<input id="fxc" type="hidden" class="input" value="fxc1111" />
+</div>
+</body>
+</html>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $(".copy").zclip({
+		path: "ZeroClipboard.swf",
+		copy: function(){
+		return $(this).text();
+		},
+		beforeCopy:function(){
+			$(this).css("color","orange");
+		},
+		afterCopy:function(){
+			var $copysuc = $("<div class='copy-tips'><div class='copy-tips-wrap'>success</div></div>");
+			$("body").find(".copy-tips").remove().end().append($copysuc);
+			$(".copy-tips").fadeOut(3000);
+        }
+	});
+
+	$(".copy-input").zclip({
+		path: "ZeroClipboard.swf",
+		copy: function(){
+			return $(this).parent().find("#fxc").val();
+		},
+		afterCopy:function(){/* 澶嶅埗鎴愬姛鍚庣殑鎿嶄綔 */
+			var $copysuc = $("<div class='copy-tips'><div class='copy-tips-wrap'>success</div></div>");
+			$("body").find(".copy-tips").remove().end().append($copysuc);
+			$(".copy-tips").fadeOut(3000);
+        }
+	});
+});
+</script>

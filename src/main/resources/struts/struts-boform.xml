@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="/boform" extends="jingtong-default">
+		<action name="boformAction" class="boformAction">
+			<result name="searchReportParameter">/platform/boform/searchReportParameter.vm</result>
+			<result name="createPrepare">/platform/boform/createReportParameter.vm</result>
+			<result name="updatePrepare">/platform/boform/searchReportParameterDetail.vm</result>
+			<result name="showBoRptPrepare">/platform/boform/showBoRpt.vm</result>
+			<result name="showBoRpt" type="redirect">${url}</result>
+			<result name="searchQueryParameter">/platform/boform/searchQueryParameter.vm</result>
+
+		</action>
+
+	</package>
+</struts>

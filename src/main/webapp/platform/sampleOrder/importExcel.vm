@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui", "ckeditor", "upload"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		<form method="post" enctype="multipart/form-data" target="hideFrame">
+				<input type="hidden" id="customer_id" name="customer_id" value="$!{customer_id}">
+				<input type="hidden" id="currency_code" name="currency_code" value="$!{currency_code}">
+ 				<input type="hidden" id="office_id" name="office_id" value="$!{office_id}">
+				<table  width="100%" border="0" cellpadding="0" cellspacing="1">
+						<tr>
+ 						<td class="head" noWrap>File:</td>
+						<td>
+							<input type="file" id="uploadFile" name="uploadFile"/>
+						</td>
+						<td class="head" noWrap></td>
+						<td>
+							<a class="easyui-linkbutton" icon="icon-redo" href="javascript:importData()">import</a>
+						</td>
+					</tr>
+		    	</table>
+				</br>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+	</body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/sampleOrder/importExcel.js"></script>
+</html>

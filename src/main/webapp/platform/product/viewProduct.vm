@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+    #CSSM(["easyui","style"])
+    #JSM(["jquery", "easyui"])
+    #JS_ENV_VAL()
+</head>
+<body>
+    <form action="" method="post">
+        <input type="hidden" id="id" name="p.id" value="$!{p.id}" />    
+        <input type="hidden" id="oldMaterial_id" name="oldMaterial_id" value="$!{p.material_id}" />    
+        <div class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+            <table  border="0" cellpadding="5" cellspacing="5">
+                <tr>
+                    <td class="head" noWrap width='160'><label for="name">12NC:</label></td>
+                    <td width='220'  class="context">
+                        <label id="material_id">$!{p.material_id}</label>
+                    </td>
+                    <td class="head" noWrap width='160'><label for="name">BOOK Part :</label></td>
+                    <td noWrap width='220'  class="context">
+                        <label>$!{p.material_name}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="head" noWrap><label for="name">Description :</label></td>
+                    <td noWrap width='220'  class="context">
+                        <label>$!{p.material_exp}</label>
+                    </td>
+                    <td class="head" noWrap><label for="name">Material Type :</label></td>
+                    <td width='220'  class="context">
+                        <label>$!{p.material_type}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="head" noWrap><label for="name">Product Group :</label></td>
+                    <td width='220'  class="context">
+                        <label>$!{p.material_groupId}</label>
+                    </td>
+                    <td class="head" noWrap><label for="name">Lead Time:</label></td>
+                    <td width='220' class="context">
+                        <label>$!{p.lead_time}</label>
+                    </td>        
+                </tr>
+                <tr>
+                    <td class="head" noWrap><label for="name">Customer Group :</label></td>
+                    <td width='220' class="context">
+                        <label>$!{p.customer_group}</label>
+                    </td>
+                    <td class="head" noWrap><label for="name">Base Unit:</label></td>
+                    <td width='220' class="context">
+                        <label>$!{p.base_unit}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="head" noWrap><label for="name">Sale Unit:</label></td>
+                    <td width='220' class="context">
+                        <label>$!{p.sale_unit}</label>
+                    </td>
+                    <td class="head" noWrap><label for="name">Numerator:</label></td>
+                    <td width='220' class="context">
+                        <label>$!{p.numerator}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="head" noWrap><label for="name">Denominator:</label></td>
+                    <td width='220'  class="context">
+                        <label>$!{p.denominator}</label>
+                    </td> 
+                    <td class="head" noWrap><label for="name">Quote Item:</label></td>
+                    <td width='220'  class="context" >
+                        <label>$!{p.isQuoteItem}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="head" noWrap><label for="name">DR Item :</label></td>
+                    <td width='220'  class="context">
+                        <label>$!{p.isDRItem}</label>
+                    </td>    
+                    <td class="head" noWrap><label for="name">Limited QTY :</label></td>
+                    <td width='220'  class="context">
+                        <label>$!{p.limited_qty}</label>
+                    </td>    
+                </tr>
+                <tr>
+                    <td class="head" noWrap><label for="name">MOQ :</label></td>
+                    <td width='220'  class="context">
+                        <label>$!{p.moq}</label>
+                    </td>    
+                    <td class="head" noWrap><label for="name">WeEn Cost :</label></td>
+                    <td width='220'  class="context">
+                        <label>$!{p.cost}</label>
+                    </td>    
+                </tr>
+                <tr>
+                    <td class="head" noWrap><label for="name">For Customer :</label></td>
+                    <td width='220'  class="context">
+                        <label>$!{p.customer_id}</label>
+                    </td>
+                    <td class="head" noWrap><label for="name">RFS Date :</label></td>
+                    <td width='220' class="context">
+                        <label>$!{p.rfs_dateStr}</label>
+                    </td>    
+                </tr>
+            </table>
+        </div>
+    </form>
+    <iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+    <div id="hiddenWin"/> 
+</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/product/viewProduct.js"></script>
+</html>

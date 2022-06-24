@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="enquiryAction" class="com.jingtong.platform.enquiry.action.EnquiryAction"
+		parent="baseAction" scope="request">
+		<property name="enquiryService" ref="enquiryService" />
+	</bean>
+	<bean id="enquiryService" class="com.jingtong.platform.enquiry.service.impl.EnquiryServiceImpl">
+		<property name="enquiryDao" ref="enquiryDao"/>
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+	
+	<bean id="enquiryDao" class="com.jingtong.platform.enquiry.dao.impl.EnquiryDaoImpl" parent="baseDao">
+	</bean>
+	 
+</beans>

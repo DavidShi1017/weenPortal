@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+	</head>
+	<body>
+		
+		
+		<!-- 查询 -->
+		<div class="easyui-layout" data-options="fit:true,border:false"> 
+
+	        <form method="post" target="hideFrame">
+			<div id="p_search" title="" style="height:120px;padding: 1px; background: #fafafa;" data-options="region:'north',iconCls:'icon-search'">
+                <input type="hidden" id="file_id" name="file_id" value="$!{file_id}"/>
+				<input  type="hidden"  id="loginRole" value="$!{loginRole}">
+				<table width="100%" border="0" cellpadding="0" cellspacing="5">
+				 <tr>
+                     <td class="head" noWrap>BOOK PART</td>
+                    <td><input class="easyui-validatebox" id="book_part" name="book_part"></td>
+						<td class="head" noWrap>STATUS</td>
+						<td>
+ 					<select id="status" name="status" value="(0)"style="width:155px;" data-options="editable:false">
+						<option value="(0,1,2,3,4,9)">ALL</option>  
+						<option value="(2,3,4)">Approved</option>  
+						<option value="(0)">Reject</option>  
+						<option value="(1)">Pending</option>
+						<option value="(9)">Transfer</option> 
+                    </select>
+					</td>
+
+				</tr>
+				<tr>
+					<td class="head" noWrap>SHIP FROM</td>
+                    <td><input class="easyui-datebox" id="start_time" name="start_time"></td>
+					<td class="head" noWrap>SHIP TO</td>
+                    <td><input class="easyui-datebox" id="end_time" name="end_time"></td>
+
+ 					<td colspan="2">
+						<a id="search" href="javascript:search()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">Search</a>
+                    	<a href="javascript:clearValue()" class="easyui-linkbutton" iconCls="icon-clear" id="clearV">Cancel</a> 	
+					</td>		
+                 </tr>
+				 <tr>
+						 <td class="head" noWrap>FILE_ID</td>
+					<td><label> $!{file_id}</label></td>
+						<td class="head" noWrap>FILE_NAME</td>
+					<td><label> $!{file_url}</label></td>
+                    </tr>
+				 
+                </table>
+				 </div>
+			    <div data-options="region:'center'">
+					<table id="datagrid"></table>
+				</div>
+	</form>
+	
+	<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+	<div id="hiddenWin"/> 
+	</div>
+		
+		
+		 
+	</body>
+<script type="text/javascript" src="$!{env.imgUrl}/js/platform/pos/searchPosDetail.js"></script>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+		#CSSM(["easyui","style"])
+		#JSM(["jquery", "easyui"])
+		#JS_ENV_VAL()
+    </head>
+	<body>
+		<form action="" method="post">
+			
+		<div  class="easyui-panel" title="" data-options="collapsible:true,iconCls:'icon-detail'" style="padding: 2px; background: #fafafa;">
+ 				<table  align="left"  border="0" cellpadding="0" cellspacing="5">
+					<input  type="hidden" name="order_id" id="order_id" value="$!{o.order_id}"/>
+					<input type="hidden" id="id" name="o.id" value="$!{o.id}"/>
+						<tr>                
+                            <td class="head" noWrap width='160'><label for="name">Order Type</label></td>
+							<td noWrap width='220'  class="context" >
+								<label >Standard</label>
+								 <!--<input class="easyui-validatebox"  id="type_id" name="o.type_id" value='$!{o.type_id}' readonly></input>-->
+							</td>
+                            <td class="head" noWrap width='160'><label for="name">Ship To</label></td>
+							<td noWrap width='220'  class="context" >
+								<label >$!{o.shipToName}</label>
+								 <!--<input class="easyui-validatebox"  id="ship_to" name="o.ship_to" value='$!{o.ship_to}' readonly></input>-->
+							</td>
+						</tr>
+						<tr>
+                            <td class="head" noWrap><label for="name">Sold To</label></td>
+							<td noWrap  class="context" >
+								<label >$!{o.customer_name}</label>
+								 <!--<input class="easyui-validatebox"  id="branch_id" name="o.branch_id" value='$!{o.branch_id}' readonly></input>-->
+							</td>
+							<td class="head" noWrap><label for="name">Payer To</label></td>
+                            <td  class="context" >
+								<label >$!{o.payerToName}</label>
+								<!--<input  class="easyui-validatebox" id="payer_to" name="o.payer_to" value='$!{o.payer_to}' readonly></input>-->
+							</td>
+						</tr>
+						<tr>
+							<td class="head" noWrap><label for="name">Currency</label></td>
+                            <td  class="context" >
+								<label >$!{o.currency_code}</label>
+								<!--<input class="easyui-validatebox" id="currency_code" name="o.currency_code" value="$!{o.currency_code}"  />  -->
+							</td>
+							<td class="head" noWrap><label for="name">Billing To</label></td>
+                            <td  class="context" >
+								<label >$!{o.billingToName}</label>
+								<!--<input id="billing_to" class="easyui-validatebox" name="o.billing_to" value='$!{o.billing_to}'  readonly />-->  
+							</td>		
+						</tr>
+						<tr>
+                            <td class="head" noWrap><label for="name">Purchase Order</label></td>
+                            <td  class="context" >
+								<label >$!{o.order_id}</label>
+								 <!--<input class="easyui-validatebox"  id="order_id"  value="$!{o.order_id}" readonly ></input>-->					
+							</td>  
+							<!--
+                            <td class="head" noWrap><label for="name">Remark备注 ：</label></td>
+                            <td  class="context" >
+								<label >$!{o.remark}</label>
+								<input class="easyui-validatebox" id="remark" name="o.remark" value="$!{o.remark}" class="easyui-validatebox"  readonly></input> 
+							</td>
+							--> 
+						</tr>
+					</table>
+					</p>				             
+			<br/>
+		</div>
+
+
+		
+		<div id="p_search" class="easyui-panel" title="" style="padding: 2px; background: #fafafa;" data-options="collapsible:true">
+			<table id="datagrid" border="0">
+			</table>			
+			<input class="easyui-validatebox" data-options="required:true" id="poDetailJson" name="poDetailJson" type="hidden">
+        </div>
+
+		</div>  
+	<!---	
+		<br/>
+			<div region="south" border="false" style="text-align:center;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" icon="icon-cancel" href="javascript:cancel()">Close</a>
+			</div>
+			-->
+		</form>
+		<iframe id="hideFrame" name="hideFrame"  style="height: 0; width: 0"></iframe>
+		<div id="maintWindow"/> 
+    </body>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/platform/order/viewOrder.js"></script>
+</html>

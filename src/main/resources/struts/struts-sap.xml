@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="saprept" extends="jingtong-default">
+		<action name="sapReportAction" class="sapReportAction"> 
+			<result name="toCase">/platform/report/productGroupReport.vm</result>
+		</action>
+
+		<action name="sapAction" class="sapAction"> 
+		</action>
+		
+		<action name="endCustomerToSapAction" class="endCustomerToSapAction"> 
+		</action>
+		
+		<action name="quoteToSapAction" class="quoteToSapAction"> 
+		</action>
+		
+		<action name="sampleOrderToSapAction" class="sampleOrderToSapAction"> 
+		</action>
+		
+		<action name="orderToSapAction" class="orderToSapAction"> 
+		</action>
+		
+		<action name="priceAction" class="priceAction"> 
+		</action>
+		
+		<action name="posToSapAction" class="posToSapAction"> 
+		</action>
+		
+		<action name="knvpAction" class="knvpAction"> 
+		</action>
+        <action name="crmOrder" class="crmOrder"/>
+        
+        <action name="shopDelivery" class="shopDeliveryAction"/>
+	</package>
+</struts>
