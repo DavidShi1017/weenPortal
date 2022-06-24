@@ -305,9 +305,6 @@
 				</isNotEmpty>
 			</dynamic>
 	</select>
-	
-	
-	
 
 	<select id="getQuoteTotal" parameterClass="quoteSap" resultClass="quoteSap">
 		<![CDATA[
